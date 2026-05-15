@@ -58,3 +58,257 @@ src="https://www.facebook.com/tr?id=4295716527336095&ev=PageView&noscript=1"
 <meta name="description" content="Transformamos histórias de crianças em canções exclusivas com letra, melodia e voz sob medida. Pague 1, leve 2 versões. Entrega em até 6h. Garantia de 30 dias." />
 <!-- Fontes otimizadas - pesos reduzidos -->
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+<section class="hero" id="hero">
+  <div class="hero__vignette"></div>
+  <img class="hero__bg-img" id="heroBgImg" src="" alt="" aria-hidden="true" decoding="async" fetchpriority="low" />
+
+  <!-- Floating notes -->
+  <div class="hero__notes" aria-hidden="true">
+
+      <!-- PAUTAS MUSICAIS — fundo esquerdo e direito -->
+      <img src="pauta musical.png"
+          class="hero__pauta hero__pauta--left" alt="" loading="lazy" decoding="async" fetchpriority="low" width="600" />
+      <img src="pauta musical.png"
+          class="hero__pauta hero__pauta--right" alt="" loading="lazy" decoding="async" fetchpriority="low" width="600" />
+
+      <!-- NOTA DUPLA — decoração de fundo grande, quase invisível -->
+      <img src="nota_dupla.png"
+          class="hero__nota-bg" alt="" loading="lazy" decoding="async" fetchpriority="low" width="210" />
+
+      <!-- NOTAS MUSICAIS 3D FLUTUANTES -->
+      <!-- Zona: topo-esquerdo -->
+      <img src="not_unica.png"
+          class="hero__asset float-note"
+          style="top:6%; left:4%; width:52px; opacity:0.80; transform:rotate(-18deg);" alt="" loading="lazy" decoding="async" width="52" />
+
+      <!-- Zona: topo-direito-interno -->
+      <img src="not_unicaa.png"
+          class="hero__asset float-note-3"
+          style="top:8%; right:20%; width:46px; opacity:0.72; transform:rotate(12deg);" alt="" loading="lazy" decoding="async" width="46" />
+
+      <!-- Zona: meio-esquerdo -->
+      <img src="upscaled_4x_nota_unica-removebg-preview.png"
+          class="hero__asset float-note-2"
+          style="top:44%; left:2%; width:66px; opacity:0.82; transform:rotate(-12deg);" alt="" loading="lazy" decoding="async" width="66" />
+
+      <!-- Zona: meio-direito -->
+      <img src="nota_dupla.png"
+          class="hero__asset float-note-4"
+          style="top:36%; right:3%; width:50px; opacity:0.55; transform:rotate(18deg);" alt="" loading="lazy" decoding="async" width="50" />
+
+      <!-- ESTRELAS 3D FLUTUANTES -->
+      <!-- Zona: topo-direito -->
+      <img src="estrela_grande.png"
+          class="hero__asset float-note-4"
+          style="top:3%; right:5%; width:74px; opacity:0.88; transform:rotate(8deg);" alt="" loading="lazy" decoding="async" width="74" />
+
+      <!-- Zona: topo-centro-esquerdo -->
+      <img src="estrela_pequena.png"
+          class="hero__asset float-note-3"
+          style="top:14%; left:20%; width:42px; opacity:0.82; transform:rotate(-6deg);" alt="" loading="lazy" decoding="async" width="42" />
+
+      <!-- Zona: baixo-direito -->
+      <img src="estrela_pequena.png"
+          class="hero__asset float-note-2"
+          style="top:72%; right:8%; width:36px; opacity:0.68; transform:rotate(22deg);" alt="" loading="lazy" decoding="async" width="36" />
+
+      <!-- Zona: baixo-esquerdo -->
+      <img src="estrela_grande.png"
+          class="hero__asset float-note"
+          style="top:68%; left:6%; width:50px; opacity:0.58; transform:rotate(-14deg);" alt="" loading="lazy" decoding="async" width="50" />
+
+      <!-- Zona: topo-centro -->
+      <img src="estrela_pequena.png"
+          class="hero__asset float-note-3"
+          style="top:5%; left:46%; width:38px; opacity:0.76; transform:rotate(14deg);" alt="" loading="lazy" decoding="async" width="38" />
+
+      <!-- Zona: superior-mid-esquerdo -->
+      <img src="not_unicaa.png"
+          class="hero__asset float-note"
+          style="top:26%; left:9%; width:40px; opacity:0.65; transform:rotate(8deg);" alt="" loading="lazy" decoding="async" width="40" />
+
+      <!-- Zona: baixo-centro-esquerdo (abaixo dos controles) -->
+      <img src="estrela_grande.png"
+          class="hero__asset float-note-2"
+          style="top:87%; left:28%; width:46px; opacity:0.55; transform:rotate(-10deg);" alt="" loading="lazy" decoding="async" width="46" />
+
+      <!-- Zona: baixo-centro-direito (abaixo dos controles) -->
+      <img src="estrela_pequena.png"
+          class="hero__asset float-note"
+          style="top:90%; right:26%; width:32px; opacity:0.50; transform:rotate(18deg);" alt="" loading="lazy" decoding="async" width="32" />
+
+  </div>
+
+  <div class="hero__content">
+    <!-- Header -->
+    <div style="max-width:40rem;text-align:center;padding-inline:1rem;">
+      <p class="hero__label"> O presente que ela nunca vai esquecer!</p>
+      <h1 class="hero__title">
+        Esse Aniversário
+         Vai Ficar
+        <span class="hero__title-accent" id="heroAccent">Para Sempre</span> na Memória
+      </h1>
+    </div>
+
+    <!-- Carousel -->
+    <div class="carousel-wrap" id="exemplos">
+      <div class="carousel" id="carousel">
+        <!-- Cards injected by JS -->
+      </div>
+      <div class="carousel__fade carousel__fade--l"></div>
+      <div class="carousel__fade carousel__fade--r"></div>
+    </div>
+
+    <!-- Controls -->
+    <div class="carousel-controls">
+      <button class="carousel-controls__btn" onclick="goToCard(activeIndex-1)" aria-label="Anterior">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5"/><path d="m11 18-6-6 6-6"/>
+        </svg>
+      </button>
+      <div class="carousel-controls__dots" id="dots"></div>
+      <button class="carousel-controls__btn" onclick="goToCard(activeIndex+1)" aria-label="Próximo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- CTA -->
+    <a href="#" class="btn btn--main" id="heroCta" onclick="return false;">Criar minha Música</a>
+
+  </div>
+</section>
+
+<!-- ── Testimonials ──────────────────────────────────────── -->
+<section class="testimonials">
+  <div class="testimonials__bubbles" aria-hidden="true">
+    <div class="testimonials__bubble bubble"  style="width:18rem;height:18rem;background:radial-gradient(circle,rgba(236,72,153,.10) 0%,transparent 70%);top:10%;left:-5%;"></div>
+    <div class="testimonials__bubble bubble-2" style="width:24rem;height:24rem;background:radial-gradient(circle,rgba(219,39,119,.07) 0%,transparent 70%);bottom:5%;right:-8%;"></div>
+    <div class="testimonials__bubble bubble-3" style="width:12rem;height:12rem;background:radial-gradient(circle,rgba(244,114,182,.09) 0%,transparent 70%);top:50%;left:50%;"></div>
+  </div>
+  <div class="container reveal">
+    <div class="text-center" style="margin-bottom:3rem;">
+      <span class="tag" style="background:#fce7f3;color:#9d174d;">Depoimentos Reais</span>
+      <h2 class="section-title">Mães, Tias e Madrinhas Que <br>
+        <span style="color:#db2777;">Já Fizeram seu presente</span></h2>
+      <p class="section-sub">Histórias reais de quem deu um presente que ainda é lembrado meses depois</p>
+    </div>
+    <div class="testimonials__grid" id="testimonialsGrid"></div>
+  </div>
+  <div class="wave-divider" style="margin-top:5rem;">
+    <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
+      <path d="M0,60 C200,0 400,60 600,30 C800,0 1000,60 1200,30 L1200,60 Z" fill="#fff7ed"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ── Compare ────────────────────────────────────────────── -->
+<section class="compare" id="compare">
+  <div class="container reveal">
+    <div class="text-center" style="margin-bottom:3rem;">
+      <span class="tag" style="background:#fed7aa;color:#9a3412;">Compare</span>
+      <h2 class="section-title" style="color:#1e293b;">Você Vai Dar Mais Um Presente <br>
+         <span style="color:#ea580c;">Que Ela Esquece em Dias?</span></h2>
+      <p style="color:#64748b;margin-top:1rem;max-width:36rem;margin-inline:auto;">Esse aniversário acontece uma vez, ela nunca fará 8 anos de novo. O que você der agora vai ficar na memória dela para sempre!</p>
+    </div>
+    <div class="compare__grid">
+      <div class="compare__card compare__card--bad">
+        <p class="compare__badge compare__badge--dark">Presentes Que Todo Mundo Dá</p>
+        <h3 class="compare__card-title">E que rapidinho esquece...</h3>
+        <ul id="badList"></ul>
+      </div>
+      <div class="compare__card compare__card--good">
+        <div style="margin-bottom:.75rem;">
+          <span style="font-size:.75rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;padding:.375rem .75rem;border-radius:9999px;color:#fff;background:rgba(255,255,255,.15);">✦ O Presente Que Fica</span>
+        </div>
+        <h3 class="compare__card-title">Música Personalizada com o Nome Dela</h3>
+        <ul id="goodList"></ul>
+      </div>
+    </div>
+    <div class="compare__cta">
+      <a href="#" class="btn btn--orange" onclick="return false;">Quero Esse Presente Inesquecível</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── How It Works ───────────────────────────────────────── -->
+<section class="how" id="como-funciona">
+  <div class="container reveal">
+    <div class="text-center" style="margin-bottom:3.5rem;">
+      <span class="tag" style="background:#fce7f3;color:#9d174d;">Como Funciona</span>
+      <h2 class="section-title" style="color:#1e293b;">Em Menos de 
+        <span style="color:#f9a8d4;">2 Minutos</span><br>
+         Você Garante o Presente</h2>
+      <p style="color:#64748b;margin-top:1rem;">Você conta a história. A gente transforma em música. Simples assim.</p>
+    </div>
+    <div class="how__grid" id="stepsGrid"></div>
+    <div class="how__cta">
+      <a href="#" class="btn btn--cyan" onclick="return false;">Criar a Música Agora</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Pricing ────────────────────────────────────────────── -->
+<section class="pricing reveal">
+  <div class="pricing__bubbles" aria-hidden="true">
+    <div class="bubble"  style="position:absolute;width:20rem;height:20rem;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,.15) 0%,transparent 70%);top:-10%;right:5%;"></div>
+    <div class="bubble-4" style="position:absolute;width:16rem;height:16rem;border-radius:50%;background:radial-gradient(circle,rgba(5,150,105,.12) 0%,transparent 70%);bottom:-5%;left:0;"></div>
+  </div>
+  <div class="container--md">
+    <div class="text-center" style="margin-bottom:3rem;">
+      <span class="tag" style="background:#a7f3d0;color:#064e3b;font-weight:800;">Presente de Aniversário</span>
+      <h2 class="section-title" style="color:#064e3b;">Esse Aniversário Passa <br> <span style="color:#059669;">A Música Fica</span></h2>
+      <p class="section-sub" style="color:#065f46;max-width:32rem;margin-inline:auto;">Daqui 10 anos ela irá se lembrar de música especial feita com tanto carinho que guarda momentos felizes da infância</p>
+    </div>
+    <div class="pricing-card">
+      <div class="pricing-card__badges">
+        <span class="pricing-card__badge pricing-card__badge--amber">🏷️ OFERTA ESPECIAL POR TEMPO LIMITADO</span>
+        <span class="pricing-card__badge pricing-card__badge--hot">MAIS POPULAR</span>
+      </div>
+      <h3 class="pricing-card__title">Plano Expresso — Entrega em até 6h</h3>
+      <p class="pricing-card__from">De R$ 67,90</p>
+      <div class="pricing-card__price">
+        <span class="pricing-card__price-amount">R$ 28,90</span>
+      </div>
+      <p class="pricing-card__period">Pagamento Único</p>
+      <div class="pricing-card__offer">🎁 Pague 1, Leve 2 </div>
+      <ul class="pricing-card__features" id="pricingFeatures"></ul>
+      <a href="#" class="pricing-card__btn" onclick="return false;">Criar Música Agora</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ────────────────────────────────────────────────── -->
+<section class="faq" id="duvidas">
+  <div class="container--sm reveal">
+    <div class="text-center" style="margin-bottom:3rem;">
+      <span class="tag" style="background:#bae6fd;color:#0369a1;">Dúvidas</span>
+      <h2 class="section-title" style="color:#1e293b;">Antes de Decidir, <span style="color:#0284c7;">Tire Suas Dúvidas</span></h2>
+      <p class="section-sub" style="color:#0369a1;">Tudo o que você precisa saber antes de criar a música da criança.</p>
+    </div>
+    <div class="faq__list" id="faqList"></div>
+  </div>
+</section>
+
+<!-- ── Footer ─────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="footer__inner">
+    <div class="footer__brand">
+      <div class="footer__logo">
+        <span class="footer__logo-icon">🎵</span>
+        <span class="footer__logo-text">Kids Music</span>
+      </div>
+      <p class="footer__tagline">A música com o nome dela — que ela vai pedir pra ouvir toda noite</p>
+    </div>
+    <div class="footer__links">
+      <a href="https://instagram.com/__kidsmusic" target="_blank" rel="noopener" class="footer__link"> @__kidsmusic</a>
+      <a href="mailto:kidsmusic@outlook.pt" class="footer__link">📧 kidsmusic@outlook.pt</a>
+      <a href="tel:+554797792833" class="footer__link">📞 (47) 97792-2833</a>
+    </div>
+    <div class="footer__legal">
+      <p>Kids Music Soluções LTDA</p>
+      <p>São Paulo - Tatuapé</p>
+    </div>
+  </div>
+</footer>
