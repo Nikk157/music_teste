@@ -238,7 +238,6 @@ function buildCarousel() {
         <div class="carousel__bar-track"><div class="carousel__bar-fill" id="bar-${card.id}" style="width:0%"></div></div>
         <div class="carousel__meta">
           <div>
-            <p class="carousel__theme">${card.theme}</p>
             <h2 class="carousel__name">${card.name}</h2>
           </div>
           <span class="carousel__num">■</span>
