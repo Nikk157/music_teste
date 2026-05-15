@@ -6,7 +6,7 @@ const MUSIC_EXAMPLES = [
     theme: "Aventura no espaço",
     vimeoId: "1191676534",
     duration: "1:12",
-    poster: "Lucas_img.jpg",
+    poster: "assets/Lucas_img.jpg",
     color: "#0ea5e9",
     glow: "rgba(14,165,233,.6)"
   },
@@ -16,7 +16,7 @@ const MUSIC_EXAMPLES = [
     theme: "Historinha delicada",
     vimeoId: "1191676533",
     duration: "0:21",
-    poster: "Maria_img.jpg",
+    poster: "assets/Maria_img.jpg",
     color: "#d946ef",
     glow: "rgba(217,70,239,.6)"
   },
@@ -26,7 +26,7 @@ const MUSIC_EXAMPLES = [
     theme: "Futebol e brincadeira",
     vimeoId: "1191676535",
     duration: "0:18",
-    poster: "Luis_img.png",
+    poster: "assets/Luis_img.png",
     color: "#22c55e",
     glow: "rgba(34,197,94,.6)"
   },
@@ -36,7 +36,7 @@ const MUSIC_EXAMPLES = [
     theme: "Momento fofo",
     vimeoId: "1191674347",
     duration: "0:16",
-    poster: "Larissa_img.jpg",
+    poster: "assets/Larissa_img.jpg",
     color: "#fb923c",
     glow: "rgba(251,146,60,.6)"
   },
@@ -46,7 +46,7 @@ const MUSIC_EXAMPLES = [
     theme: "Aniversário mágico",
     vimeoId: "1191674348",
     duration: "0:16",
-    poster: "Ana_img.jpg",
+    poster: "assets/Ana_img.jpg",
     color: "#ec4899",
     glow: "rgba(236,72,153,.6)"
   },
