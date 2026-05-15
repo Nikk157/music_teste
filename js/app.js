@@ -2,50 +2,35 @@
 const MUSIC_EXAMPLES = [
   {
     id: 1,
-    name: "Lucas",
-    theme: "Aventura no espaço",
     vimeoId: "1191676534",
-    duration: "1:12",
     poster: "assets/Lucas_img.jpg",
     color: "#0ea5e9",
     glow: "rgba(14,165,233,.6)"
   },
   {
     id: 2,
-    name: "Maria",
-    theme: "Historinha delicada",
     vimeoId: "1191676533",
-    duration: "0:21",
     poster: "assets/Maria_img.jpg",
     color: "#d946ef",
     glow: "rgba(217,70,239,.6)"
   },
   {
     id: 3,
-    name: "Luis",
-    theme: "Futebol e brincadeira",
     vimeoId: "1191676535",
-    duration: "0:18",
     poster: "assets/Luis_img.png",
     color: "#22c55e",
     glow: "rgba(34,197,94,.6)"
   },
   {
     id: 4,
-    name: "Larissa",
-    theme: "Momento fofo",
     vimeoId: "1191674347",
-    duration: "0:16",
     poster: "assets/Larissa_img.jpg",
     color: "#fb923c",
     glow: "rgba(251,146,60,.6)"
   },
   {
     id: 5,
-    name: "Ana",
-    theme: "Aniversário mágico",
     vimeoId: "1191674348",
-    duration: "0:16",
     poster: "assets/Ana_img.jpg",
     color: "#ec4899",
     glow: "rgba(236,72,153,.6)"
@@ -60,10 +45,10 @@ const MUSIC_EXAMPLES = [
 ];
 
 const TESTIMONIALS = [
-  { initials:"LC", name:"Lucas Costa",    image:"instagram-dm.png", music:"Música da Sofia",     avatarColor:"#0ea5e9", playerColor:"#0ea5e9", topGrad:"linear-gradient(140deg,#e0f2fe 0%,#bae6fd 100%)" },
-  { initials:"MS", name:"Mariana Santos", image:"instagram-dm (4).png", music:"Música do Davi",      avatarColor:"#10b981", playerColor:"#10b981", topGrad:"linear-gradient(140deg,#d1fae5 0%,#a7f3d0 100%)" },
-  { initials:"RP", name:"Rafael Pereira", image:"instagram-dm (3).png", music:"Música da Valentina", avatarColor:"#f59e0b", playerColor:"#d97706", topGrad:"linear-gradient(140deg,#fef3c7 0%,#fde68a 100%)" },
-  { initials:"AB", name:"Ana Beatriz",  image:"instagram-dm (2).png",   music:"Música do Miguel",    avatarColor:"#38bdf8", playerColor:"#0284c7", topGrad:"linear-gradient(140deg,#e0f2fe 0%,#bae6fd 100%)" },
+  { initials:"LC", name:"Lucas Costa",    image:"assets/instagram-dm.png", music:"Música da Sofia",     avatarColor:"#0ea5e9", playerColor:"#0ea5e9", topGrad:"linear-gradient(140deg,#e0f2fe 0%,#bae6fd 100%)" },
+  { initials:"MS", name:"Mariana Santos", image:"assets/instagram-dm (4).png", music:"Música do Davi",      avatarColor:"#10b981", playerColor:"#10b981", topGrad:"linear-gradient(140deg,#d1fae5 0%,#a7f3d0 100%)" },
+  { initials:"RP", name:"Rafael Pereira", image:"assets/instagram-dm (3).png", music:"Música da Valentina", avatarColor:"#f59e0b", playerColor:"#d97706", topGrad:"linear-gradient(140deg,#fef3c7 0%,#fde68a 100%)" },
+  { initials:"AB", name:"Ana Beatriz",  image:"assets/instagram-dm (2).png",   music:"Música do Miguel",    avatarColor:"#38bdf8", playerColor:"#0284c7", topGrad:"linear-gradient(140deg,#e0f2fe 0%,#bae6fd 100%)" },
 ];
 
 const BAD_ITEMS = [
