@@ -52,10 +52,7 @@ const MUSIC_EXAMPLES = [
   },
   {
     id: 6,
-    name: "João",
-    theme: "Aventura espacial",
     vimeoId: "1191674277",
-    duration: "0:16",
     poster: "Joao_img.png",
     color: "#6366f1",
     glow: "rgba(99,102,241,.6)"
