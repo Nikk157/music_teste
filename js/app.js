@@ -1062,11 +1062,14 @@ loadVimeoAPI().then(() => {
 (function() {
     const STORAGE_KEY  = 'km_exit_count';
     const MAX_SHOWS    = 2;
-    const MIN_DELAY_MS = 3500; // mínimo 3.5s na página antes de disparar
+    const MIN_DELAY_MS = 3500;
 
-    let modalShown     = false;
-    let pageReadyTime  = Date.now();
-    let listenersAdded = false;
+    let modalShown       = false;
+    let pageReadyTime    = Date.now();
+    let listenersAdded   = false;
+    let historyBufferSet = false;
+    let lastScrollY      = window.scrollY;
+    let lastScrollTime   = Date.now();
 
     /* ---------- helpers ---------- */
     function getCount() {
@@ -1089,6 +1092,9 @@ loadVimeoAPI().then(() => {
     function readyLongEnough() {
         return (Date.now() - pageReadyTime) >= MIN_DELAY_MS;
     }
+    function isMobile() {
+        return /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 768;
+    }
 
     /* ---------- copy por contexto ---------- */
     const COPY = {
@@ -1109,97 +1115,146 @@ loadVimeoAPI().then(() => {
     };
 
     /* ---------- mostrar modal ---------- */
-    function showModal() {
+    function showModal(forceCtx) {
         if (modalShown || !canShow()) return;
         if (!readyLongEnough()) return;
-        if (isCheckoutVisible()) return; // não interrompe quem está no checkout
+        if (isCheckoutVisible()) return;
 
         modalShown = true;
         incCount();
 
-        const ctx   = isQuizOpen() ? 'quiz' : 'page';
-        const copy  = COPY[ctx];
-        const modal = document.getElementById('exitModal');
+        const ctx  = forceCtx || (isQuizOpen() ? 'quiz' : 'page');
+        const copy = COPY[ctx];
 
-        document.getElementById('exitBadge').textContent       = copy.badge;
-        document.getElementById('exitModalTitle').innerHTML    = copy.title;
-        document.getElementById('exitBody').textContent        = copy.body;
-        document.getElementById('exitCta').textContent         = copy.cta;
-        document.getElementById('exitDismiss').textContent     = copy.dismiss;
+        document.getElementById('exitBadge').textContent    = copy.badge;
+        document.getElementById('exitModalTitle').innerHTML = copy.title;
+        document.getElementById('exitBody').textContent     = copy.body;
+        document.getElementById('exitCta').textContent      = copy.cta;
+        document.getElementById('exitDismiss').textContent  = copy.dismiss;
 
-        modal.classList.add('active');
+        document.getElementById('exitModal').classList.add('active');
         document.body.style.overflow = 'hidden';
+
+        // Após exibir o modal, reempurra o buffer para capturar uma próxima tentativa
+        if (historyBufferSet) {
+            history.pushState({ exitBuffer: true }, '', location.href);
+        }
     }
 
     /* ---------- fechar modal ---------- */
     function closeModal(openQuizAfter) {
-        const modal = document.getElementById('exitModal');
-        modal.classList.remove('active');
-        // só restaura overflow se o quiz não está aberto
+        document.getElementById('exitModal').classList.remove('active');
+        modalShown = false; // permite nova exibição se o contador ainda permitir
         if (!isQuizOpen()) document.body.style.overflow = '';
         if (openQuizAfter && typeof window.openQuiz === 'function') {
             window.openQuiz();
         }
     }
 
-    /* ---------- listeners do modal ---------- */
+    /* ---------- botões do modal ---------- */
     function bindModalButtons() {
-        document.getElementById('exitCta')?.addEventListener('click', function() {
-            closeModal(true);
-        });
-        document.getElementById('exitDismiss')?.addEventListener('click', function() {
-            closeModal(false);
-        });
-        document.getElementById('exitOverlay')?.addEventListener('click', function() {
-            closeModal(false);
-        });
+        document.getElementById('exitCta')?.addEventListener('click', () => closeModal(true));
+        document.getElementById('exitDismiss')?.addEventListener('click', () => closeModal(false));
+        document.getElementById('exitOverlay')?.addEventListener('click', () => closeModal(false));
     }
 
-    /* ---------- detecção mobile: visibilitychange ---------- */
-    function onVisibilityChange() {
-        if (document.visibilityState === 'hidden') {
+    /* ---------- BACK BUTTON (mobile + desktop)
+       Técnica: pushState cria uma entrada "buffer" no histórico.
+       Quando o usuário aperta Voltar, navega para o buffer (popstate dispara)
+       em vez de sair do site. Reempurramos a entrada e exibimos o modal.
+       IMPORTANTE: pushState precisa ser chamado dentro de um evento de
+       interação do usuário para funcionar no Safari/iOS (restrição de segurança).
+    ---------- */
+    function setupBackButtonTrap() {
+        if (historyBufferSet) return;
+
+        // Empurra a entrada buffer — deve ser dentro de gesto do usuário (já estamos)
+        history.pushState({ exitBuffer: true }, '', location.href);
+        historyBufferSet = true;
+
+        window.addEventListener('popstate', function(e) {
+            // Se disparou mas o modal não pode ser exibido, deixa o usuário sair
+            if (!canShow() || !readyLongEnough() || isCheckoutVisible()) return;
+
+            // Reempurra o buffer para manter o usuário na página
+            history.pushState({ exitBuffer: true }, '', location.href);
             showModal();
-        }
+        });
     }
 
-    /* ---------- detecção mobile: swipe down no topo ---------- */
-    let touchStartY = 0;
-    function onTouchStart(e) {
-        touchStartY = e.touches[0].clientY;
-    }
-    function onTouchEnd(e) {
-        const dy = e.changedTouches[0].clientY - touchStartY;
-        // swipe para baixo de pelo menos 60px, iniciado no terço superior
-        if (dy > 60 && touchStartY < window.innerHeight * 0.33) {
-            showModal();
+    /* ---------- SCROLL RÁPIDO PARA CIMA (mobile)
+       Usuários que querem sair no mobile puxam a barra de URL revelando-a
+       com um scroll rápido para cima. Velocidade < -80px / 100ms = saída.
+    ---------- */
+    function onScroll() {
+        const now      = Date.now();
+        const currentY = window.scrollY;
+        const dy       = currentY - lastScrollY;
+        const dt       = now - lastScrollTime;
+
+        // Só analisa se passou tempo suficiente (evita ruído)
+        if (dt > 0 && dt < 200) {
+            const speed = dy / dt; // px por ms — negativo = scroll para cima
+            // Threshold: mais rápido que -0.8px/ms (≈ 80px em 100ms) = intenção de saída
+            if (speed < -0.8 && currentY < 300) {
+                showModal();
+            }
         }
+
+        lastScrollY    = currentY;
+        lastScrollTime = now;
     }
 
-    /* ---------- detecção desktop: mouse sai pelo topo ---------- */
+    /* ---------- MOUSE LEAVE TOPO (desktop) ---------- */
     function onMouseLeave(e) {
-        if (e.clientY <= 0) {
-            showModal();
-        }
+        if (e.clientY <= 10) showModal();
     }
 
-    /* ---------- registrar listeners ---------- */
+    /* ---------- registrar listeners após delay ---------- */
     function addListeners() {
         if (listenersAdded) return;
         listenersAdded = true;
 
-        // Mobile
-        document.addEventListener('visibilitychange', onVisibilityChange, { passive: true });
-        document.addEventListener('touchstart', onTouchStart, { passive: true });
-        document.addEventListener('touchend', onTouchEnd, { passive: true });
+        if (isMobile()) {
+            // Mobile: scroll rápido para cima
+            window.addEventListener('scroll', onScroll, { passive: true });
+            // Back button: configura na primeira interação real (exigência Safari iOS)
+            const gestureEvent = ('ontouchend' in window) ? 'touchend' : 'click';
+            document.addEventListener(gestureEvent, function setupBuffer() {
+                setupBackButtonTrap();
+                document.removeEventListener(gestureEvent, setupBuffer);
+            }, { once: true, passive: true });
+        } else {
+            // Desktop: mouse sai pelo topo
+            document.addEventListener('mouseleave', onMouseLeave, { passive: true });
+            // Back button também no desktop
+            const gestureEvent = 'click';
+            document.addEventListener(gestureEvent, function setupBuffer() {
+                setupBackButtonTrap();
+                document.removeEventListener(gestureEvent, setupBuffer);
+            }, { once: true });
+        }
+    }
 
-        // Desktop
-        document.addEventListener('mouseleave', onMouseLeave, { passive: true });
+    /* ---------- interceptar botão X do quiz ---------- */
+    function interceptQuizClose() {
+        const closeBtn = document.querySelector('.q-close');
+        if (!closeBtn) return;
+
+        closeBtn.addEventListener('click', function(e) {
+            // Só intercepta se o modal pode ser exibido E o quiz está aberto
+            if (canShow() && readyLongEnough() && isQuizOpen()) {
+                e.stopImmediatePropagation();
+                showModal('quiz');
+            }
+            // Se não pode exibir, deixa o resetQuiz() original rodar normalmente
+        }, true); // capture=true para rodar antes do onclick do HTML
     }
 
     /* ---------- init ---------- */
     function init() {
         bindModalButtons();
-        // Aguarda o delay mínimo antes de registrar os listeners de saída
+        interceptQuizClose();
         setTimeout(addListeners, MIN_DELAY_MS);
     }
 
@@ -1208,4 +1263,7 @@ loadVimeoAPI().then(() => {
     } else {
         init();
     }
+
+    // Expõe para uso externo se necessário
+    window._exitIntent = { showModal, closeModal };
 })();
