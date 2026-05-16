@@ -1057,3 +1057,155 @@ loadVimeoAPI().then(() => {
         init();
     }
 })();
+
+/* ── EXIT INTENT ────────────────────────────────────────────── */
+(function() {
+    const STORAGE_KEY  = 'km_exit_count';
+    const MAX_SHOWS    = 2;
+    const MIN_DELAY_MS = 3500; // mínimo 3.5s na página antes de disparar
+
+    let modalShown     = false;
+    let pageReadyTime  = Date.now();
+    let listenersAdded = false;
+
+    /* ---------- helpers ---------- */
+    function getCount() {
+        try { return parseInt(sessionStorage.getItem(STORAGE_KEY) || '0', 10); }
+        catch(e) { return 0; }
+    }
+    function incCount() {
+        try { sessionStorage.setItem(STORAGE_KEY, String(getCount() + 1)); }
+        catch(e) {}
+    }
+    function canShow() {
+        return getCount() < MAX_SHOWS;
+    }
+    function isQuizOpen() {
+        return document.getElementById('quiz')?.classList.contains('active');
+    }
+    function isCheckoutVisible() {
+        return document.getElementById('comp')?.classList.contains('active');
+    }
+    function readyLongEnough() {
+        return (Date.now() - pageReadyTime) >= MIN_DELAY_MS;
+    }
+
+    /* ---------- copy por contexto ---------- */
+    const COPY = {
+        page: {
+            badge:   'Espera um segundo',
+            title:   'Sua música ainda <span class="exit-title-accent">não foi criada</span>',
+            body:    'Por menos de um café, sua criança terá uma música única no mundo — com o nome e a história dela. Esse presente ela vai pedir pra ouvir toda noite.',
+            cta:     'Quero criar a música agora',
+            dismiss: 'Não, prefiro dar um presente comum'
+        },
+        quiz: {
+            badge:   'Quase lá',
+            title:   'Você já está <span class="exit-title-accent">no caminho certo</span>',
+            body:    'Você já dedicou seu tempo para personalizar esse presente. Falta muito pouco — e no final sua criança vai ter uma música que só ela tem no mundo inteiro.',
+            cta:     'Continuar e finalizar minha música',
+            dismiss: 'Deixar pra depois e perder os dados'
+        }
+    };
+
+    /* ---------- mostrar modal ---------- */
+    function showModal() {
+        if (modalShown || !canShow()) return;
+        if (!readyLongEnough()) return;
+        if (isCheckoutVisible()) return; // não interrompe quem está no checkout
+
+        modalShown = true;
+        incCount();
+
+        const ctx   = isQuizOpen() ? 'quiz' : 'page';
+        const copy  = COPY[ctx];
+        const modal = document.getElementById('exitModal');
+
+        document.getElementById('exitBadge').textContent       = copy.badge;
+        document.getElementById('exitModalTitle').innerHTML    = copy.title;
+        document.getElementById('exitBody').textContent        = copy.body;
+        document.getElementById('exitCta').textContent         = copy.cta;
+        document.getElementById('exitDismiss').textContent     = copy.dismiss;
+
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    /* ---------- fechar modal ---------- */
+    function closeModal(openQuizAfter) {
+        const modal = document.getElementById('exitModal');
+        modal.classList.remove('active');
+        // só restaura overflow se o quiz não está aberto
+        if (!isQuizOpen()) document.body.style.overflow = '';
+        if (openQuizAfter && typeof window.openQuiz === 'function') {
+            window.openQuiz();
+        }
+    }
+
+    /* ---------- listeners do modal ---------- */
+    function bindModalButtons() {
+        document.getElementById('exitCta')?.addEventListener('click', function() {
+            closeModal(true);
+        });
+        document.getElementById('exitDismiss')?.addEventListener('click', function() {
+            closeModal(false);
+        });
+        document.getElementById('exitOverlay')?.addEventListener('click', function() {
+            closeModal(false);
+        });
+    }
+
+    /* ---------- detecção mobile: visibilitychange ---------- */
+    function onVisibilityChange() {
+        if (document.visibilityState === 'hidden') {
+            showModal();
+        }
+    }
+
+    /* ---------- detecção mobile: swipe down no topo ---------- */
+    let touchStartY = 0;
+    function onTouchStart(e) {
+        touchStartY = e.touches[0].clientY;
+    }
+    function onTouchEnd(e) {
+        const dy = e.changedTouches[0].clientY - touchStartY;
+        // swipe para baixo de pelo menos 60px, iniciado no terço superior
+        if (dy > 60 && touchStartY < window.innerHeight * 0.33) {
+            showModal();
+        }
+    }
+
+    /* ---------- detecção desktop: mouse sai pelo topo ---------- */
+    function onMouseLeave(e) {
+        if (e.clientY <= 0) {
+            showModal();
+        }
+    }
+
+    /* ---------- registrar listeners ---------- */
+    function addListeners() {
+        if (listenersAdded) return;
+        listenersAdded = true;
+
+        // Mobile
+        document.addEventListener('visibilitychange', onVisibilityChange, { passive: true });
+        document.addEventListener('touchstart', onTouchStart, { passive: true });
+        document.addEventListener('touchend', onTouchEnd, { passive: true });
+
+        // Desktop
+        document.addEventListener('mouseleave', onMouseLeave, { passive: true });
+    }
+
+    /* ---------- init ---------- */
+    function init() {
+        bindModalButtons();
+        // Aguarda o delay mínimo antes de registrar os listeners de saída
+        setTimeout(addListeners, MIN_DELAY_MS);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
