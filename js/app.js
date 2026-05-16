@@ -230,16 +230,14 @@ function buildCarousel() {
       <img class="carousel__poster" id="poster-${card.id}" src="${card.poster}" alt="${card.name}" loading="${idx === activeIndex ? 'eager' : 'lazy'}" decoding="async" />
       <div class="carousel__media" id="media-${card.id}"></div>
       <div class="carousel__overlay"></div>
-      <div class="carousel__top"><span></span><span>${card.duration}</span></div>
+      <div class="carousel__top"></div>
       <button class="carousel__play" id="play-${card.id}" onclick="event.stopPropagation(); toggleVideo(${card.id})" aria-label="Play">
         ${PLAY_SVG}
       </button>
       <div class="carousel__bottom">
         <div class="carousel__bar-track"><div class="carousel__bar-fill" id="bar-${card.id}" style="width:0%"></div></div>
         <div class="carousel__meta">
-          <div>
-            <h2 class="carousel__name">${card.name}</h2>
-          </div>
+          <div></div>
           <span class="carousel__num">■</span>
         </div>
       </div>
