@@ -214,7 +214,7 @@ function toggleFaq(i) {
 }
 
 /* ── Carousel com Facade Pattern (Lazy Load Real) ─────────── */
-let activeIndex = 1;
+let activeIndex = 0;
 let playingId = null;
 let vimeoPlayers = {};
 let vimeoApiLoaded = false;
