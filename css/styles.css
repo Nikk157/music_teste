@@ -216,8 +216,6 @@ ul { list-style: none; }
 .carousel__card{flex-shrink:0;width:280px;height:448px;scroll-snap-align:center;border-radius:2rem;overflow:hidden;position:relative;cursor:pointer;box-shadow:0 30px 60px rgba(0,0,0,.7);transition:transform .5s cubic-bezier(.34,1.56,.64,1),opacity .5s ease,box-shadow .5s ease;background:#090b10;will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;-webkit-mask-image:-webkit-radial-gradient(white,black);isolation:isolate;}
 .carousel__card img{width:100%;height:100%;object-fit:cover;object-position:top;transition:transform .7s ease}
 .carousel__card:hover img{transform:scale(1.06)}
-.carousel__overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.05) 0%,transparent 35%,rgba(0,0,0,.82) 100%)}
-.carousel__top{position:absolute;inset-inline:1.25rem;top:1.25rem;display:flex;justify-content:space-between;font-family:var(--ff-body);font-size:.62rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.7)}
 
 /* BOTÃO PLAY/PAUSE TRANSPARENTE */
 .carousel__play{
@@ -241,13 +239,6 @@ ul { list-style: none; }
 .carousel__card:hover .carousel__play{transform:translate(-50%,-50%)scale(1.12);background:rgba(255,255,255,.22)}
 .carousel__play svg{width:1.75rem;height:1.75rem}
 
-.carousel__bottom{position:absolute;inset-inline:1.25rem;bottom:1.25rem}
-.carousel__bar-track{height:3px;border-radius:9999px;overflow:hidden;margin-bottom:1rem;background:rgba(255,255,255,.22)}
-.carousel__bar-fill{height:100%;border-radius:9999px;background:#fff;width:0%;transition:width 0.1s linear;}
-.carousel__meta{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem}
-.carousel__theme{font-family:var(--ff-body);font-size:.65rem;font-weight:900;text-transform:uppercase;letter-spacing:.4em;color:rgba(255,255,255,.5)}
-.carousel__name{font-family:var(--ff-head);font-size:2.5rem;font-weight:700;text-transform:uppercase;color:#fff;letter-spacing:.08em;margin-top:.4rem;line-height:1;text-shadow:0 2px 16px rgba(0,0,0,.6)}
-.carousel__num{width:2rem;height:2rem;flex-shrink:0;border-radius:.375rem;display:grid;place-items:center;font-size:.55rem;color:#fff;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.18);backdrop-filter:blur(6px)}
 .carousel__fade{pointer-events:none;position:absolute;inset-y:0;width:8rem}
 .carousel__fade--l{left:0;background:linear-gradient(to right,rgba(232,213,245,0.85),transparent)}
 .carousel__fade--r{right:0;background:linear-gradient(to left,rgba(248,221,232,0.85),transparent)}
