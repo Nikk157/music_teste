@@ -368,8 +368,8 @@ async function toggleVideo(id) {
       // CORREÇÃO CRÍTICA: Desmutar ANTES de dar play
       // No mobile, o primeiro play() após interação do usuário deve ser suficiente
       // para ativar o áudio. Mas garantimos com setMuted(false).
-      await player.setMuted(false);
-      await player.setVolume(1);
+      player.setMuted(false);
+      player.setVolume(1);
       await player.play();
 
       playingId = id;
@@ -575,6 +575,9 @@ document.getElementById('carousel')?.addEventListener('scroll', function() {
 /* ── Init ────────────────────────────────────────────────── */
 buildCarousel();
 updateCards();
+loadVimeoAPI().then(() => {
+  initVimeoPlayer(MUSIC_EXAMPLES[activeIndex].id, false);
+});
 
 (function() {
     const TOTAL = 8;
