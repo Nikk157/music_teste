@@ -17,15 +17,15 @@
 <script>
   window.pixelId = "6a053d3f03e2553b0b5da8be";
   var a = document.createElement("script");
-  a.sAttribute("async", "");
-  a.sAttribute("defer", "");
-  a.sAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
+  a.setAttribute("async", "");
+  a.setAttribute("defer", "");
+  a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
   document.head.appendChild(a);
 </script>
-<!-- Ma Pixel Code -->
+<!-- Meta Pixel Code -->
 <script>
 !function(f,b,e,v,n,t,s)
-{if(f.fbq)rurn;n=f.fbq=function(){n.callMethod?
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
 if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
 n.queue=[];t=b.createElement(e);t.async=!0;
@@ -532,10 +532,29 @@ src="https://www.facebook.com/tr?id=4295716527336095&ev=PageView&noscript=1"
     </div>
 </div>
 
+<!-- EXIT INTENT MODAL -->
+<div id="exitModal" aria-modal="true" role="dialog" aria-labelledby="exitModalTitle">
+  <div class="exit-overlay" id="exitOverlay"></div>
+  <div class="exit-card">
+    <img src="assets/estrela_grande.png" class="exit-star exit-star--tl" alt="" aria-hidden="true" />
+    <img src="assets/estrela_pequena.png" class="exit-star exit-star--tr" alt="" aria-hidden="true" />
+    <img src="assets/estrela_pequena.png" class="exit-star exit-star--bl" alt="" aria-hidden="true" />
+    <img src="assets/estrela_grande.png" class="exit-star exit-star--br" alt="" aria-hidden="true" />
+    <div class="exit-badge" id="exitBadge">Espera um segundo</div>
+    <h2 class="exit-title" id="exitModalTitle">Sua música ainda <span class="exit-title-accent">não foi criada</span></h2>
+    <p class="exit-body" id="exitBody">Por menos de um café, sua criança terá uma música única no mundo — com o nome e a história dela. Esse presente ela vai pedir pra ouvir toda noite.</p>
+    <div class="exit-proof">
+      <div class="exit-proof-dot"></div>
+      <span>Mais de 1.200 músicas entregues esse mês</span>
+    </div>
+    <button class="exit-cta" id="exitCta">Quero criar a música agora</button>
+    <button class="exit-dismiss" id="exitDismiss">Não, prefiro dar um presente comum</button>
+  </div>
+</div>
+
 <div id="eTost"></div>
 <canvas id="confCanvas"></canvas>
 
 <script src="js/app.js"></script>
 </body>
 </html>
-
