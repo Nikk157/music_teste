@@ -577,6 +577,7 @@ buildCarousel();
 updateCards();
 loadVimeoAPI().then(() => {
   initVimeoPlayer(MUSIC_EXAMPLES[activeIndex].id, false);
+  initVimeoPlayer(MUSIC_EXAMPLES[activeIndex + 1].id, false);
 });
 
 (function() {
