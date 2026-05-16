@@ -1070,6 +1070,8 @@ loadVimeoAPI().then(() => {
     let historyBufferSet = false;
     let lastScrollY      = window.scrollY;
     let lastScrollTime   = Date.now();
+    let idleTimer        = null;
+    const IDLE_DELAY_MS  = 45000; // 45s sem interação na landing = desengajado
 
     /* ---------- helpers ---------- */
     function getCount() {
@@ -1184,7 +1186,9 @@ loadVimeoAPI().then(() => {
 
     /* ---------- SCROLL RÁPIDO PARA CIMA (mobile)
        Usuários que querem sair no mobile puxam a barra de URL revelando-a
-       com um scroll rápido para cima. Velocidade < -80px / 100ms = saída.
+       com um scroll rápido para cima. Velocidade < -0.8px/ms = saída.
+       Threshold de scrollY ampliado para 600px — captura quem está no meio
+       da landing page e decide sair, não só quem está no topo.
     ---------- */
     function onScroll() {
         const now      = Date.now();
@@ -1192,17 +1196,49 @@ loadVimeoAPI().then(() => {
         const dy       = currentY - lastScrollY;
         const dt       = now - lastScrollTime;
 
-        // Só analisa se passou tempo suficiente (evita ruído)
+        // Só analisa se passou tempo suficiente (evita ruído de momentum)
         if (dt > 0 && dt < 200) {
             const speed = dy / dt; // px por ms — negativo = scroll para cima
             // Threshold: mais rápido que -0.8px/ms (≈ 80px em 100ms) = intenção de saída
-            if (speed < -0.8 && currentY < 300) {
+            // currentY < 600 cobre quem está na metade superior da landing page
+            if (speed < -0.8 && currentY < 600) {
                 showModal();
             }
         }
 
         lastScrollY    = currentY;
         lastScrollTime = now;
+
+        // Qualquer scroll reinicia o idle timer (usuário ainda está engajado)
+        if (!isQuizOpen()) resetIdleTimer();
+    }
+
+    /* ---------- VISIBILITYCHANGE — troca de app/aba no mobile
+       MDN confirma: é o sinal mais confiável no mobile para detectar saída.
+       Dispara quando o usuário minimiza o browser, troca de app ou de aba.
+       Só aplica na landing page (não no quiz, que já tem o X interceptado).
+    ---------- */
+    function onVisibilityChange() {
+        if (document.visibilityState !== 'hidden') return;
+        if (isQuizOpen()) return; // quiz tem seu próprio controle
+        showModal();
+    }
+
+    /* ---------- IDLE TIMER — inatividade na landing page
+       45s sem toque, scroll ou clique = usuário perdeu o interesse.
+       Momento ideal para reengajar antes que ele feche o browser.
+       Só ativo na landing page (quiz tem interação constante).
+    ---------- */
+    function resetIdleTimer() {
+        if (isQuizOpen()) return;
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(() => {
+            if (!isQuizOpen()) showModal();
+        }, IDLE_DELAY_MS);
+    }
+
+    function onUserActivity() {
+        if (!isQuizOpen()) resetIdleTimer();
     }
 
     /* ---------- MOUSE LEAVE TOPO (desktop) ---------- */
@@ -1215,9 +1251,19 @@ loadVimeoAPI().then(() => {
         if (listenersAdded) return;
         listenersAdded = true;
 
+        // visibilitychange: confiável em todos os browsers mobile modernos
+        // (MDN: "transitioning to hidden is the last event reliably observable")
+        document.addEventListener('visibilitychange', onVisibilityChange, { passive: true });
+
         if (isMobile()) {
             // Mobile: scroll rápido para cima
             window.addEventListener('scroll', onScroll, { passive: true });
+
+            // Idle timer: inicia agora e reinicia em qualquer interação
+            resetIdleTimer();
+            document.addEventListener('touchstart', onUserActivity, { passive: true });
+            document.addEventListener('touchend',   onUserActivity, { passive: true });
+
             // Back button: configura na primeira interação real (exigência Safari iOS)
             const gestureEvent = ('ontouchend' in window) ? 'touchend' : 'click';
             document.addEventListener(gestureEvent, function setupBuffer() {
@@ -1227,6 +1273,13 @@ loadVimeoAPI().then(() => {
         } else {
             // Desktop: mouse sai pelo topo
             document.addEventListener('mouseleave', onMouseLeave, { passive: true });
+
+            // Idle no desktop também (mousemove e clique reiniciam)
+            resetIdleTimer();
+            document.addEventListener('mousemove', onUserActivity, { passive: true });
+            document.addEventListener('click',     onUserActivity, { passive: true });
+            document.addEventListener('keydown',   onUserActivity, { passive: true });
+
             // Back button também no desktop
             const gestureEvent = 'click';
             document.addEventListener(gestureEvent, function setupBuffer() {
