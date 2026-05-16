@@ -616,7 +616,10 @@ loadVimeoAPI().then(() => {
                 const v = c.dataset.v;
                 if (v === '__free__') {
                     const isSel = c.classList.contains('sel');
-                    if (!isSel && data.personalidade.length >= 3) return;
+                    if (!isSel && data.personalidade.length >= 3) {
+                        showErr('Limite atingido! Você já escolheu 3 características. Remova uma para adicionar outra.');
+                        return;
+                    }
                     c.classList.toggle('sel');
                     const freeField = document.getElementById('persFreeField');
                     freeField.style.display = c.classList.contains('sel') ? 'block' : 'none';
@@ -631,6 +634,8 @@ loadVimeoAPI().then(() => {
                     } else if (data.personalidade.length < 3) {
                         c.classList.add('sel');
                         data.personalidade.push(v);
+                    } else {
+                        showErr('Limite atingido! Você já escolheu 3 características. Remova uma para adicionar outra.');
                     }
                 }
                 const freeSelected = document.querySelector('#gPerso .ocard[data-v="__free__"]').classList.contains('sel');
@@ -646,7 +651,10 @@ loadVimeoAPI().then(() => {
                     c.classList.remove('sel');
                     data.universo = data.universo.filter(x => x !== v);
                 } else {
-                  if (data.universo.length >= 3) return;
+                  if (data.universo.length >= 3) {
+                        showErr('Limite atingido! Você já escolheu 3 universos. Remova um para adicionar outro.');
+                        return;
+                    }
                     c.classList.add('sel');
                     data.universo.push(v);
                 }
