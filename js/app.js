@@ -38,7 +38,7 @@ const MUSIC_EXAMPLES = [
   {
     id: 6,
     vimeoId: "1191674277",
-    poster: "Joao_img.png",
+    poster: "assets/Joao_img.png",
     color: "#6366f1",
     glow: "rgba(99,102,241,.6)"
   }
