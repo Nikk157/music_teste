@@ -1250,7 +1250,7 @@ ul { list-style: none; }
   position: fixed;
   bottom: 2rem;
   left: 50%;
-  transform: translateX(-50%) translateY(100px);
+  transform: translateX(-50%) translateY(200%);
   background: #1e293b;
   color: #fff;
   padding: 0.75rem 1.5rem;
