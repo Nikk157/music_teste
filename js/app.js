@@ -227,7 +227,7 @@ function buildCarousel() {
   c.style.paddingLeft = c.style.paddingRight = 'calc(50% - 140px)';
   c.innerHTML = MUSIC_EXAMPLES.map((card, idx) => `
     <div class="carousel__card" id="card-${card.id}" data-index="${idx}">
-      <img class="carousel__poster" id="poster-${card.id}" src="${card.poster}" alt="${card.name}" loading="${idx === activeIndex ? 'eager' : 'lazy'}" decoding="async" />
+      <img class="carousel__poster" id="poster-${card.id}" src="${card.poster}" alt="" loading="${idx === activeIndex ? 'eager' : 'lazy'}" decoding="async" />
       <div class="carousel__media" id="media-${card.id}"></div>
       <div class="carousel__overlay"></div>
       <div class="carousel__top"></div>
