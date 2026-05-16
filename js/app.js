@@ -225,24 +225,16 @@ const PLAY_SVG  = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.14
 function buildCarousel() {
   const c = document.getElementById('carousel');
   c.style.paddingLeft = c.style.paddingRight = 'calc(50% - 140px)';
+  
   c.innerHTML = MUSIC_EXAMPLES.map((card, idx) => `
-    <div class="carousel__card" id="card-${card.id}" data-index="${idx}">
-      <img class="carousel__poster" id="poster-${card.id}" src="${card.poster}" alt="" loading="${idx === activeIndex ? 'eager' : 'lazy'}" decoding="async" />
-      <div class="carousel__media" id="media-${card.id}"></div>
-      <div class="carousel__overlay"></div>
-      <div class="carousel__top"></div>
-      <button class="carousel__play" id="play-${card.id}" onclick="event.stopPropagation(); toggleVideo(${card.id})" aria-label="Play">
-        ${PLAY_SVG}
-      </button>
-      <div class="carousel__bottom">
-        <div class="carousel__bar-track"><div class="carousel__bar-fill" id="bar-${card.id}" style="width:0%"></div></div>
-        <div class="carousel__meta">
-          <div></div>
-          <span class="carousel__num">■</span>
-        </div>
-      </div>
-    </div>
-  `).join('');
+  <div class="carousel__card" id="card-${card.id}" data-index="${idx}">
+    <img class="carousel__poster" id="poster-${card.id}" src="${card.poster}" alt="" loading="${idx === activeIndex ? 'eager' : 'lazy'}" decoding="async" />
+    <div class="carousel__media" id="media-${card.id}"></div>
+    <button class="carousel__play" id="play-${card.id}" onclick="event.stopPropagation(); toggleVideo(${card.id})" aria-label="Play">
+      ${PLAY_SVG}
+    </button>
+  </div>
+`).join('');
 
   // Adicionar listener de clique no card para navegação
   MUSIC_EXAMPLES.forEach((card, idx) => {
