@@ -2,17 +2,17 @@
 const MUSIC_EXAMPLES = [
   {
     id: 1,
-    vimeoId: "1191676534",
-    poster: "assets/Lucas_img.jpg",
-    color: "#0ea5e9",
-    glow: "rgba(14,165,233,.6)"
-  },
-  {
-    id: 2,
     vimeoId: "1191676533",
     poster: "assets/Maria_img.jpg",
     color: "#d946ef",
     glow: "rgba(217,70,239,.6)"
+  },
+  {
+    id: 2,
+    vimeoId: "1191676534",
+    poster: "assets/Lucas_img.jpg",
+    color: "#0ea5e9",
+    glow: "rgba(14,165,233,.6)"
   },
   {
     id: 3,
