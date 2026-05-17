@@ -894,6 +894,20 @@ loadVimeoAPI().then(() => {
         document.getElementById('smClima').textContent  = data.clima || '—';
         document.getElementById('smEstilo').textContent = data.estilo || '—';
 
+        // Preenche os elementos visuais do novo design
+        const smNomeEl = document.getElementById('smNome');
+        if (smNomeEl) smNomeEl.textContent = data.nome || '—';
+        const vis = {
+            smPersoVis:  persoFull || '—',
+            smUnivVis:   univFull  || '—',
+            smClimaVis:  data.clima || '—',
+            smEstiloVis: data.estilo || '—',
+        };
+        Object.entries(vis).forEach(([id, val]) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = val;
+        });
+
         pendingPayload = {
             paraQuem:      data.rel,
             nome:          data.nome,
