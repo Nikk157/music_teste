@@ -942,17 +942,17 @@ ul { list-style: none; }
 .milestone-pill svg { width: 16px; height: 16px; stroke: currentColor; }
 
 /* ── Tela de Revisão / Review Page ───────────────────────── */
+/* ── TELA DE CHECKOUT / COMPOSIÇÃO ─────────────────────────── */
 .comp {
   display: none;
   flex-direction: column;
   align-items: center;
-  text-align: center;
-  padding: 1.75rem 1.25rem 3rem;
-  animation: fadeInUp 0.6s ease both;
+  padding: 2rem 1.25rem 3rem;
+  animation: fadeInUp 0.5s ease both;
   max-width: 480px;
   margin: 0 auto;
   width: 100%;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 .comp.active {
   display: flex;
@@ -960,27 +960,86 @@ ul { list-style: none; }
   overflow-y: auto;
 }
 
-/* Badge topo */
+/* ── Topo hero ── */
+.comp-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+/* Animação de anéis pulsantes */
+.comp-anim {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.25rem;
+}
+.comp-anim-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid #3b82f6;
+  animation: compRingPulse 2.4s ease-in-out infinite;
+}
+.comp-anim-ring--1 { width: 80px; height: 80px; opacity: 0.15; animation-delay: 0s; }
+.comp-anim-ring--2 { width: 60px; height: 60px; opacity: 0.30; animation-delay: 0.3s; }
+.comp-anim-ring--3 { width: 44px; height: 44px; opacity: 0.55; animation-delay: 0.6s; }
+@keyframes compRingPulse {
+  0%, 100% { transform: scale(1);    opacity: var(--op, .2); }
+  50%       { transform: scale(1.08); opacity: calc(var(--op, .2) * 1.6); }
+}
+.comp-anim-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(59,130,246,0.35);
+  animation: compIconPulse 2.4s ease-in-out infinite;
+}
+@keyframes compIconPulse {
+  0%, 100% { box-shadow: 0 4px 16px rgba(59,130,246,0.35); }
+  50%       { box-shadow: 0 6px 24px rgba(59,130,246,0.55); }
+}
+.comp-anim-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: #fff;
+}
+
+/* Badge */
 .comp-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  background: #dcfce7;
-  color: #15803d;
+  background: #dbeafe;
+  color: #1d4ed8;
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.13em;
   text-transform: uppercase;
-  padding: 0.45rem 1.1rem;
+  padding: 0.4rem 1rem;
   border-radius: 999px;
-  border: 1px solid #86efac;
+  border: 1px solid #bfdbfe;
 }
 .comp-badge-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #22c55e;
+  background: #3b82f6;
   flex-shrink: 0;
+  animation: compDotBlink 1.4s ease-in-out infinite;
+}
+@keyframes compDotBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
 }
 
 .comp-title {
@@ -988,176 +1047,134 @@ ul { list-style: none; }
   font-size: 1.65rem;
   font-weight: 700;
   color: #1e293b;
-  line-height: 1.25;
-  margin-bottom: 0;
+  line-height: 1.2;
+  margin: 0;
 }
-.comp-title span { color: #3b82f6; }
+.comp-title-name { color: #3b82f6; }
 .comp-sub {
   color: #64748b;
   font-size: 0.9rem;
   line-height: 1.55;
-  margin-bottom: 0;
+  margin: 0;
+  max-width: 340px;
 }
 
-/* Stats — 3 pills separadas */
-.comp-stats {
-  display: flex;
-  gap: 0.5rem;
+/* ── Card preview do que vai na música ── */
+.comp-preview {
   width: 100%;
-  max-width: 400px;
-}
-.comp-stat {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0.85rem 0.5rem;
   background: #fff;
-  border: 1px solid #bfdbfe;
-  border-radius: 1rem;
-}
-.comp-stat strong {
-  font-family: var(--ff-head);
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #3b82f6;
-  line-height: 1;
-}
-.comp-stat span {
-  font-size: 0.68rem;
-  color: #94a3b8;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-top: 0.25rem;
-}
-
-/* Resumo card */
-.comp-card {
-  background: #fff;
-  border: 1px solid #bfdbfe;
+  border: 1.5px solid #bfdbfe;
   border-radius: 1.25rem;
-  width: 100%;
-  max-width: 400px;
   overflow: hidden;
   box-shadow: 0 2px 16px rgba(59,130,246,0.07);
-  text-align: left;
 }
-.comp-header {
+.comp-preview-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   background: linear-gradient(135deg, #eff6ff, #dbeafe);
-  padding: 0.875rem 1.25rem;
+  padding: 0.85rem 1.25rem;
   border-bottom: 1px solid #bfdbfe;
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
+  font-family: var(--ff-head);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1e3a8a;
 }
-.comp-header-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: #3b82f6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.comp-header-icon svg {
+.comp-preview-header svg {
   width: 16px;
   height: 16px;
-  stroke: #fff;
-  fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.comp-header-labels { display: flex; flex-direction: column; gap: 1px; }
-.comp-name {
-  font-family: var(--ff-head);
-  font-size: 0.95rem;
-  color: #1e3a8a;
-  font-weight: 700;
-  line-height: 1;
-}
-.comp-name-sub {
-  font-size: 0.72rem;
-  color: #3b82f6;
-  font-weight: 600;
-}
-.comp-body { padding: 0.25rem 1.25rem 0.75rem; }
-.sumrow {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
-  padding: 0.6rem 0;
-  border-bottom: 1px solid #eff6ff;
-}
-.sumrow:last-child { border-bottom: none; }
-.suk {
-  font-weight: 700;
-  color: #94a3b8;
-  font-size: 0.75rem;
+  stroke: #3b82f6;
   flex-shrink: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding-top: 1px;
 }
-.suv { font-weight: 700; color: #1e293b; font-size: 0.82rem; text-align: right; }
-
-/* WhatsApp section */
-.comp-wpp {
-  width: 100%;
-  max-width: 400px;
-  background: #fff;
-  border: 1.5px solid #bbf7d0;
-  border-radius: 1.25rem;
-  padding: 1.25rem;
-  box-shadow: 0 2px 16px rgba(16,185,129,0.07);
-  text-align: left;
-}
-.comp-wpp-header {
+.comp-preview-body { padding: 0.5rem 1.25rem 0.75rem; }
+.comp-preview-row {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  margin-bottom: 0.35rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid #eff6ff;
 }
-.comp-wpp-icon {
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
+.comp-preview-row:last-child { border-bottom: none; }
+.comp-preview-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.comp-preview-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+  min-width: 80px;
+}
+.comp-preview-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1e293b;
+  text-align: right;
+  flex: 1;
+  line-height: 1.3;
+}
+
+/* ── Card checkout (wpp + cta) ── */
+.comp-checkout {
+  width: 100%;
+  background: #fff;
+  border: 1.5px solid #bbf7d0;
+  border-radius: 1.25rem;
+  padding: 1.35rem 1.25rem 1.25rem;
+  box-shadow: 0 4px 24px rgba(16,185,129,0.09);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.comp-checkout-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.comp-checkout-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   background: #22c55e;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
-.comp-wpp-icon svg {
-  width: 16px;
-  height: 16px;
-  fill: #fff;
+.comp-checkout-icon svg {
+  width: 18px;
+  height: 18px;
 }
-.comp-wpp-title {
+.comp-checkout-title {
   font-family: var(--ff-head);
   font-size: 1rem;
   font-weight: 700;
   color: #15803d;
-  margin-bottom: 0;
+  line-height: 1.1;
+  margin: 0;
 }
-.comp-wpp-sub {
-  font-size: 0.7rem;
+.comp-checkout-sub {
+  font-size: 0.75rem;
   color: #64748b;
-  margin-bottom: 0.85rem;
-  line-height: 1.45;
+  margin: 0;
+  margin-top: 2px;
 }
+
+/* Input wrap */
 .comp-wpp-input-wrap {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   background: #f0fdf9;
   border: 2px solid #86efac;
-  border-radius: 0.75rem;
+  border-radius: 0.875rem;
   padding: 0.1rem 0.1rem 0.1rem 1rem;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 .comp-wpp-input-wrap:focus-within {
   border-color: #22c55e;
@@ -1178,17 +1195,19 @@ ul { list-style: none; }
   font-size: 1rem;
   font-weight: 600;
   color: #1e293b;
-  padding: 0.8rem 0;
+  padding: 0.85rem 0;
   outline: none;
 }
 #wpp::placeholder { color: #94a3b8; font-weight: 400; }
+
+/* Privacy */
 .comp-wpp-privacy {
   font-size: 0.72rem;
   color: #94a3b8;
-  margin-top: 0.6rem;
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  margin-top: -0.25rem;
 }
 .comp-wpp-privacy-dot {
   width: 7px;
@@ -1198,12 +1217,11 @@ ul { list-style: none; }
   flex-shrink: 0;
 }
 
-/* CTA button na review page */
+/* CTA */
 .comp-cta {
   width: 100%;
-  max-width: 400px;
   padding: 1.15rem;
-  background: linear-gradient(135deg, #22c55e, #16a34a);
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
   color: #fff;
   border-radius: 1rem;
   font-family: var(--ff-head);
@@ -1213,35 +1231,43 @@ ul { list-style: none; }
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  box-shadow: 0 6px 20px rgba(34,197,94,0.35);
+  box-shadow: 0 6px 24px rgba(34,197,94,0.38);
   transition: transform 0.2s, box-shadow 0.2s;
   cursor: pointer;
   border: none;
+  animation: compCtaPulse 2s ease-in-out infinite;
 }
-.comp-cta:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(34,197,94,0.45);
+@keyframes compCtaPulse {
+  0%, 100% { box-shadow: 0 6px 24px rgba(34,197,94,0.38); }
+  50%       { box-shadow: 0 8px 32px rgba(34,197,94,0.58); }
+}
+.comp-cta:active {
+  transform: scale(0.98);
+  box-shadow: 0 3px 12px rgba(34,197,94,0.3);
+  animation: none;
 }
 .comp-cta svg { width: 20px; height: 20px; }
+
+/* Trust bar */
 .comp-trust {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  font-size: 0.72rem;
-  color: #94a3b8;
-  font-weight: 600;
   flex-wrap: wrap;
 }
 .comp-trust-item {
   display: flex;
   align-items: center;
   gap: 0.3rem;
+  font-size: 0.72rem;
+  color: #94a3b8;
+  font-weight: 600;
 }
-.comp-trust-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
+.comp-trust-item svg {
+  width: 13px;
+  height: 13px;
+  stroke: #94a3b8;
   flex-shrink: 0;
 }
 
