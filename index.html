@@ -491,44 +491,109 @@ src="https://www.facebook.com/tr?id=4295716527336095&ev=PageView&noscript=1"
     </div>
 
     <div class="comp" id="comp">
-        <div class="comp-badge">
-            <div class="comp-badge-dot"></div>
-            Composição Registrada
-        </div>
-        <h2 class="comp-title">A música de <span id="smNome"></span> está sendo criada!⚙️</h2>
-        <p class="comp-sub">Nossa equipe já foi notificada e está trabalhando no seu presente.</p>
+
+        <!-- Dados ocultos preenchidos pelo JS -->
         <span id="smOc"    style="display:none"></span>
         <span id="smPerso" style="display:none"></span>
         <span id="smUniv"  style="display:none"></span>
         <span id="smClima" style="display:none"></span>
         <span id="smEstilo"style="display:none"></span>
-        <div class="comp-wpp">
-            <div class="comp-wpp-header">
-                <div class="comp-wpp-icon">
-                    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM11.926 0C5.352 0 0 5.352 0 11.926c0 2.089.545 4.05 1.502 5.754L0 24l6.495-1.485A11.892 11.892 0 0 0 11.926 23.85c6.574 0 11.926-5.352 11.926-11.926C23.852 5.352 18.5 0 11.926 0zm0 21.752a9.818 9.818 0 0 1-5.006-1.368l-.358-.213-3.716.85.882-3.628-.233-.373A9.817 9.817 0 0 1 2.1 11.926c0-5.427 4.399-9.826 9.826-9.826 5.427 0 9.826 4.399 9.826 9.826 0 5.427-4.399 9.826-9.826 9.826z"/></svg>
+
+        <!-- Topo: animação + título -->
+        <div class="comp-hero">
+            <div class="comp-anim" aria-hidden="true">
+                <div class="comp-anim-ring comp-anim-ring--1"></div>
+                <div class="comp-anim-ring comp-anim-ring--2"></div>
+                <div class="comp-anim-ring comp-anim-ring--3"></div>
+                <div class="comp-anim-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 18V5l12-2v13"/>
+                        <circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+                    </svg>
                 </div>
-                <p class="comp-wpp-title">Entregamos direto no seu WhatsApp</p>
             </div>
-            <p class="comp-wpp-sub"> Informe seu WhatsApp abaixo para receber sua música assim que ficar pronta.</p>
+            <div class="comp-badge">
+                <div class="comp-badge-dot"></div>
+                Composição em andamento
+            </div>
+            <h2 class="comp-title">A música de <span id="smNome" class="comp-title-name"></span><br>está sendo criada!</h2>
+            <p class="comp-sub">Nossa equipe já recebeu tudo e está compondo agora. Só falta uma última etapa para garantir a entrega.</p>
+        </div>
+
+        <!-- Card: o que vem na música -->
+        <div class="comp-preview">
+            <div class="comp-preview-header">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                <span>O que vai entrar na letra</span>
+            </div>
+            <div class="comp-preview-body">
+                <div class="comp-preview-row">
+                    <span class="comp-preview-dot" style="background:#3b82f6"></span>
+                    <span class="comp-preview-label">Personalidade</span>
+                    <span class="comp-preview-value" id="smPersoVis"></span>
+                </div>
+                <div class="comp-preview-row">
+                    <span class="comp-preview-dot" style="background:#8b5cf6"></span>
+                    <span class="comp-preview-label">Universo</span>
+                    <span class="comp-preview-value" id="smUnivVis"></span>
+                </div>
+                <div class="comp-preview-row">
+                    <span class="comp-preview-dot" style="background:#ec4899"></span>
+                    <span class="comp-preview-label">Clima</span>
+                    <span class="comp-preview-value" id="smClimaVis"></span>
+                </div>
+                <div class="comp-preview-row" style="border-bottom:none">
+                    <span class="comp-preview-dot" style="background:#f59e0b"></span>
+                    <span class="comp-preview-label">Estilo</span>
+                    <span class="comp-preview-value" id="smEstiloVis"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção WhatsApp + CTA — tudo em um só card -->
+        <div class="comp-checkout">
+            <div class="comp-checkout-header">
+                <div class="comp-checkout-icon">
+                    <svg viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM11.926 0C5.352 0 0 5.352 0 11.926c0 2.089.545 4.05 1.502 5.754L0 24l6.495-1.485A11.892 11.892 0 0 0 11.926 23.85c6.574 0 11.926-5.352 11.926-11.926C23.852 5.352 18.5 0 11.926 0zm0 21.752a9.818 9.818 0 0 1-5.006-1.368l-.358-.213-3.716.85.882-3.628-.233-.373A9.817 9.817 0 0 1 2.1 11.926c0-5.427 4.399-9.826 9.826-9.826 5.427 0 9.826 4.399 9.826 9.826 0 5.427-4.399 9.826-9.826 9.826z"/></svg>
+                </div>
+                <div>
+                    <p class="comp-checkout-title">Onde entregamos a música</p>
+                    <p class="comp-checkout-sub">Você recebe o arquivo em até 6h no WhatsApp</p>
+                </div>
+            </div>
+
             <div class="comp-wpp-input-wrap" id="wppWrap">
                 <span class="comp-wpp-flag">BR</span>
                 <span class="comp-wpp-ddi">+55</span>
                 <input type="tel" id="wpp" placeholder="(11) 99999-9999" autocomplete="tel" inputmode="numeric" maxlength="15">
             </div>
+
             <p class="comp-wpp-privacy">
                 <span class="comp-wpp-privacy-dot"></span>
-                Enviamos apenas sua música.
+                Seu número é usado só para entregar a música. Nunca enviamos spam.
             </p>
+
+            <button class="comp-cta" id="ctaBtn" onclick="checkout()">
+                Garantir minha música agora
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+
+            <div class="comp-trust">
+                <div class="comp-trust-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Checkout seguro
+                </div>
+                <div class="comp-trust-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                    30 dias de garantia
+                </div>
+                <div class="comp-trust-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    Entrega em até 6h
+                </div>
+            </div>
         </div>
-        <button class="comp-cta" id="ctaBtn" onclick="checkout()">
-             Clique aqui para finalizar!
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </button>
-        <div class="comp-trust">
-            <div class="comp-trust-item"><div class="comp-trust-dot" style="background:#22c55e"></div>Checkout seguro</div>
-            <div class="comp-trust-item"><div class="comp-trust-dot" style="background:#3b82f6"></div>30 dias de garantia</div>
-            <div class="comp-trust-item"><div class="comp-trust-dot" style="background:#f59e0b"></div>Entrega em até 6h</div>
-        </div>
+
     </div>
 </div>
 
