@@ -1,242 +1,83 @@
-/* ── Data ──────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   KIDS MUSIC — APP.JS
+   Fluxo: Quiz Landing → Quiz (8 etapas) → Loading Screen →
+          Página de Vendas → Checkout
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Dados ──────────────────────────────────────────────── */
 const MUSIC_EXAMPLES = [
-  {
-    id: 1,
-    vimeoId: "1191676533",
-    poster: "assets/Maria_img.jpg",
-    color: "#d946ef",
-    glow: "rgba(217,70,239,.6)"
-  },
-  {
-    id: 2,
-    vimeoId: "1191676534",
-    poster: "assets/Lucas_img.jpg",
-    color: "#0ea5e9",
-    glow: "rgba(14,165,233,.6)"
-  },
-  {
-    id: 3,
-    vimeoId: "1191676535",
-    poster: "assets/Luis_img.png",
-    color: "#22c55e",
-    glow: "rgba(34,197,94,.6)"
-  },
-  {
-    id: 4,
-    vimeoId: "1191674347",
-    poster: "assets/Larissa_img.jpg",
-    color: "#fb923c",
-    glow: "rgba(251,146,60,.6)"
-  },
-  {
-    id: 5,
-    vimeoId: "1191674348",
-    poster: "assets/Ana_img.jpg",
-    color: "#ec4899",
-    glow: "rgba(236,72,153,.6)"
-  },
-  {
-    id: 6,
-    vimeoId: "1191674277",
-    poster: "assets/Joao_img.png",
-    color: "#6366f1",
-    glow: "rgba(99,102,241,.6)"
-  }
+  { id:1, vimeoId:"1191676533", poster:"assets/Maria_img.jpg",   color:"#d946ef", glow:"rgba(217,70,239,.6)" },
+  { id:2, vimeoId:"1191676534", poster:"assets/Lucas_img.jpg",   color:"#0ea5e9", glow:"rgba(14,165,233,.6)" },
+  { id:3, vimeoId:"1191676535", poster:"assets/Luis_img.png",    color:"#22c55e", glow:"rgba(34,197,94,.6)"  },
+  { id:4, vimeoId:"1191674347", poster:"assets/Larissa_img.jpg", color:"#fb923c", glow:"rgba(251,146,60,.6)" },
+  { id:5, vimeoId:"1191674348", poster:"assets/Ana_img.jpg",     color:"#ec4899", glow:"rgba(236,72,153,.6)" },
+  { id:6, vimeoId:"1191674277", poster:"assets/Joao_img.png",    color:"#6366f1", glow:"rgba(99,102,241,.6)" },
 ];
 
 const TESTIMONIALS = [
-  { initials:"LC", name:"Lucas Costa",    image:"assets/instagram-dm.png", music:"Música da Sofia",     avatarColor:"#0ea5e9", playerColor:"#0ea5e9", topGrad:"linear-gradient(140deg,#e0f2fe 0%,#bae6fd 100%)" },
-  { initials:"MS", name:"Mariana Santos", image:"assets/instagram-dm (4).png", music:"Música do Davi",      avatarColor:"#10b981", playerColor:"#10b981", topGrad:"linear-gradient(140deg,#d1fae5 0%,#a7f3d0 100%)" },
-  { initials:"RP", name:"Rafael Pereira", image:"assets/instagram-dm (3).png", music:"Música da Valentina", avatarColor:"#f59e0b", playerColor:"#d97706", topGrad:"linear-gradient(140deg,#fef3c7 0%,#fde68a 100%)" },
-  { initials:"AB", name:"Ana Beatriz",  image:"assets/instagram-dm (2).png",   music:"Música do Miguel",    avatarColor:"#38bdf8", playerColor:"#0284c7", topGrad:"linear-gradient(140deg,#e0f2fe 0%,#bae6fd 100%)" },
+  {
+    name: "Lucas Costa", role: "Pai da Sofia, 6 anos",
+    image: "assets/instagram-dm.png",
+    stars: 5,
+    text: "Minha filha ouviu a música e começou a chorar de alegria! Ela pediu pra colocar de novo umas 10 vezes seguidas. Nunca vi ela tão feliz com um presente. Simplesmente incrível!"
+  },
+  {
+    name: "Mariana Santos", role: "Mãe do Davi, 4 anos",
+    image: "assets/instagram-dm (4).png",
+    stars: 5,
+    text: "Cheguei a chorar quando ouvi. Eles capturaram tudo que é o meu filho — o jeito dele ser, o que ele ama, os detalhes que só eu sei. Esse presente não tem preço."
+  },
+  {
+    name: "Rafael Pereira", role: "Pai da Valentina, 7 anos",
+    image: "assets/instagram-dm (3).png",
+    stars: 5,
+    text: "A entrega foi super rápida, recebi em menos de 4 horas! A qualidade da produção é profissional demais. A Valentina já decorou a letra toda e canta toda manhã."
+  },
+  {
+    name: "Ana Beatriz", role: "Mãe do Miguel, 5 anos",
+    image: "assets/instagram-dm (2).png",
+    stars: 5,
+    text: "Achei que seria algo genérico, mas fiquei completamente surpresa. Cada parte da letra tem algo específico do meu filho. Ele fica pedindo toda noite antes de dormir!"
+  },
 ];
 
-const BAD_ITEMS = [
-  "Roupas ficam pequenas em 3 meses — e vão para o fundo do guarda-roupa.",
-  "Brinquedos viram bagunça no chão em menos de uma semana.",
-  "Chocolates acabam antes de terminar a festa.",
-  "Dinheiro em envelope: ela nem sabe o que ganhou.",
-];
-
-const GOOD_ITEMS = [
-  { bold:"Única no mundo:",   rest:" só ela tem uma música com o próprio nome e história." },
-  { bold:"Fica para sempre:", rest:" o arquivo nunca some, nunca estraga, nunca sai de moda." },
-  { bold:"Ela vai pedir pra ouvir toda noite:", rest:" essa música vira parte da infância dela." },
-  { bold:"Você vira o presente favorito:", rest:" e ela vai contar pra todo mundo quem deu." },
-];
-
-const STEPS = [
-  { number:"01", emoji:"✏️", time:"2 MINUTOS",  title:"Você Conta a História Dela",    desc:"Nome, personalidade, o que ela ama. Quanto mais você contar, mais especial fica — e só leva 2 minutinhos.",
-    nodeBg:"#fce7f3", nodeBorder:"#f9a8d4", nodeColor:"#9d174d",
-    cardBg:"#fce7f3", cardBorder:"#fbcfe8", titleColor:"#831843", descColor:"#9d174d",
-    badgeBg:"#fbcfe8", badgeColor:"#9d174d" },
-  { number:"02", emoji:"🎼", time:"ATÉ 6 HORAS",   title:"A Gente Cria Só pra Ela",     desc:"Compositores e cantores profissionais montam letra, melodia e voz do zero — nada de template, tudo personalizado. Entregamos em até 6h.",
-    nodeBg:"#fff7ed", nodeBorder:"#fdba74", nodeColor:"#9a3412",
-    cardBg:"#fff7ed", cardBorder:"#fed7aa", titleColor:"#7c2d12", descColor:"#9a3412",
-    badgeBg:"#fed7aa", badgeColor:"#9a3412" },
-  { number:"03", emoji:"🎧", time:"NA HORA",   title:"Ela Ouve e Não Esquece Mais", desc:"Chega via WhatsApp — você coloca pra tocar e assiste a reação dela. Esse momento você vai querer gravar.",
-    nodeBg:"#ede9fe", nodeBorder:"#c4b5fd", nodeColor:"#4c1d95",
-    cardBg:"#ede9fe", cardBorder:"#ddd6fe", titleColor:"#3b0764", descColor:"#4c1d95",
-    badgeBg:"#ddd6fe", badgeColor:"#4c1d95" },
-];
-
-const FEATURES = [
+const DEAL_FEATURES = [
   "Composição completa (Letra + Melodia)",
   "Voz profissional de estúdio",
   "Arquivo MP3 em alta definição",
   "Capa do álbum personalizada",
-  "Letra escrita pelos nossos compositores",
-];
-const CHECK_COLORS = ["rgba(255,255,255,1)","rgba(255,255,255,1)","rgba(255,255,255,1)","rgba(255,255,255,1)","rgba(255,255,255,1)"];
-
-const FAQ_ITEMS = [
-  { q:"Em quanto tempo recebo a música?", a:"Após o pedido e pagamento confirmados, nossa equipe começa imediatamente. O prazo padrão é de até 6h no Plano Expresso — ideal para quem está na véspera do aniversário ou quer surpreender rápido." },
-  { q:"E se a criança — ou eu — não gostar?", a:"Não acontece quase nunca, mas se acontecer: fazemos revisões gratuitas sem custo adicional. E se ainda assim não ficar bom, devolvemos 100% do valor pago em até 30 dias. Sem burocracia." },
-  { q:"Preciso escrever a letra? Preciso saber de música?", a:"Não precisa de nada disso. Você só responde algumas perguntas simples sobre a criança — nome, o que ela gosta, a personalidade dela. Nossa equipe de compositores faz todo o resto: letra, melodia e arranjo." },
-  { q:"Quais estilos musicais vocês fazem?", a:"Pop infantil, sertanejo, pagode kids, funk suave, gospel, MPB, forró e muito mais. Você escolhe o estilo no momento do pedido — e a música vai soar exatamente do jeito que a criança curte." },
-  { q:"O que exatamente vou receber?", a:"Você recebe um arquivo MP3 em alta qualidade, a capa do álbum personalizada e a letra completa da música. No Plano Expresso, você ainda leva 2 versões diferentes — e pode escolher a favorita junto com a criança." },
-  { q:"Tem limite de idade? Funciona para qual faixa etária?", a:"As músicas são criadas sob medida para qualquer faixa etária — bebês, crianças pequenas, pré-adolescentes. Você informa a idade e a personalidade, e adaptamos o tom, a letra e o estilo da música." },
-  { q:"Posso usar a música nas redes sociais ou no vídeo de aniversário?", a:"Sim! As músicas são licenciadas para uso pessoal e familiar, incluindo redes sociais, vídeos de aniversário e grupos de família. Para uso comercial, entre em contato para uma licença especial." },
-  { q:"Os dados da criança ficam protegidos?", a:"Absolutamente. Todas as informações compartilhadas — nome, história, dados pessoais — são tratadas com total sigilo e segurança, em conformidade com a LGPD. Nunca compartilhamos nada com terceiros." },
+  "2 versões para escolher — Pague 1, leve 2",
 ];
 
-/* ── Navbar ──────────────────────────────────────────────── */
-window.addEventListener('scroll', () => {
-  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 30);
-}, { passive:true });
-
-function toggleMenu() {
-  document.getElementById('burger').classList.toggle('open');
-  document.getElementById('mobileMenu').classList.toggle('open');
-}
-
-function scrollToSection(id) {
-  document.getElementById(id)?.scrollIntoView({ behavior:'smooth' });
-}
-
-/* ── Scroll Reveal ── */
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-}, { threshold:.08, rootMargin:'0px 0px -40px 0px' });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-/* ── Testimonials ────────────────────────────────────────── */
-(function buildTestimonials() {
-  const grid = document.getElementById('testimonialsGrid');
-  grid.innerHTML = TESTIMONIALS.map(t => `
-    <div class="tcard">
-      <div class="tcard__img-area" style="background:${t.topGrad};">
-        <div class="tcard__img-dot"></div>
-        ${t.image
-          ? `<img src="${t.image}" alt="${t.name}" style="width:100%;height:100%;object-fit:cover;object-position:top;position:absolute;inset:0;" loading="lazy" decoding="async" />`
-          : `<div class="tcard__img-placeholder">
-              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/></svg>
-              <span>Imagem do cliente aqui</span>
-            </div>`
-        }
-      </div>
-    </div>`
-  ).join('');
-})();
-
-/* ── Compare ─────────────────────────────────────────────── */
-(function buildCompare() {
-  document.getElementById('badList').innerHTML = BAD_ITEMS.map(item =>
-    `<li class="compare__item compare__item--bad"><span class="compare__x">✗</span><span>${item}</span></li>`
-  ).join('');
-  document.getElementById('goodList').innerHTML = GOOD_ITEMS.map(item =>
-    `<li class="compare__item compare__item--good">
-      <span class="compare__check">✓</span>
-      <span><strong>${item.bold}</strong>${item.rest}</span>
-    </li>`
-  ).join('');
-})();
-
-/* ── Steps ───────────────────────────────────────────────── */
-(function buildSteps() {
-  const grid = document.getElementById('stepsGrid');
-  const lineHtml = `<div class="tl-line" aria-hidden="true"></div>`;
-  const stepsHtml = STEPS.map(s =>
-    `<div class="tl-step">
-      <div class="tl-node" style="background:${s.nodeBg};border:2px solid ${s.nodeBorder};color:${s.nodeColor};">
-        <span class="tl-node-num">${s.number}</span>
-      </div>
-      <div class="tl-card" style="background:${s.cardBg};border:1.5px solid ${s.cardBorder};">
-        <span class="tl-emoji">${s.emoji}</span>
-        <span class="tl-badge" style="background:${s.badgeBg};color:${s.badgeColor};">${s.time}</span>
-        <h3 class="tl-title" style="color:${s.titleColor};">${s.title}</h3>
-        <p class="tl-desc" style="color:${s.descColor};">${s.desc}</p>
-      </div>
-    </div>`
-  ).join('');
-  grid.innerHTML = `<div class="tl-wrapper">${lineHtml}<div class="tl-row">${stepsHtml}</div></div>`;
-})();
-
-/* ── Pricing ─────────────────────────────────────────────── */
-(function buildPricing() {
-  document.getElementById('pricingFeatures').innerHTML = FEATURES.map((f, i) =>
-    `<li class="pricing-card__feature">
-      <span class="pricing-card__check" style="background:${CHECK_COLORS[i]}30;color:${CHECK_COLORS[i]};">✓</span>
-      ${f}
-    </li>`
-  ).join('');
-})();
-
-/* ── FAQ ─────────────────────────────────────────────────── */
-(function buildFaq() {
-  document.getElementById('faqList').innerHTML = FAQ_ITEMS.map((item, i) =>
-    `<div class="faq__item reveal" id="faq-${i}">
-      <button class="faq__btn" onclick="toggleFaq(${i})" aria-expanded="false">
-        <span class="faq__question">${item.q}</span>
-        <span class="faq__icon">+</span>
-      </button>
-      <div class="faq__answer" id="faq-ans-${i}">
-        <div class="faq__answer-inner">
-          <p class="faq__text">${item.a}</p>
-        </div>
-      </div>
-    </div>`
-  ).join('');
-  document.querySelectorAll('#faqList .reveal').forEach(el => observer.observe(el));
-})();
-
-let openFaq = null;
-function toggleFaq(i) {
-  const item = document.getElementById(`faq-${i}`);
-  const btn = item.querySelector('.faq__btn');
-  if (openFaq !== null && openFaq !== i) {
-    document.getElementById(`faq-${openFaq}`).classList.remove('open');
-    document.querySelector(`#faq-${openFaq} .faq__btn`).setAttribute('aria-expanded','false');
-  }
-  const isOpen = item.classList.toggle('open');
-  btn.setAttribute('aria-expanded', isOpen);
-  openFaq = isOpen ? i : null;
-}
-
-/* ── Carousel com Facade Pattern (Lazy Load Real) ─────────── */
-let activeIndex = 0;
-let playingId = null;
+/* ── Estado global ──────────────────────────────────────── */
+let activeIndex  = 0;
+let playingId    = null;
 let vimeoPlayers = {};
 let vimeoApiLoaded = false;
+let spTestimonialIndex = 0;
 
 const PAUSE_SVG = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5.75A1.75 1.75 0 0 1 8.75 4h.5A1.75 1.75 0 0 1 11 5.75v12.5A1.75 1.75 0 0 1 9.25 20h-.5A1.75 1.75 0 0 1 7 18.25V5.75Zm6 0A1.75 1.75 0 0 1 14.75 4h.5A1.75 1.75 0 0 1 17 5.75v12.5A1.75 1.75 0 0 1 15.25 20h-.5A1.75 1.75 0 0 1 13 18.25V5.75Z"/></svg>`;
 const PLAY_SVG  = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.14v13.72c0 .78.86 1.25 1.52.82l10.2-6.86a.98.98 0 0 0 0-1.64L9.52 4.32A.98.98 0 0 0 8 5.14Z"/></svg>`;
 
+
+/* ══════════════════════════════════════════════════════════
+   CAROUSEL — QUIZ LANDING
+   ══════════════════════════════════════════════════════════ */
 function buildCarousel() {
   const c = document.getElementById('carousel');
-  c.style.paddingLeft = c.style.paddingRight = 'calc(50% - 140px)';
-  
-  c.innerHTML = MUSIC_EXAMPLES.map((card, idx) => `
-  <div class="carousel__card" id="card-${card.id}" data-index="${idx}">
-    <img class="carousel__poster" id="poster-${card.id}" src="${card.poster}" alt="" loading="${idx === activeIndex ? 'eager' : 'lazy'}" decoding="async" />
-    <div class="carousel__media" id="media-${card.id}"></div>
-    <button class="carousel__play" id="play-${card.id}" onclick="event.stopPropagation(); toggleVideo(${card.id})" aria-label="Play">
-      ${PLAY_SVG}
-    </button>
-  </div>
-`).join('');
+  if (!c) return;
+  c.style.paddingLeft = c.style.paddingRight = 'calc(50% - 124px)';
 
-  // Adicionar listener de clique no card para navegação
+  c.innerHTML = MUSIC_EXAMPLES.map((card, idx) => `
+    <div class="carousel__card" id="card-${card.id}" data-index="${idx}">
+      <img class="carousel__poster" id="poster-${card.id}" src="${card.poster}" alt="" loading="${idx === activeIndex ? 'eager' : 'lazy'}" decoding="async" />
+      <div class="carousel__media" id="media-${card.id}"></div>
+      <button class="carousel__play" id="play-${card.id}" onclick="event.stopPropagation(); toggleVideo(${card.id})" aria-label="Play">
+        ${PLAY_SVG}
+      </button>
+    </div>
+  `).join('');
+
   MUSIC_EXAMPLES.forEach((card, idx) => {
     const cardEl = document.getElementById(`card-${card.id}`);
     if (cardEl) {
@@ -249,225 +90,17 @@ function buildCarousel() {
   });
 
   buildDots();
-  updateHero();
+  updateCards();
   setTimeout(() => {
-    const activeCard = document.getElementById(`card-${MUSIC_EXAMPLES[activeIndex].id}`);
-    if (activeCard) {
-      activeCard.scrollIntoView({ behavior: 'auto', inline: 'center', block: 'nearest' });
-    }
+    const active = document.getElementById(`card-${MUSIC_EXAMPLES[activeIndex].id}`);
+    if (active) active.scrollIntoView({ behavior:'auto', inline:'center', block:'nearest' });
   }, 50);
 }
 
-function loadVimeoAPI() {
-  if (vimeoApiLoaded) return Promise.resolve();
-  return new Promise((resolve) => {
-    if (typeof Vimeo !== 'undefined') {
-      vimeoApiLoaded = true;
-      resolve();
-      return;
-    }
-    const script = document.createElement('script');
-    script.src = 'https://player.vimeo.com/api/player.js';
-    script.defer = true;
-    script.onload = () => {
-      vimeoApiLoaded = true;
-      resolve();
-    };
-    document.body.appendChild(script);
-  });
-}
-
-async function initVimeoPlayer(id) {
-  await loadVimeoAPI();
-  const card = MUSIC_EXAMPLES.find(c => c.id === id);
-  if (!card || vimeoPlayers[id]) return;
-
-  const mediaContainer = document.getElementById(`media-${id}`);
-  if (!mediaContainer) return;
-
-  const player = new Vimeo.Player(mediaContainer, {
-    id: parseInt(card.vimeoId),
-    loop: true,
-    autoplay: false,
-    muted: false,
-    controls: false,
-    responsive: true,
-    dnt: true
-  });
-  vimeoPlayers[id] = player;
-
-  player.on('timeupdate', (data) => {
-    if (playingId === id && data.duration) {
-      const pct = (data.seconds / data.duration) * 100;
-      const bar = document.getElementById(`bar-${id}`);
-      if (bar) bar.style.width = pct + '%';
-    }
-  });
-
-  player.on('ended', () => {
-    const bar = document.getElementById(`bar-${id}`);
-    if (bar) bar.style.width = '0%';
-  });
-}
-
-async function toggleVideo(id) {
-  const idx = MUSIC_EXAMPLES.findIndex(c => c.id === id);
-  const btn = document.getElementById(`play-${id}`);
-
-  if (!btn) return;
-
-  // Se clicou num card lateral (não ativo), apenas navega
-  if (idx !== activeIndex) {
-    goToCard(idx);
-    setTimeout(() => toggleVideo(id), 400);
-    return;
-  }
-
-  const isPlaying = playingId === id;
-
-  // PAUSAR qualquer outro vídeo ativo primeiro
-  if (playingId !== null && playingId !== id) {
-    const oldPlayer = vimeoPlayers[playingId];
-    const oldBtn = document.getElementById(`play-${playingId}`);
-    const oldPlaceholder = document.querySelector(`#card-${playingId} .carousel__placeholder`);
-    const oldMedia = document.getElementById(`media-${playingId}`);
-    if (oldPlayer) {
-      oldPlayer.pause();
-      oldPlayer.setVolume(0);
-    }
-    if (oldBtn) {
-      oldBtn.innerHTML = PLAY_SVG;
-      oldBtn.classList.remove('playing');
-    }
-    if (oldPlaceholder) oldPlaceholder.classList.remove('hidden');
-    if (oldMedia) oldMedia.classList.remove('active');
-  }
-
-  if (isPlaying) {
-    const player = vimeoPlayers[id];
-    if (player) {
-      await player.pause();
-      await player.setVolume(0);
-    }
-    playingId = null;
-    btn.innerHTML = PLAY_SVG;
-    btn.classList.remove('playing');
-    const placeholder = document.querySelector(`#card-${id} .carousel__placeholder`);
-    const media = document.getElementById(`media-${id}`);
-    if (placeholder) placeholder.classList.remove('hidden');
-    if (media) media.classList.remove('active');
-  } else {
-    btn.classList.add('is-loading');
-    btn.innerHTML = '<div class="loader-spinner"></div>';
-
-    try {
-      await initVimeoPlayer(id);
-      const player = vimeoPlayers[id];
-      if (!player) throw new Error('Player não inicializado');
-
-      // CORREÇÃO CRÍTICA: Desmutar ANTES de dar play
-      // No mobile, o primeiro play() após interação do usuário deve ser suficiente
-      // para ativar o áudio. Mas garantimos com setMuted(false).
-      player.setMuted(false);
-      player.setVolume(1);
-      await player.play();
-
-      playingId = id;
-      btn.classList.remove('is-loading');
-      btn.innerHTML = PAUSE_SVG;
-      btn.classList.add('playing');
-
-      const placeholder = document.querySelector(`#card-${id} .carousel__placeholder`);
-      const media = document.getElementById(`media-${id}`);
-      if (placeholder) placeholder.classList.add('hidden');
-      if (media) media.classList.add('active');
-    } catch (err) {
-      btn.classList.remove('is-loading');
-      btn.innerHTML = PLAY_SVG;
-      console.warn('Erro ao dar play:', err);
-    }
-  }
-}
-
-// NOVA FUNÇÃO: Aguarda o player Vimeo estar pronto
-function waitForPlayerReady(player) {
-  return new Promise((resolve) => {
-    // Se já temos o método getPaused, o player está pronto
-    if (player._ready) {
-      resolve();
-      return;
-    }
-    
-    // Ouve o evento 'loaded' que indica que o player está pronto
-    player.on('loaded', () => {
-      player._ready = true;
-      resolve();
-    });
-    
-    // Fallback: resolve após 1 segundo mesmo sem o evento
-    setTimeout(() => {
-      player._ready = true;
-      resolve();
-    }, 1000);
-  });
-}
-
-// FUNÇÃO ATUALIZADA: Cria player com autoplay se for a primeira vez
-async function initVimeoPlayer(id, autoplay = false) {
-  await loadVimeoAPI();
-  const card = MUSIC_EXAMPLES.find(c => c.id === id);
-  if (!card) return;
-  
-  const mediaContainer = document.getElementById(`media-${id}`);
-  if (!mediaContainer) return;
-  
-  const player = new Vimeo.Player(mediaContainer, {
-    id: parseInt(card.vimeoId),
-    loop: true,
-    autoplay: autoplay, // CORREÇÃO: autoplay=true no primeiro play
-    muted: false,       // CORREÇÃO: começa desmutado
-    controls: false,
-    responsive: true,
-    dnt: true
-  });
-  
-  player._wasAutoPlayed = autoplay;
-  vimeoPlayers[id] = player;
-
-  // Se autoplay=true, o player já vai tocar automaticamente
-  // Não precisamos fazer nada, só aguardar o 'loaded'
-}
-
-  
-// NOVA FUNÇÃO: Desbloqueia o AudioContext do browser
-function unlockAudioContext() {
-  // Cria um elemento de áudio vazio e dá play para desbloquear
-  const silentAudio = new Audio();
-  silentAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAAAAA==';
-  silentAudio.play().catch(() => {});
-  
-  // Também tenta via Web Audio API se disponível
-  if (typeof AudioContext !== 'undefined' || typeof webkitAudioContext !== 'undefined') {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (AudioCtx) {
-      const ctx = new AudioCtx();
-      if (ctx.state === 'suspended') {
-        ctx.resume().catch(() => {});
-      }
-      // Cria oscilador silencioso
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      gain.gain.value = 0;
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.001);
-    }
-  }
-}
-
 function buildDots() {
-  document.getElementById('dots').innerHTML = MUSIC_EXAMPLES.map((_,i) =>
+  const el = document.getElementById('dots');
+  if (!el) return;
+  el.innerHTML = MUSIC_EXAMPLES.map((_,i) =>
     `<button class="carousel-controls__dot${i===0?' active':''}" onclick="goToCard(${i})" aria-label="Card ${i+1}"></button>`
   ).join('');
 }
@@ -483,31 +116,6 @@ function glowToRgb(glow) {
   return m ? `${m[1]},${m[2]},${m[3]}` : '180,180,220';
 }
 
-function updateHero() {
-  const card = MUSIC_EXAMPLES[activeIndex];
-  const rgb  = glowToRgb(card.glow);
-  const hero = document.getElementById('hero');
-
-  hero.style.background =
-    `radial-gradient(ellipse at 18% 52%, rgba(${rgb},0.30) 0%, transparent 50%),` +
-    `radial-gradient(ellipse at 82% 52%, rgba(${rgb},0.20) 0%, transparent 50%),` +
-    `linear-gradient(160deg, #e8d5f5 0%, #dde8fb 28%, #efe4fb 55%, #f8dde8 80%, #fce8d5 100%)`;
-
-  document.getElementById('heroBgImg').src = card.poster;
-  document.getElementById('heroAccent').style.color = card.color;
-
-  const cta = document.getElementById('heroCta');
-  cta.style.background = `linear-gradient(135deg,${card.color},${card.color}cc)`;
-  cta.style.boxShadow  = `0 8px 30px rgba(${rgb},0.45),0 2px 8px rgba(0,0,0,.1)`;
-
-  document.querySelector('.carousel__fade--l').style.background =
-    `linear-gradient(to right, rgba(${rgb},0.18), transparent)`;
-  document.querySelector('.carousel__fade--r').style.background =
-    `linear-gradient(to left, rgba(${rgb},0.14), transparent)`;
-
-  updateDots();
-}
-
 function updateCards() {
   MUSIC_EXAMPLES.forEach((card, idx) => {
     const el = document.getElementById(`card-${card.id}`);
@@ -517,48 +125,60 @@ function updateCards() {
     el.style.transform = `translateY(${active?0:20}px) rotate(${d*-4}deg) scale(${active?1:.91})`;
     el.style.opacity   = active ? '1' : '0.62';
     el.style.zIndex    = active ? '10' : '1';
-
-    const playEl = el.querySelector('.carousel__play');
-    if (playEl) {
-      playEl.style.background = 'rgba(255,255,255,.12)';
-      playEl.style.border     = '1.5px solid rgba(255,255,255,.35)';
-      playEl.style.boxShadow  = 'none';
-      playEl.style.color      = '#fff';
-    }
-
     el.style.boxShadow = active
       ? `0 30px 60px rgba(0,0,0,.7), 0 0 48px ${card.glow}`
       : '0 8px 32px rgba(0,0,0,.4)';
 
-    // Pausar vídeo automaticamente quando card sai do centro
     if (!active && playingId === card.id) {
       const player = vimeoPlayers[card.id];
-      const btn = document.getElementById(`play-${card.id}`);
-      const poster = document.getElementById(`poster-${card.id}`);
-      const media = document.getElementById(`media-${card.id}`);
+      const btn    = document.getElementById(`play-${card.id}`);
+      const media  = document.getElementById(`media-${card.id}`);
       if (player) { player.pause(); player.setVolume(0); }
-      if (btn) { btn.innerHTML = PLAY_SVG; btn.classList.remove('playing'); }
-      if (poster) poster.classList.remove('hidden');
-      if (media) media.classList.remove('active');
-      document.getElementById(`bar-${card.id}`).style.width = '0%';
+      if (btn)    { btn.innerHTML = PLAY_SVG; btn.classList.remove('playing'); }
+      if (media)  { media.classList.remove('active'); }
       playingId = null;
     }
   });
-  updateHero();
+
+  // Atualiza glow e cor da landing
+  const card = MUSIC_EXAMPLES[activeIndex];
+  const rgb  = glowToRgb(card.glow);
+  const ql   = document.getElementById('quizLanding');
+  if (ql) {
+    ql.style.background =
+      `radial-gradient(ellipse at 18% 52%, rgba(${rgb},.28) 0%, transparent 50%),` +
+      `radial-gradient(ellipse at 82% 52%, rgba(${rgb},.18) 0%, transparent 50%),` +
+      `linear-gradient(160deg, #e8d5f5 0%, #dde8fb 28%, #efe4fb 55%, #f8dde8 80%, #fce8d5 100%)`;
+  }
+  const qlBg = document.getElementById('qlBgImg');
+  if (qlBg) qlBg.src = card.poster;
+  const accent = document.getElementById('qlAccent');
+  if (accent) accent.style.color = card.color;
+  const cta = document.getElementById('qlCta');
+  if (cta) {
+    cta.style.background = `linear-gradient(135deg, ${card.color}, ${card.color}cc)`;
+    cta.style.boxShadow  = `0 6px 28px rgba(${rgb},.5), 0 2px 8px rgba(0,0,0,.1)`;
+  }
+
+  const fl = document.querySelector('.carousel__fade--l');
+  const fr = document.querySelector('.carousel__fade--r');
+  if (fl) fl.style.background = `linear-gradient(to right, rgba(${rgb},.18), transparent)`;
+  if (fr) fr.style.background = `linear-gradient(to left, rgba(${rgb},.14), transparent)`;
+
+  updateDots();
 }
 
 function goToCard(idx) {
   const n = MUSIC_EXAMPLES.length;
   activeIndex = ((idx % n) + n) % n;
-  const targetCard = document.getElementById(`card-${MUSIC_EXAMPLES[activeIndex].id}`);
-  if (targetCard) {
-    targetCard.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
-  }
+  const target = document.getElementById(`card-${MUSIC_EXAMPLES[activeIndex].id}`);
+  if (target) target.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
   updateCards();
 }
 
 document.getElementById('carousel')?.addEventListener('scroll', function() {
-  const cx = this.getBoundingClientRect(), mid = cx.left + cx.width / 2;
+  const cx  = this.getBoundingClientRect();
+  const mid = cx.left + cx.width / 2;
   let ci = 0, cd = Infinity;
   MUSIC_EXAMPLES.forEach((card, i) => {
     const el = document.getElementById(`card-${card.id}`);
@@ -566,771 +186,889 @@ document.getElementById('carousel')?.addEventListener('scroll', function() {
     const d = Math.abs(mid - (el.getBoundingClientRect().left + el.offsetWidth / 2));
     if (d < cd) { cd = d; ci = i; }
   });
-  if (ci !== activeIndex) {
-    activeIndex = ci;
-    updateCards();
-  }
-}, { passive:true });
+  if (ci !== activeIndex) { activeIndex = ci; updateCards(); }
+}, { passive: true });
 
-/* ── Init ────────────────────────────────────────────────── */
+
+/* ── Vimeo ──────────────────────────────────────────────── */
+function loadVimeoAPI() {
+  if (vimeoApiLoaded) return Promise.resolve();
+  return new Promise((resolve) => {
+    if (typeof Vimeo !== 'undefined') { vimeoApiLoaded = true; resolve(); return; }
+    const script = document.createElement('script');
+    script.src = 'https://player.vimeo.com/api/player.js';
+    script.defer = true;
+    script.onload = () => { vimeoApiLoaded = true; resolve(); };
+    document.body.appendChild(script);
+  });
+}
+
+async function initVimeoPlayer(id, autoplay = false) {
+  await loadVimeoAPI();
+  const card = MUSIC_EXAMPLES.find(c => c.id === id);
+  if (!card || vimeoPlayers[id]) return;
+  const mc = document.getElementById(`media-${id}`);
+  if (!mc) return;
+  const player = new Vimeo.Player(mc, {
+    id: parseInt(card.vimeoId), loop: true, autoplay,
+    muted: false, controls: false, responsive: true, dnt: true
+  });
+  vimeoPlayers[id] = player;
+  player.on('timeupdate', (data) => {
+    if (playingId === id && data.duration) {
+      const bar = document.getElementById(`bar-${id}`);
+      if (bar) bar.style.width = (data.seconds / data.duration * 100) + '%';
+    }
+  });
+}
+
+async function toggleVideo(id) {
+  const idx = MUSIC_EXAMPLES.findIndex(c => c.id === id);
+  const btn = document.getElementById(`play-${id}`);
+  if (!btn) return;
+  if (idx !== activeIndex) { goToCard(idx); setTimeout(() => toggleVideo(id), 400); return; }
+  const isPlaying = playingId === id;
+
+  if (playingId !== null && playingId !== id) {
+    const op = vimeoPlayers[playingId];
+    const ob = document.getElementById(`play-${playingId}`);
+    const om = document.getElementById(`media-${playingId}`);
+    if (op) { op.pause(); op.setVolume(0); }
+    if (ob) { ob.innerHTML = PLAY_SVG; ob.classList.remove('playing'); }
+    if (om) om.classList.remove('active');
+  }
+
+  if (isPlaying) {
+    const player = vimeoPlayers[id];
+    if (player) { await player.pause(); await player.setVolume(0); }
+    playingId = null;
+    btn.innerHTML = PLAY_SVG;
+    btn.classList.remove('playing');
+    document.getElementById(`media-${id}`)?.classList.remove('active');
+  } else {
+    btn.classList.add('is-loading');
+    btn.innerHTML = '<div class="loader-spinner"></div>';
+    try {
+      await initVimeoPlayer(id);
+      const player = vimeoPlayers[id];
+      if (!player) throw new Error('not ready');
+      player.setMuted(false);
+      player.setVolume(1);
+      await player.play();
+      playingId = id;
+      btn.classList.remove('is-loading');
+      btn.innerHTML = PAUSE_SVG;
+      btn.classList.add('playing');
+      document.getElementById(`media-${id}`)?.classList.add('active');
+    } catch (err) {
+      btn.classList.remove('is-loading');
+      btn.innerHTML = PLAY_SVG;
+    }
+  }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   LOADING SCREEN — TELA 2
+   ══════════════════════════════════════════════════════════ */
+const LS_STEPS = [
+  'Recebendo informações...',
+  'Analisando a personalidade...',
+  'Escolhendo melodia e ritmo...',
+  'Compondo a letra exclusiva...',
+  'Ajustando voz e arranjo...',
+  'Preparando sua música... ✨',
+];
+
+const LS_PROGRESS = [8, 22, 42, 62, 80, 100];
+
+function buildLoadingParticles() {
+  const container = document.getElementById('lsParticles');
+  if (!container) return;
+  container.innerHTML = '';
+  const count = 28;
+  const colors = ['rgba(255,255,255,.18)', 'rgba(249,168,212,.3)', 'rgba(196,181,253,.25)', 'rgba(186,230,253,.2)'];
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'ls-particle';
+    const size = 4 + Math.random() * 10;
+    const x    = Math.random() * 100;
+    const delay = Math.random() * 5;
+    const dur   = 4 + Math.random() * 6;
+    const col   = colors[Math.floor(Math.random() * colors.length)];
+    p.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${x}%; bottom:-${size}px;
+      background:${col};
+      animation: lsParticleFloat ${dur}s ease-in-out ${delay}s infinite;
+    `;
+    container.appendChild(p);
+  }
+
+  // Adiciona keyframes dinâmicos para as partículas
+  if (!document.getElementById('ls-particle-style')) {
+    const style = document.createElement('style');
+    style.id = 'ls-particle-style';
+    style.textContent = `
+      @keyframes lsParticleFloat {
+        0%   { transform: translateY(0) scale(1); opacity: 0; }
+        15%  { opacity: 1; }
+        85%  { opacity: .7; }
+        100% { transform: translateY(-110vh) scale(.6); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+}
+
+function showLoadingScreen(nome) {
+  buildLoadingParticles();
+
+  const ls    = document.getElementById('loadingScreen');
+  const bar   = document.getElementById('lsBar');
+  const status = document.getElementById('lsStatus');
+  const lsNome = document.getElementById('lsNome');
+
+  if (lsNome) lsNome.textContent = nome || 'sua criança';
+  ls.classList.add('active');
+
+  let step = 0;
+  if (bar)    bar.style.width = LS_PROGRESS[0] + '%';
+  if (status) { status.style.animation = 'none'; void status.offsetWidth; status.style.animation = ''; status.textContent = LS_STEPS[0]; }
+
+  const totalDuration = 4200; // ms total da tela
+  const stepInterval  = Math.floor(totalDuration / (LS_STEPS.length - 1));
+
+  const stepTimer = setInterval(() => {
+    step++;
+    if (step >= LS_STEPS.length) { clearInterval(stepTimer); return; }
+    if (bar)    bar.style.width = LS_PROGRESS[step] + '%';
+    if (status) {
+      status.style.animation = 'none';
+      void status.offsetWidth;
+      status.style.animation = 'lsStatusFade .6s ease';
+      status.textContent = LS_STEPS[step];
+    }
+  }, stepInterval);
+
+  // Avança para a página de vendas após totalDuration + 300ms de folga
+  setTimeout(() => {
+    clearInterval(stepTimer);
+    ls.classList.remove('active');
+    showSalesPage();
+  }, totalDuration + 300);
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   PÁGINA DE VENDAS — TELA 3
+   ══════════════════════════════════════════════════════════ */
+function buildSalesTestimonials() {
+  const track = document.getElementById('spTrack');
+  const dotsEl = document.getElementById('spDots');
+  if (!track) return;
+
+  track.innerHTML = TESTIMONIALS.map(t => `
+    <div class="sp-tcard">
+      <div class="sp-tcard-top">
+        <img class="sp-tcard-avatar" src="${t.image}" alt="${t.name}" loading="lazy" />
+        <div class="sp-tcard-info">
+          <p class="sp-tcard-name">${t.name}</p>
+          <p class="sp-tcard-role">${t.role}</p>
+          <p class="sp-tcard-stars">${'★'.repeat(t.stars)}</p>
+        </div>
+        <div class="sp-tcard-quote-icon">"</div>
+      </div>
+      <p class="sp-tcard-text">${t.text}</p>
+    </div>
+  `).join('');
+
+  if (dotsEl) {
+    dotsEl.innerHTML = TESTIMONIALS.map((_,i) =>
+      `<button class="sp-carousel-dot${i===0?' active':''}" onclick="goToTestimonial(${i})" aria-label="Depoimento ${i+1}"></button>`
+    ).join('');
+  }
+}
+
+function goToTestimonial(idx) {
+  spTestimonialIndex = idx;
+  const track = document.getElementById('spTrack');
+  if (track) track.style.transform = `translateX(-${idx * 100}%)`;
+  document.querySelectorAll('.sp-carousel-dot').forEach((d,i) =>
+    d.classList.toggle('active', i === idx)
+  );
+}
+
+function nextTestimonial() {
+  goToTestimonial((spTestimonialIndex + 1) % TESTIMONIALS.length);
+}
+
+function prevTestimonial() {
+  goToTestimonial((spTestimonialIndex - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
+}
+
+function buildDealList() {
+  const el = document.getElementById('spDealList');
+  if (!el) return;
+  el.innerHTML = DEAL_FEATURES.map(f =>
+    `<li class="sp-deal-item">${f}</li>`
+  ).join('');
+}
+
+function setTodayDate() {
+  const el = document.getElementById('spDate');
+  if (!el) return;
+  const now = new Date();
+  const dias = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+  const meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  el.textContent = `${dias[now.getDay()]}, ${now.getDate()} de ${meses[now.getMonth()]}`;
+}
+
+function launchEntranceStars(nome) {
+  const area = document.getElementById('spEntranceStars');
+  if (!area) return;
+  area.innerHTML = '';
+  const assets = [
+    'assets/estrela_grande.png',
+    'assets/estrela_pequena.png',
+    'assets/not_unica.png',
+    'assets/not_unicaa.png',
+    'assets/nota_dupla.png',
+  ];
+  for (let i = 0; i < 20; i++) {
+    const img = document.createElement('img');
+    img.src = assets[i % assets.length];
+    const size = 20 + Math.random() * 44;
+    img.style.cssText = `
+      width:${size}px;
+      left:${Math.random() * 100}%;
+      top:${20 + Math.random() * 60}%;
+      animation-delay:${Math.random() * 1.2}s;
+      animation-duration:${1.8 + Math.random() * 1.2}s;
+    `;
+    img.className = 'sp-entrance-star';
+    area.appendChild(img);
+  }
+  // Remove após animação
+  setTimeout(() => { area.innerHTML = ''; }, 4000);
+}
+
+function launchSalesConfetti() {
+  const area = document.getElementById('spConfettiArea');
+  if (!area) return;
+  area.innerHTML = '';
+  const colors = ['#ec4899','#f9a8d4','#8b5cf6','#c4b5fd','#3b82f6','#93c5fd','#f59e0b','#fde68a','#10b981','#6ee7b7'];
+  for (let i = 0; i < 60; i++) {
+    const p = document.createElement('div');
+    p.className = 'sp-conf-piece';
+    const size = 6 + Math.random() * 10;
+    p.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random() * 100}%;
+      top:${-size}px;
+      background:${colors[Math.floor(Math.random() * colors.length)]};
+      border-radius:${Math.random() > .5 ? '50%' : '2px'};
+      animation-duration:${1.2 + Math.random() * 1.8}s;
+      animation-delay:${Math.random() * .8}s;
+      opacity:0;
+    `;
+    area.appendChild(p);
+  }
+}
+
+// Canvas confetti grande (reutiliza lógica original com mais partículas)
+function launchConfetti() {
+  const canvas = document.getElementById('confCanvas');
+  if (!canvas) return;
+  canvas.style.display = 'block';
+  const ctx = canvas.getContext('2d');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colors = ['#ec4899','#f9a8d4','#8b5cf6','#c4b5fd','#3b82f6','#f59e0b','#ffffff','#10b981'];
+  const pieces = Array.from({ length: 160 }, () => ({
+    x:  Math.random() * canvas.width,
+    y:  -20 - Math.random() * 150,
+    w:  6 + Math.random() * 10,
+    h:  6 + Math.random() * 10,
+    r:  Math.random() * Math.PI * 2,
+    dr: (Math.random() - .5) * .22,
+    vx: (Math.random() - .5) * 5,
+    vy: 2.5 + Math.random() * 4.5,
+    col: colors[Math.floor(Math.random() * colors.length)],
+    op: 1
+  }));
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    pieces.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.r += p.dr;
+      if (frame > 80) p.op = Math.max(0, p.op - .012);
+      if (p.y < canvas.height && p.op > 0) {
+        alive = true;
+        ctx.save();
+        ctx.globalAlpha = p.op;
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.r);
+        ctx.fillStyle = p.col;
+        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        ctx.restore();
+      }
+    });
+    frame++;
+    if (alive && frame < 350) requestAnimationFrame(draw);
+    else canvas.style.display = 'none';
+  }
+  draw();
+}
+
+function buildSalesCopy(data) {
+  const nome  = data.nome || 'sua criança';
+  const perso = [...(data.personalidade || []), data.persFree].filter(Boolean).join(' e ');
+  const univ  = [...(data.universo || []), data.universoFree].filter(Boolean).join(', ');
+  const oc    = data.oc || '';
+
+  // Headline
+  document.getElementById('spNome').textContent = nome;
+
+  // Subheadline dinâmica baseada nos dados
+  const subEl = document.getElementById('spSub');
+  if (subEl) {
+    const parts = [];
+    if (perso) parts.push(`${nome} é ${perso}`);
+    if (univ)  parts.push(`adora ${univ}`);
+    const base = parts.length
+      ? `Com tudo que você nos contou — ${parts.join(' e ')} — estamos prontos para criar algo que ela vai querer ouvir toda noite.`
+      : `Só falta garantir para a música de ${nome} ser entregue em até 6h no seu WhatsApp.`;
+    subEl.textContent = base;
+  }
+}
+
+let _salesData = null;
+
+function showSalesPage() {
+  buildDealList();
+  buildSalesTestimonials();
+  setTodayDate();
+
+  if (_salesData) buildSalesCopy(_salesData);
+
+  const sp = document.getElementById('salesPage');
+  sp.classList.add('active');
+
+  // Scroll para o topo
+  const scroll = sp.querySelector('.sp-scroll');
+  if (scroll) scroll.scrollTop = 0;
+
+  // Efeitos de entrada com leve delay para o fade-in terminar
+  setTimeout(() => {
+    launchEntranceStars(_salesData?.nome);
+    launchSalesConfetti();
+    launchConfetti();
+  }, 250);
+
+  // WhatsApp input mask
+  const wppInput = document.getElementById('wpp');
+  if (wppInput && !wppInput.dataset.masked) {
+    wppInput.dataset.masked = 'true';
+    wppInput.addEventListener('input', function() {
+      let v = this.value.replace(/\D/g,'').slice(0,11);
+      if (v.length > 10)     v = v.replace(/^(\d{2})(\d{5})(\d{4})$/,'($1) $2-$3');
+      else if (v.length > 6) v = v.replace(/^(\d{2})(\d{4})(\d*)$/,'($1) $2-$3');
+      else if (v.length > 2) v = v.replace(/^(\d{2})(\d*)$/,'($1) $2');
+      this.value = v;
+    });
+  }
+
+  // Auto-avança depoimentos a cada 5s
+  setInterval(() => {
+    nextTestimonial();
+  }, 5000);
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   QUIZ — LÓGICA COMPLETA (preservada)
+   ══════════════════════════════════════════════════════════ */
+(function() {
+  const TOTAL = 8;
+  let cur = 1;
+  const data = {
+    rel:'', nome:'', idade:'', oc:'',
+    personalidade:[], persFree:'',
+    universo:[], universoFree:'',
+    hist:'', clima:'', estilo:'', ref:'', whatsapp:''
+  };
+
+  let pendingPayload = null;
+  const URL_PLANILHA = "https://script.google.com/macros/s/AKfycbysAvegPSUlDcbJWX0XSYqUjRwPC0krH9BdJlXmt6-bMsXZDFUOHLcHWQbeE3ZnUS/exec";
+
+  function init() {
+    document.querySelectorAll('#gRel .ocard').forEach(c => {
+      c.addEventListener('click', () => {
+        document.querySelectorAll('#gRel .ocard').forEach(x => x.classList.remove('sel'));
+        c.classList.add('sel');
+        data.rel = c.dataset.v;
+      });
+    });
+
+    document.querySelectorAll('#gOc .ocard').forEach(c => {
+      c.addEventListener('click', () => {
+        document.querySelectorAll('#gOc .ocard').forEach(x => x.classList.remove('sel'));
+        c.classList.add('sel');
+        data.oc = c.dataset.v;
+        setTimeout(next, 1000);
+      });
+    });
+
+    document.querySelectorAll('#gPerso .ocard').forEach(c => {
+      c.addEventListener('click', () => {
+        const v = c.dataset.v;
+        if (v === '__free__') {
+          const isSel = c.classList.contains('sel');
+          if (!isSel && data.personalidade.length >= 3) { showErr('Limite atingido! Remova uma para adicionar outra.'); return; }
+          c.classList.toggle('sel');
+          document.getElementById('persFreeField').style.display = c.classList.contains('sel') ? 'block' : 'none';
+          if (!c.classList.contains('sel')) { data.persFree = ''; document.getElementById('persFree').value = ''; }
+        } else {
+          if (c.classList.contains('sel')) {
+            c.classList.remove('sel');
+            data.personalidade = data.personalidade.filter(x => x !== v);
+          } else if (data.personalidade.length < 3) {
+            c.classList.add('sel');
+            data.personalidade.push(v);
+          } else {
+            showErr('Limite atingido! Remova uma para adicionar outra.');
+          }
+        }
+        const freeSelected = document.querySelector('#gPerso .ocard[data-v="__free__"]').classList.contains('sel');
+        document.getElementById('pCnt').textContent = data.personalidade.length + (freeSelected ? 1 : 0);
+      });
+    });
+
+    document.querySelectorAll('#gUniv .ocard').forEach(c => {
+      c.addEventListener('click', () => {
+        const v = c.dataset.v;
+        if (c.classList.contains('sel')) {
+          c.classList.remove('sel');
+          data.universo = data.universo.filter(x => x !== v);
+        } else {
+          if (data.universo.length >= 3) { showErr('Limite atingido! Remova um para adicionar outro.'); return; }
+          c.classList.add('sel');
+          data.universo.push(v);
+        }
+      });
+    });
+
+    document.querySelectorAll('#gClima .ocard').forEach(c => {
+      c.addEventListener('click', () => {
+        document.querySelectorAll('#gClima .ocard').forEach(x => x.classList.remove('sel'));
+        c.classList.add('sel');
+        data.clima = c.dataset.v;
+        setTimeout(next, 1000);
+      });
+    });
+
+    document.querySelectorAll('#gEstilo .ocard').forEach(c => {
+      c.addEventListener('click', () => {
+        document.querySelectorAll('#gEstilo .ocard').forEach(x => x.classList.remove('sel'));
+        c.classList.add('sel');
+        data.estilo = c.dataset.v;
+        setTimeout(next, 1000);
+      });
+    });
+
+    document.querySelectorAll('.qi, .qt').forEach(el => {
+      el.addEventListener('input', () => el.style.borderColor = '');
+    });
+  }
+
+  function updateUI() {
+    document.getElementById('sNum').textContent = String(cur).padStart(2,'0');
+    document.getElementById('pFill').style.width = (cur / TOTAL * 100) + '%';
+    document.querySelectorAll('.qs').forEach(p =>
+      p.classList.toggle('active', parseInt(p.dataset.s) === cur)
+    );
+    document.querySelector('.qb').scrollTop = 0;
+    const nome = data.nome || 'essa criança';
+    ['n3','n4','n5','n6','n7','n8'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = nome;
+    });
+    document.querySelectorAll('.milestone-pill').forEach(p => p.classList.remove('show'));
+    if (cur === 4) setTimeout(() => document.getElementById('milestone4')?.classList.add('show'), 400);
+    if (cur === 8) setTimeout(() => document.getElementById('milestone8')?.classList.add('show'), 400);
+  }
+
+  function save() {
+    if (cur === 1) { data.nome = document.getElementById('nome').value.trim(); data.idade = document.getElementById('idade').value.trim(); }
+    if (cur === 3) { data.persFree = document.getElementById('persFree')?.value.trim() || ''; }
+    if (cur === 4) { data.universoFree = document.getElementById('universoFree').value.trim(); }
+    if (cur === 5) { data.hist = document.getElementById('hist').value.trim(); }
+    if (cur === 8) { data.ref  = document.getElementById('ref').value.trim(); }
+  }
+
+  function validate() {
+    if (cur === 1) {
+      if (!data.rel) { showErr('Selecione sua relação com a criança'); return false; }
+      const n = document.getElementById('nome');
+      if (!n.value.trim()) { n.style.borderColor = '#ef4444'; showErr('Digite o nome da criança'); return false; }
+    }
+    if (cur === 2 && !data.oc) { showErr('Selecione a ocasião'); return false; }
+    if (cur === 3) {
+      const freeSelected = document.querySelector('#gPerso .ocard[data-v="__free__"]').classList.contains('sel');
+      if (data.personalidade.length === 0 && !freeSelected) { showErr('Selecione pelo menos 1 característica'); return false; }
+      if (freeSelected && !document.getElementById('persFree').value.trim()) {
+        document.getElementById('persFree').style.borderColor = '#ef4444';
+        showErr('Descreva a personalidade'); return false;
+      }
+    }
+    if (cur === 4) {
+      if (data.universo.length === 0 && !document.getElementById('universoFree').value.trim()) {
+        showErr('Selecione pelo menos 1 universo ou descreva no campo'); return false;
+      }
+    }
+    if (cur === 5) {
+      const h = document.getElementById('hist');
+      if (!h.value.trim()) { h.style.borderColor = '#ef4444'; showErr('Conte a história'); return false; }
+    }
+    if (cur === 6 && !data.clima)  { showErr('Selecione o clima da música'); return false; }
+    if (cur === 7 && !data.estilo) { showErr('Selecione o estilo musical'); return false; }
+    return true;
+  }
+
+  function next() {
+    if (!validate()) return;
+    save();
+    if (cur < TOTAL) { cur++; updateUI(); }
+    else             { submit(); }
+  }
+
+  function goBack() {
+    if (cur > 1) { cur--; updateUI(); }
+    else         { saveToCache(); resetQuiz(); }
+  }
+
+  const CACHE_KEY = 'kidsmusic_quiz';
+
+  function saveToCache() {
+    save();
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ...data, _cur: cur })); } catch(e) {}
+  }
+
+  function restoreFromCache() {
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return false;
+      const saved = JSON.parse(raw);
+      Object.assign(data, {
+        rel: saved.rel||'', nome: saved.nome||'', idade: saved.idade||'',
+        oc: saved.oc||'', personalidade: saved.personalidade||[],
+        persFree: saved.persFree||'', universo: saved.universo||[],
+        universoFree: saved.universoFree||'', hist: saved.hist||'',
+        clima: saved.clima||'', estilo: saved.estilo||'', ref: saved.ref||''
+      });
+      cur = saved._cur || 1;
+
+      if (data.nome)         document.getElementById('nome').value         = data.nome;
+      if (data.idade)        document.getElementById('idade').value        = data.idade;
+      if (data.hist)         document.getElementById('hist').value         = data.hist;
+      if (data.ref)          document.getElementById('ref').value          = data.ref;
+      if (data.universoFree) document.getElementById('universoFree').value = data.universoFree;
+      if (data.persFree) {
+        document.getElementById('persFree').value = data.persFree;
+        document.getElementById('persFreeField').style.display = 'block';
+      }
+      if (data.rel) document.querySelectorAll('#gRel .ocard').forEach(c => { if (c.dataset.v === data.rel) c.classList.add('sel'); });
+      if (data.oc)  document.querySelectorAll('#gOc  .ocard').forEach(c => { if (c.dataset.v === data.oc)  c.classList.add('sel'); });
+      if (data.personalidade.length) document.querySelectorAll('#gPerso .ocard').forEach(c => { if (data.personalidade.includes(c.dataset.v)) c.classList.add('sel'); });
+      if (data.persFree) document.querySelector('#gPerso .ocard[data-v="__free__"]')?.classList.add('sel');
+      document.getElementById('pCnt').textContent = data.personalidade.length + (data.persFree ? 1 : 0);
+      if (data.universo.length) document.querySelectorAll('#gUniv .ocard').forEach(c => { if (data.universo.includes(c.dataset.v)) c.classList.add('sel'); });
+      if (data.clima)  document.querySelectorAll('#gClima  .ocard').forEach(c => { if (c.dataset.v === data.clima)  c.classList.add('sel'); });
+      if (data.estilo) document.querySelectorAll('#gEstilo .ocard').forEach(c => { if (c.dataset.v === data.estilo) c.classList.add('sel'); });
+      return true;
+    } catch(e) { return false; }
+  }
+
+  function clearCache() {
+    try { localStorage.removeItem(CACHE_KEY); } catch(e) {}
+  }
+
+  function submit() {
+    save();
+
+    const persoFull = [...data.personalidade, data.persFree].filter(Boolean).join(', ');
+    const univFull  = [...data.universo, data.universoFree].filter(Boolean).join(', ');
+
+    pendingPayload = {
+      paraQuem: data.rel, nome: data.nome, idade: data.idade,
+      momento: data.oc, personalidade: persoFull, universo: univFull,
+      historia: data.hist, clima: data.clima, estilo: data.estilo,
+      referencia: data.ref, whatsapp: '', status: 'Quiz Concluído'
+    };
+
+    // Salva dados para a página de vendas
+    _salesData = { ...data, persoFull, univFull };
+
+    // Fecha o quiz overlay
+    document.getElementById('quiz').classList.remove('active');
+    document.body.style.overflow = '';
+
+    // Inicia a tela de loading
+    showLoadingScreen(data.nome);
+  }
+
+  function resetQuiz() {
+    cur = 1;
+    Object.assign(data, {
+      rel:'', nome:'', idade:'', oc:'',
+      personalidade:[], persFree:'',
+      universo:[], universoFree:'',
+      hist:'', clima:'', estilo:'', ref:'', whatsapp:''
+    });
+    pendingPayload = null;
+
+    document.querySelectorAll('.ocard').forEach(c => c.classList.remove('sel'));
+    document.querySelectorAll('.qi, .qt').forEach(i => { i.value = ''; i.style.borderColor = ''; });
+    document.getElementById('pCnt').textContent = '0';
+    document.getElementById('persFreeField').style.display = 'none';
+
+    document.getElementById('quiz').classList.remove('active');
+    document.body.style.overflow = '';
+    updateUI();
+  }
+
+  function openQuiz() {
+    document.getElementById('quiz').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    const hadCache = restoreFromCache();
+    updateUI();
+    if (hadCache && cur > 1) setTimeout(() => showErr('✅ Seus dados foram salvos! Continue de onde parou 🎵'), 400);
+  }
+
+  let eTimer = null;
+  function showErr(msg) {
+    const t = document.getElementById('eTost');
+    t.textContent = msg;
+    t.classList.add('show');
+    if (eTimer) clearTimeout(eTimer);
+    eTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // Checkout — chamado pelo botão da página de vendas
+  window.checkout = function() {
+    const wppInput = document.getElementById('wpp');
+    const wrap     = document.getElementById('spWppWrap');
+    const rawNum   = wppInput.value.replace(/\D/g,'');
+
+    if (rawNum.length < 10) {
+      if (wrap) wrap.style.borderColor = '#ef4444';
+      wppInput.focus();
+      showErr('Digite seu WhatsApp com DDD para receber sua música');
+      setTimeout(() => { if (wrap) wrap.style.borderColor = ''; }, 3000);
+      return;
+    }
+
+    const btn = document.getElementById('ctaBtn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Redirecionando...'; }
+
+    const intlNum = '55' + rawNum;
+
+    if (pendingPayload) {
+      pendingPayload.whatsapp = wppInput.value.trim();
+      pendingPayload.status   = 'Checkout Iniciado';
+      fetch(URL_PLANILHA, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(pendingPayload)
+      }).catch(err => console.error('Erro ao salvar:', err));
+    }
+
+    clearCache();
+    // TODO: insira seu link de checkout aqui
+    const checkoutBase = 'https://pay.cakto.com.br/h3srsgc_866648';
+    window.open(checkoutBase + '?phone=' + intlNum, '_blank');
+  };
+
+  window.openQuiz  = openQuiz;
+  window.next      = next;
+  window.goBack    = goBack;
+  window.resetQuiz = resetQuiz;
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+
+
+/* ══════════════════════════════════════════════════════════
+   EXIT INTENT (preservado do original)
+   ══════════════════════════════════════════════════════════ */
+(function() {
+  const STORAGE_KEY = 'km_exit_count';
+  const MAX_SHOWS   = 2;
+  const MIN_DELAY   = 3500;
+
+  let modalShown = false, pageReadyTime = Date.now(), listenersAdded = false;
+  let historyBufferSet = false, lastScrollY = window.scrollY, lastScrollTime = Date.now();
+  let idleTimer = null;
+  const IDLE_DELAY = 45000;
+
+  function getCount() { try { return parseInt(sessionStorage.getItem(STORAGE_KEY)||'0',10); } catch(e){ return 0; } }
+  function incCount() { try { sessionStorage.setItem(STORAGE_KEY, String(getCount()+1)); } catch(e){} }
+  function canShow()  { return getCount() < MAX_SHOWS; }
+  function isQuizOpen()      { return document.getElementById('quiz')?.classList.contains('active'); }
+  function isSalesOpen()     { return document.getElementById('salesPage')?.classList.contains('active'); }
+  function isLoadingOpen()   { return document.getElementById('loadingScreen')?.classList.contains('active'); }
+  function readyLongEnough() { return (Date.now() - pageReadyTime) >= MIN_DELAY; }
+  function isMobile()        { return /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 768; }
+
+  const COPY = {
+    page: {
+      badge:'Espera um segundo',
+      title:'Sua música ainda <span class="exit-title-accent">não foi criada</span>',
+      body:'Por menos de um café, sua criança terá uma música única no mundo — com o nome e a história dela. Esse presente ela vai pedir pra ouvir toda noite.',
+      cta:'Quero criar a música agora',
+      dismiss:'Não, prefiro dar um presente comum'
+    },
+    quiz: {
+      badge:'Quase lá',
+      title:'Você já está <span class="exit-title-accent">no caminho certo</span>',
+      body:'Você já dedicou seu tempo para personalizar esse presente. Falta muito pouco — e no final sua criança vai ter uma música que só ela tem no mundo inteiro.',
+      cta:'Continuar e finalizar minha música',
+      dismiss:'Deixar pra depois e perder os dados'
+    }
+  };
+
+  function showModal(forceCtx) {
+    if (modalShown || !canShow() || !readyLongEnough()) return;
+    if (isSalesOpen() || isLoadingOpen()) return;
+    modalShown = true; incCount();
+    const ctx  = forceCtx || (isQuizOpen() ? 'quiz' : 'page');
+    const copy = COPY[ctx];
+    document.getElementById('exitBadge').textContent    = copy.badge;
+    document.getElementById('exitModalTitle').innerHTML = copy.title;
+    document.getElementById('exitBody').textContent     = copy.body;
+    document.getElementById('exitCta').textContent      = copy.cta;
+    document.getElementById('exitDismiss').textContent  = copy.dismiss;
+    document.getElementById('exitModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    if (historyBufferSet) history.pushState({ exitBuffer:true },'',location.href);
+  }
+
+  function closeModal(openQuizAfter) {
+    document.getElementById('exitModal').classList.remove('active');
+    modalShown = false;
+    if (!isQuizOpen()) document.body.style.overflow = '';
+    if (openQuizAfter && typeof window.openQuiz === 'function') window.openQuiz();
+  }
+
+  function bindModalButtons() {
+    document.getElementById('exitCta')?.addEventListener('click',    () => closeModal(true));
+    document.getElementById('exitDismiss')?.addEventListener('click', () => closeModal(false));
+    document.getElementById('exitOverlay')?.addEventListener('click', () => closeModal(false));
+  }
+
+  function setupBackButtonTrap() {
+    if (historyBufferSet) return;
+    history.pushState({ exitBuffer:true },'',location.href);
+    historyBufferSet = true;
+    window.addEventListener('popstate', function() {
+      if (!canShow() || !readyLongEnough() || isSalesOpen() || isLoadingOpen()) return;
+      history.pushState({ exitBuffer:true },'',location.href);
+      showModal();
+    });
+  }
+
+  function onScroll() {
+    const now = Date.now(), dy = window.scrollY - lastScrollY, dt = now - lastScrollTime;
+    if (dt > 0 && dt < 200 && (dy/dt) < -.8 && window.scrollY < 600) showModal();
+    lastScrollY = window.scrollY; lastScrollTime = now;
+    if (!isQuizOpen()) resetIdleTimer();
+  }
+
+  function onVisibilityChange() {
+    if (document.visibilityState !== 'hidden') return;
+    if (isQuizOpen() || isSalesOpen() || isLoadingOpen()) return;
+    showModal();
+  }
+
+  function resetIdleTimer() {
+    if (isQuizOpen()) return;
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => { if (!isQuizOpen()) showModal(); }, IDLE_DELAY);
+  }
+
+  function onUserActivity() { if (!isQuizOpen()) resetIdleTimer(); }
+  function onMouseLeave(e)  { if (e.clientY <= 10) showModal(); }
+
+  function addListeners() {
+    if (listenersAdded) return;
+    listenersAdded = true;
+    document.addEventListener('visibilitychange', onVisibilityChange, { passive:true });
+    if (isMobile()) {
+      window.addEventListener('scroll', onScroll, { passive:true });
+      resetIdleTimer();
+      document.addEventListener('touchstart', onUserActivity, { passive:true });
+      document.addEventListener('touchend',   onUserActivity, { passive:true });
+      document.addEventListener('touchend', function setupBuffer() {
+        setupBackButtonTrap();
+        document.removeEventListener('touchend', setupBuffer);
+      }, { once:true, passive:true });
+    } else {
+      document.addEventListener('mouseleave', onMouseLeave, { passive:true });
+      resetIdleTimer();
+      document.addEventListener('mousemove', onUserActivity, { passive:true });
+      document.addEventListener('click',     onUserActivity, { passive:true });
+      document.addEventListener('keydown',   onUserActivity, { passive:true });
+      document.addEventListener('click', function setupBuffer() {
+        setupBackButtonTrap();
+        document.removeEventListener('click', setupBuffer);
+      }, { once:true });
+    }
+  }
+
+  function interceptQuizClose() {
+    const closeBtn = document.querySelector('.q-close');
+    if (!closeBtn) return;
+    closeBtn.addEventListener('click', function(e) {
+      if (canShow() && readyLongEnough() && isQuizOpen()) {
+        e.stopImmediatePropagation();
+        showModal('quiz');
+      }
+    }, true);
+  }
+
+  function init() {
+    bindModalButtons();
+    interceptQuizClose();
+    setTimeout(addListeners, MIN_DELAY);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  window._exitIntent = { showModal, closeModal };
+})();
+
+
+/* ══════════════════════════════════════════════════════════
+   INIT
+   ══════════════════════════════════════════════════════════ */
 buildCarousel();
 updateCards();
 loadVimeoAPI().then(() => {
   initVimeoPlayer(MUSIC_EXAMPLES[activeIndex].id, false);
-  initVimeoPlayer(MUSIC_EXAMPLES[activeIndex + 1].id, false);
+  if (MUSIC_EXAMPLES[activeIndex + 1]) initVimeoPlayer(MUSIC_EXAMPLES[activeIndex + 1].id, false);
 });
 
-(function() {
-    const TOTAL = 8;
-    let cur = 1;
-    const data = {
-        rel: '', nome: '', idade: '', oc: '',
-        personalidade: [], persFree: '',
-        universo: [], universoFree: '',
-        hist: '', clima: '', estilo: '', ref: '', whatsapp: ''
-    };
-
-    let pendingPayload = null;
-    const URL_PLANILHA = "https://script.google.com/macros/s/AKfycbysAvegPSUlDcbJWX0XSYqUjRwPC0krH9BdJlXmt6-bMsXZDFUOHLcHCXWQbeE3ZnUS/exec";
-
-    function init() {
-        document.querySelectorAll('#gRel .ocard').forEach(c => {
-            c.addEventListener('click', () => {
-                document.querySelectorAll('#gRel .ocard').forEach(x => x.classList.remove('sel'));
-                c.classList.add('sel');
-                data.rel = c.dataset.v;
-            });
-        });
-
-        document.querySelectorAll('#gOc .ocard').forEach(c => {
-            c.addEventListener('click', () => {
-                document.querySelectorAll('#gOc .ocard').forEach(x => x.classList.remove('sel'));
-                c.classList.add('sel');
-                data.oc = c.dataset.v;
-                setTimeout(next, 1000);
-            });
-        });
-
-        document.querySelectorAll('#gPerso .ocard').forEach(c => {
-            c.addEventListener('click', () => {
-                const v = c.dataset.v;
-                if (v === '__free__') {
-                    const isSel = c.classList.contains('sel');
-                    if (!isSel && data.personalidade.length >= 3) {
-                        showErr('Limite atingido! Você já escolheu 3 características. Remova uma para adicionar outra.');
-                        return;
-                    }
-                    c.classList.toggle('sel');
-                    const freeField = document.getElementById('persFreeField');
-                    freeField.style.display = c.classList.contains('sel') ? 'block' : 'none';
-                    if (!c.classList.contains('sel')) {
-                        data.persFree = '';
-                        document.getElementById('persFree').value = '';
-                    }
-                } else {
-                    if (c.classList.contains('sel')) {
-                        c.classList.remove('sel');
-                        data.personalidade = data.personalidade.filter(x => x !== v);
-                    } else if (data.personalidade.length < 3) {
-                        c.classList.add('sel');
-                        data.personalidade.push(v);
-                    } else {
-                        showErr('Limite atingido! Você já escolheu 3 características. Remova uma para adicionar outra.');
-                    }
-                }
-                const freeSelected = document.querySelector('#gPerso .ocard[data-v="__free__"]').classList.contains('sel');
-                const count = data.personalidade.length + (freeSelected ? 1 : 0);
-                document.getElementById('pCnt').textContent = count;
-            });
-        });
-
-        document.querySelectorAll('#gUniv .ocard').forEach(c => {
-            c.addEventListener('click', () => {
-                const v = c.dataset.v;
-                if (c.classList.contains('sel')) {
-                    c.classList.remove('sel');
-                    data.universo = data.universo.filter(x => x !== v);
-                } else {
-                  if (data.universo.length >= 3) {
-                        showErr('Limite atingido! Você já escolheu 3 universos. Remova um para adicionar outro.');
-                        return;
-                    }
-                    c.classList.add('sel');
-                    data.universo.push(v);
-                }
-            });
-        });
-
-        document.querySelectorAll('#gClima .ocard').forEach(c => {
-            c.addEventListener('click', () => {
-                document.querySelectorAll('#gClima .ocard').forEach(x => x.classList.remove('sel'));
-                c.classList.add('sel');
-                data.clima = c.dataset.v;
-                setTimeout(next, 1000);
-            });
-        });
-
-        document.querySelectorAll('#gEstilo .ocard').forEach(c => {
-            c.addEventListener('click', () => {
-                document.querySelectorAll('#gEstilo .ocard').forEach(x => x.classList.remove('sel'));
-                c.classList.add('sel');
-                data.estilo = c.dataset.v;
-                setTimeout(next, 1000);
-            });
-        });
-
-        document.querySelectorAll('.qi, .qt').forEach(el => {
-            el.addEventListener('input', () => el.style.borderColor = '');
-        });
-
-        const wppInput = document.getElementById('wpp');
-        if (wppInput) {
-            wppInput.addEventListener('input', function() {
-                let v = this.value.replace(/\D/g, '').slice(0, 11);
-                if (v.length > 10)      v = v.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
-                else if (v.length > 6)  v = v.replace(/^(\d{2})(\d{4})(\d*)$/, '($1) $2-$3');
-                else if (v.length > 2)  v = v.replace(/^(\d{2})(\d*)$/, '($1) $2');
-                this.value = v;
-            });
-        }
-
-        document.querySelectorAll('.btn, .pricing-card__btn, .navbar__cta .btn--sm, .navbar__link, .navbar__mobile-link').forEach(btn => {
-            if (btn.tagName === 'A' && btn.getAttribute('href')?.startsWith('#') && btn.getAttribute('href').length > 1) return;
-            btn.addEventListener('click', (e) => {
-                if (btn.tagName === 'A' && btn.getAttribute('href') && !btn.getAttribute('href').startsWith('#')) return;
-                e.preventDefault();
-                openQuiz();
-            });
-        });
-    }
-
-    function updateUI(back) {
-        document.getElementById('sNum').textContent = String(cur).padStart(2, '0');
-        document.getElementById('pFill').style.width = (cur / TOTAL * 100) + '%';
-        document.querySelectorAll('.qs').forEach(p => {
-            p.classList.toggle('active', parseInt(p.dataset.s) === cur);
-        });
-        document.querySelector('.qb').scrollTop = 0;
-        const nome = data.nome || 'essa criança';
-        ['n3','n4','n5','n6','n7','n8'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.textContent = nome;
-        });
-        document.querySelectorAll('.milestone-pill').forEach(p => p.classList.remove('show'));
-        if (cur === 4) setTimeout(() => document.getElementById('milestone4')?.classList.add('show'), 400);
-        if (cur === 8) setTimeout(() => document.getElementById('milestone8')?.classList.add('show'), 400);
-    }
-
-    function save() {
-        switch(cur) {
-            case 1:
-                data.nome  = document.getElementById('nome').value.trim();
-                data.idade = document.getElementById('idade').value.trim();
-                break;
-            case 4:
-                data.universoFree = document.getElementById('universoFree').value.trim();
-                break;
-            case 5:
-                data.hist = document.getElementById('hist').value.trim();
-                break;
-            case 3:
-                data.persFree = document.getElementById('persFree')?.value.trim() || '';
-                break;
-            case 8:
-                data.ref = document.getElementById('ref').value.trim();
-                break;
-        }
-    }
-
-    function validate() {
-        if (cur === 1) {
-            if (!data.rel) { showErr('Selecione sua relação com a criança'); return false; }
-            const n = document.getElementById('nome');
-            if (!n.value.trim()) { n.style.borderColor = '#ef4444'; showErr('Digite o nome da criança'); return false; }
-        }
-        if (cur === 2 && !data.oc) { showErr('Selecione a ocasião'); return false; }
-        if (cur === 3) {
-            const freeSelected = document.querySelector('#gPerso .ocard[data-v="__free__"]').classList.contains('sel');
-            if (data.personalidade.length === 0 && !freeSelected) {
-                showErr('Selecione pelo menos 1 característica'); return false;
-            }
-            if (freeSelected) {
-                const pf = document.getElementById('persFree');
-                if (!pf.value.trim()) { pf.style.borderColor = '#ef4444'; showErr('Descreva a personalidade'); return false; }
-            }
-        }
-        if (cur === 4) {
-            const freeVal = document.getElementById('universoFree').value.trim();
-            if (data.universo.length === 0 && !freeVal) {
-                showErr('Selecione pelo menos 1 universo ou descreva no campo'); return false;
-            }
-        }
-        if (cur === 5) {
-            const h = document.getElementById('hist');
-            if (!h.value.trim()) { h.style.borderColor = '#ef4444'; showErr('Conte a história'); return false; }
-        }
-        if (cur === 6 && !data.clima) { showErr('Selecione o clima da música'); return false; }
-        if (cur === 7 && !data.estilo) { showErr('Selecione o estilo musical'); return false; }
-        return true;
-    }
-
-    function next() {
-        if (!validate()) return;
-        save();
-        if (cur < TOTAL) {
-            cur++;
-            updateUI(false);
-        } else {
-            submit();
-        }
-    }
-
-    function goBack() {
-        if (cur > 1) {
-            cur--;
-            updateUI(true);
-        } else {
-            saveToCache();
-            resetQuiz();
-        }
-    }
-
-    const CACHE_KEY = 'kidsmusic_quiz';
-
-    function saveToCache() {
-        save();
-        try {
-            localStorage.setItem(CACHE_KEY, JSON.stringify({ ...data, _cur: cur }));
-        } catch (e) { }
-    }
-
-    function restoreFromCache() {
-        try {
-            const raw = localStorage.getItem(CACHE_KEY);
-            if (!raw) return false;
-            const saved = JSON.parse(raw);
-            data.rel         = saved.rel         || '';
-            data.nome        = saved.nome        || '';
-            data.idade       = saved.idade       || '';
-            data.oc          = saved.oc          || '';
-            data.personalidade = saved.personalidade || [];
-            data.persFree    = saved.persFree    || '';
-            data.universo    = saved.universo    || [];
-            data.universoFree= saved.universoFree|| '';
-            data.hist        = saved.hist        || '';
-            data.clima       = saved.clima       || '';
-            data.estilo      = saved.estilo      || '';
-            data.ref         = saved.ref         || '';
-            cur = saved._cur || 1;
-
-            if (data.nome)         document.getElementById('nome').value  = data.nome;
-            if (data.idade)        document.getElementById('idade').value = data.idade;
-            if (data.hist)         document.getElementById('hist').value  = data.hist;
-            if (data.ref)          document.getElementById('ref').value   = data.ref;
-            if (data.universoFree) document.getElementById('universoFree').value = data.universoFree;
-            if (data.persFree) {
-                document.getElementById('persFree').value = data.persFree;
-                document.getElementById('persFreeField').style.display = 'block';
-            }
-
-            if (data.rel) {
-                document.querySelectorAll('#gRel .ocard').forEach(c => {
-                    if (c.dataset.v === data.rel) c.classList.add('sel');
-                });
-            }
-            if (data.oc) {
-                document.querySelectorAll('#gOc .ocard').forEach(c => {
-                    if (c.dataset.v === data.oc) c.classList.add('sel');
-                });
-            }
-            if (data.personalidade.length) {
-                document.querySelectorAll('#gPerso .ocard').forEach(c => {
-                    if (data.personalidade.includes(c.dataset.v)) c.classList.add('sel');
-                });
-            }
-            if (data.persFree) {
-                document.querySelector('#gPerso .ocard[data-v="__free__"]')?.classList.add('sel');
-            }
-            const cnt = data.personalidade.length + (data.persFree ? 1 : 0);
-            document.getElementById('pCnt').textContent = cnt;
-
-            if (data.universo.length) {
-                document.querySelectorAll('#gUniv .ocard').forEach(c => {
-                    if (data.universo.includes(c.dataset.v)) c.classList.add('sel');
-                });
-            }
-            if (data.clima) {
-                document.querySelectorAll('#gClima .ocard').forEach(c => {
-                    if (c.dataset.v === data.clima) c.classList.add('sel');
-                });
-            }
-            if (data.estilo) {
-                document.querySelectorAll('#gEstilo .ocard').forEach(c => {
-                    if (c.dataset.v === data.estilo) c.classList.add('sel');
-                });
-            }
-            return true;
-        } catch (e) { return false; }
-    }
-
-    function clearCache() {
-        try { localStorage.removeItem(CACHE_KEY); } catch (e) { }
-    }
-
-    function submit() {
-        save();
-        document.getElementById('qBody').style.display = 'none';
-        document.getElementById('qHeader').style.display = 'none';
-        const comp = document.getElementById('comp');
-        comp.classList.add('active');
-
-        const persoFull = [...data.personalidade, data.persFree].filter(Boolean).join(', ');
-        const univFull  = [...data.universo, data.universoFree].filter(Boolean).join(', ');
-
-        document.getElementById('smNome').textContent   = data.nome || '—';
-        document.getElementById('smOc').textContent     = data.oc || '—';
-        document.getElementById('smPerso').textContent  = persoFull || '—';
-        document.getElementById('smUniv').textContent   = univFull || '—';
-        document.getElementById('smClima').textContent  = data.clima || '—';
-        document.getElementById('smEstilo').textContent = data.estilo || '—';
-
-        // Preenche os elementos visuais do novo design
-        const smNomeEl = document.getElementById('smNome');
-        if (smNomeEl) smNomeEl.textContent = data.nome || '—';
-        const vis = {
-            smPersoVis:  persoFull || '—',
-            smUnivVis:   univFull  || '—',
-            smClimaVis:  data.clima || '—',
-            smEstiloVis: data.estilo || '—',
-        };
-        Object.entries(vis).forEach(([id, val]) => {
-            const el = document.getElementById(id);
-            if (el) el.textContent = val;
-        });
-
-        pendingPayload = {
-            paraQuem:      data.rel,
-            nome:          data.nome,
-            idade:         data.idade,
-            momento:       data.oc,
-            personalidade: persoFull,
-            universo:      univFull,
-            historia:      data.hist,
-            clima:         data.clima,
-            estilo:        data.estilo,
-            referencia:    data.ref,
-            whatsapp:      '',
-            status:        'Quiz Concluído'
-        };
-
-        setTimeout(launchConfetti, 350);
-    }
-
-    function launchConfetti() {
-        const canvas = document.getElementById('confCanvas');
-        canvas.style.display = 'block';
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        const colors = ['#10b981', '#34d399', '#38bdf8', '#f59e0b', '#ffffff'];
-        const pieces = [];
-        for (let i = 0; i < 100; i++) {
-            pieces.push({
-                x: Math.random() * canvas.width,
-                y: -20 - Math.random() * 100,
-                w: 8 + Math.random() * 8,
-                h: 8 + Math.random() * 8,
-                r: Math.random() * Math.PI * 2,
-                dr: (Math.random() - 0.5) * 0.2,
-                vx: (Math.random() - 0.5) * 4,
-                vy: 3 + Math.random() * 4,
-                col: colors[Math.floor(Math.random() * colors.length)],
-                op: 1
-            });
-        }
-        let frame = 0;
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            let alive = false;
-            pieces.forEach(p => {
-                p.x += p.vx; p.y += p.vy; p.r += p.dr;
-                if (frame > 100) p.op = Math.max(0, p.op - 0.01);
-                if (p.y < canvas.height && p.op > 0) {
-                    alive = true;
-                    ctx.save();
-                    ctx.globalAlpha = p.op;
-                    ctx.translate(p.x, p.y);
-                    ctx.rotate(p.r);
-                    ctx.fillStyle = p.col;
-                    ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
-                    ctx.restore();
-                }
-            });
-            frame++;
-            if (alive && frame < 300) { requestAnimationFrame(draw); } 
-            else{
-              canvas.style.display = 'none';
-            }
-        }
-        draw();
-    }
-
-    function resetQuiz() {
-        cur = 1;
-        data.rel = ''; data.nome = ''; data.idade = ''; data.oc = '';
-        data.personalidade = []; data.persFree = '';
-        data.universo = []; data.universoFree = '';
-        data.hist = ''; data.clima = ''; data.estilo = ''; data.ref = ''; data.whatsapp = '';
-        pendingPayload = null;
-
-        document.querySelectorAll('.ocard').forEach(c => c.classList.remove('sel'));
-        document.querySelectorAll('.qi, .qt').forEach(i => { i.value = ''; i.style.borderColor = ''; });
-        document.getElementById('pCnt').textContent = '0';
-        document.getElementById('persFreeField').style.display = 'none';
-
-        const wppInput = document.getElementById('wpp');
-        if (wppInput) wppInput.value = '';
-        const wppWrap = document.getElementById('wppWrap');
-        if (wppWrap) wppWrap.style.borderColor = '';
-        const ctaBtn = document.getElementById('ctaBtn');
-        if (ctaBtn) {
-            ctaBtn.disabled = false;
-            ctaBtn.innerHTML = 'Garantir Minha Música Agora <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
-        }
-
-        document.getElementById('qBody').style.display = '';
-        document.getElementById('qHeader').style.display = '';
-        document.getElementById('comp').classList.remove('active');
-        document.getElementById('quiz').classList.remove('active');
-        document.body.style.overflow = '';
-        updateUI(false);
-    }
-
-    function openQuiz() {
-        document.getElementById('quiz').classList.add('active');
-        document.body.style.overflow = 'hidden';
-        const hadCache = restoreFromCache();
-        updateUI(false);
-        if (hadCache && cur > 1) {
-            setTimeout(() => showErr('✅ Seus dados foram salvos! Continue de onde parou 🎵'), 400);
-        }
-    }
-
-    let eTimer = null;
-    function showErr(msg) {
-        const t = document.getElementById('eTost');
-        t.textContent = msg;
-        t.classList.add('show');
-        if (eTimer) clearTimeout(eTimer);
-        eTimer = setTimeout(() => t.classList.remove('show'), 3000);
-    }
-
-    window.openQuiz      = openQuiz;
-    window.next          = next;
-    window.goBack        = goBack;
-    window.resetQuiz     = resetQuiz;
-    window.checkout = function() {
-        const wppInput = document.getElementById('wpp');
-        const wrap     = document.getElementById('wppWrap');
-        const rawNum   = wppInput.value.replace(/\D/g, '');
-
-        if (rawNum.length < 10) {
-            wrap.style.borderColor = '#ef4444';
-            wppInput.focus();
-            showErr('Digite seu WhatsApp com DDD para receber sua música');
-            setTimeout(() => { wrap.style.borderColor = ''; }, 3000);
-            return;
-        }
-
-        const btn = document.getElementById('ctaBtn');
-        btn.disabled = true;
-        btn.textContent = 'Redirecionando...';
-
-        const intlNum = '55' + rawNum;
-
-        if (pendingPayload) {
-            pendingPayload.whatsapp = wppInput.value.trim();
-            pendingPayload.status   = 'Quiz Concluído';
-
-            fetch(URL_PLANILHA, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "text/plain" },
-                body: JSON.stringify(pendingPayload)
-            }).catch(err => console.error('Erro ao salvar:', err));
-        }
-
-        const base = 'https://pay.cakto.com.br/h3srsgc_866648';
-        clearCache();
-        window.open(base + '?phone=' + intlNum, '_blank');
-    };
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
-})();
-
-/* ── EXIT INTENT ────────────────────────────────────────────── */
-(function() {
-    const STORAGE_KEY  = 'km_exit_count';
-    const MAX_SHOWS    = 2;
-    const MIN_DELAY_MS = 3500;
-
-    let modalShown       = false;
-    let pageReadyTime    = Date.now();
-    let listenersAdded   = false;
-    let historyBufferSet = false;
-    let lastScrollY      = window.scrollY;
-    let lastScrollTime   = Date.now();
-    let idleTimer        = null;
-    const IDLE_DELAY_MS  = 45000; // 45s sem interação na landing = desengajado
-
-    /* ---------- helpers ---------- */
-    function getCount() {
-        try { return parseInt(sessionStorage.getItem(STORAGE_KEY) || '0', 10); }
-        catch(e) { return 0; }
-    }
-    function incCount() {
-        try { sessionStorage.setItem(STORAGE_KEY, String(getCount() + 1)); }
-        catch(e) {}
-    }
-    function canShow() {
-        return getCount() < MAX_SHOWS;
-    }
-    function isQuizOpen() {
-        return document.getElementById('quiz')?.classList.contains('active');
-    }
-    function isCheckoutVisible() {
-        return document.getElementById('comp')?.classList.contains('active');
-    }
-    function readyLongEnough() {
-        return (Date.now() - pageReadyTime) >= MIN_DELAY_MS;
-    }
-    function isMobile() {
-        return /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 768;
-    }
-
-    /* ---------- copy por contexto ---------- */
-    const COPY = {
-        page: {
-            badge:   'Espera um segundo',
-            title:   'Sua música ainda <span class="exit-title-accent">não foi criada</span>',
-            body:    'Por menos de um café, sua criança terá uma música única no mundo — com o nome e a história dela. Esse presente ela vai pedir pra ouvir toda noite.',
-            cta:     'Quero criar a música agora',
-            dismiss: 'Não, prefiro dar um presente comum'
-        },
-        quiz: {
-            badge:   'Quase lá',
-            title:   'Você já está <span class="exit-title-accent">no caminho certo</span>',
-            body:    'Você já dedicou seu tempo para personalizar esse presente. Falta muito pouco — e no final sua criança vai ter uma música que só ela tem no mundo inteiro.',
-            cta:     'Continuar e finalizar minha música',
-            dismiss: 'Deixar pra depois e perder os dados'
-        }
-    };
-
-    /* ---------- mostrar modal ---------- */
-    function showModal(forceCtx) {
-        if (modalShown || !canShow()) return;
-        if (!readyLongEnough()) return;
-        if (isCheckoutVisible()) return;
-
-        modalShown = true;
-        incCount();
-
-        const ctx  = forceCtx || (isQuizOpen() ? 'quiz' : 'page');
-        const copy = COPY[ctx];
-
-        document.getElementById('exitBadge').textContent    = copy.badge;
-        document.getElementById('exitModalTitle').innerHTML = copy.title;
-        document.getElementById('exitBody').textContent     = copy.body;
-        document.getElementById('exitCta').textContent      = copy.cta;
-        document.getElementById('exitDismiss').textContent  = copy.dismiss;
-
-        document.getElementById('exitModal').classList.add('active');
-        document.body.style.overflow = 'hidden';
-
-        // Após exibir o modal, reempurra o buffer para capturar uma próxima tentativa
-        if (historyBufferSet) {
-            history.pushState({ exitBuffer: true }, '', location.href);
-        }
-    }
-
-    /* ---------- fechar modal ---------- */
-    function closeModal(openQuizAfter) {
-        document.getElementById('exitModal').classList.remove('active');
-        modalShown = false; // permite nova exibição se o contador ainda permitir
-        if (!isQuizOpen()) document.body.style.overflow = '';
-        if (openQuizAfter && typeof window.openQuiz === 'function') {
-            window.openQuiz();
-        }
-    }
-
-    /* ---------- botões do modal ---------- */
-    function bindModalButtons() {
-        document.getElementById('exitCta')?.addEventListener('click', () => closeModal(true));
-        document.getElementById('exitDismiss')?.addEventListener('click', () => closeModal(false));
-        document.getElementById('exitOverlay')?.addEventListener('click', () => closeModal(false));
-    }
-
-    /* ---------- BACK BUTTON (mobile + desktop)
-       Técnica: pushState cria uma entrada "buffer" no histórico.
-       Quando o usuário aperta Voltar, navega para o buffer (popstate dispara)
-       em vez de sair do site. Reempurramos a entrada e exibimos o modal.
-       IMPORTANTE: pushState precisa ser chamado dentro de um evento de
-       interação do usuário para funcionar no Safari/iOS (restrição de segurança).
-    ---------- */
-    function setupBackButtonTrap() {
-        if (historyBufferSet) return;
-
-        // Empurra a entrada buffer — deve ser dentro de gesto do usuário (já estamos)
-        history.pushState({ exitBuffer: true }, '', location.href);
-        historyBufferSet = true;
-
-        window.addEventListener('popstate', function(e) {
-            // Se disparou mas o modal não pode ser exibido, deixa o usuário sair
-            if (!canShow() || !readyLongEnough() || isCheckoutVisible()) return;
-
-            // Reempurra o buffer para manter o usuário na página
-            history.pushState({ exitBuffer: true }, '', location.href);
-            showModal();
-        });
-    }
-
-    /* ---------- SCROLL RÁPIDO PARA CIMA (mobile)
-       Usuários que querem sair no mobile puxam a barra de URL revelando-a
-       com um scroll rápido para cima. Velocidade < -0.8px/ms = saída.
-       Threshold de scrollY ampliado para 600px — captura quem está no meio
-       da landing page e decide sair, não só quem está no topo.
-    ---------- */
-    function onScroll() {
-        const now      = Date.now();
-        const currentY = window.scrollY;
-        const dy       = currentY - lastScrollY;
-        const dt       = now - lastScrollTime;
-
-        // Só analisa se passou tempo suficiente (evita ruído de momentum)
-        if (dt > 0 && dt < 200) {
-            const speed = dy / dt; // px por ms — negativo = scroll para cima
-            // Threshold: mais rápido que -0.8px/ms (≈ 80px em 100ms) = intenção de saída
-            // currentY < 600 cobre quem está na metade superior da landing page
-            if (speed < -0.8 && currentY < 600) {
-                showModal();
-            }
-        }
-
-        lastScrollY    = currentY;
-        lastScrollTime = now;
-
-        // Qualquer scroll reinicia o idle timer (usuário ainda está engajado)
-        if (!isQuizOpen()) resetIdleTimer();
-    }
-
-    /* ---------- VISIBILITYCHANGE — troca de app/aba no mobile
-       MDN confirma: é o sinal mais confiável no mobile para detectar saída.
-       Dispara quando o usuário minimiza o browser, troca de app ou de aba.
-       Só aplica na landing page (não no quiz, que já tem o X interceptado).
-    ---------- */
-    function onVisibilityChange() {
-        if (document.visibilityState !== 'hidden') return;
-        if (isQuizOpen()) return; // quiz tem seu próprio controle
-        showModal();
-    }
-
-    /* ---------- IDLE TIMER — inatividade na landing page
-       45s sem toque, scroll ou clique = usuário perdeu o interesse.
-       Momento ideal para reengajar antes que ele feche o browser.
-       Só ativo na landing page (quiz tem interação constante).
-    ---------- */
-    function resetIdleTimer() {
-        if (isQuizOpen()) return;
-        clearTimeout(idleTimer);
-        idleTimer = setTimeout(() => {
-            if (!isQuizOpen()) showModal();
-        }, IDLE_DELAY_MS);
-    }
-
-    function onUserActivity() {
-        if (!isQuizOpen()) resetIdleTimer();
-    }
-
-    /* ---------- MOUSE LEAVE TOPO (desktop) ---------- */
-    function onMouseLeave(e) {
-        if (e.clientY <= 10) showModal();
-    }
-
-    /* ---------- registrar listeners após delay ---------- */
-    function addListeners() {
-        if (listenersAdded) return;
-        listenersAdded = true;
-
-        // visibilitychange: confiável em todos os browsers mobile modernos
-        // (MDN: "transitioning to hidden is the last event reliably observable")
-        document.addEventListener('visibilitychange', onVisibilityChange, { passive: true });
-
-        if (isMobile()) {
-            // Mobile: scroll rápido para cima
-            window.addEventListener('scroll', onScroll, { passive: true });
-
-            // Idle timer: inicia agora e reinicia em qualquer interação
-            resetIdleTimer();
-            document.addEventListener('touchstart', onUserActivity, { passive: true });
-            document.addEventListener('touchend',   onUserActivity, { passive: true });
-
-            // Back button: configura na primeira interação real (exigência Safari iOS)
-            const gestureEvent = ('ontouchend' in window) ? 'touchend' : 'click';
-            document.addEventListener(gestureEvent, function setupBuffer() {
-                setupBackButtonTrap();
-                document.removeEventListener(gestureEvent, setupBuffer);
-            }, { once: true, passive: true });
-        } else {
-            // Desktop: mouse sai pelo topo
-            document.addEventListener('mouseleave', onMouseLeave, { passive: true });
-
-            // Idle no desktop também (mousemove e clique reiniciam)
-            resetIdleTimer();
-            document.addEventListener('mousemove', onUserActivity, { passive: true });
-            document.addEventListener('click',     onUserActivity, { passive: true });
-            document.addEventListener('keydown',   onUserActivity, { passive: true });
-
-            // Back button também no desktop
-            const gestureEvent = 'click';
-            document.addEventListener(gestureEvent, function setupBuffer() {
-                setupBackButtonTrap();
-                document.removeEventListener(gestureEvent, setupBuffer);
-            }, { once: true });
-        }
-    }
-
-    /* ---------- interceptar botão X do quiz ---------- */
-    function interceptQuizClose() {
-        const closeBtn = document.querySelector('.q-close');
-        if (!closeBtn) return;
-
-        closeBtn.addEventListener('click', function(e) {
-            // Só intercepta se o modal pode ser exibido E o quiz está aberto
-            if (canShow() && readyLongEnough() && isQuizOpen()) {
-                e.stopImmediatePropagation();
-                showModal('quiz');
-            }
-            // Se não pode exibir, deixa o resetQuiz() original rodar normalmente
-        }, true); // capture=true para rodar antes do onclick do HTML
-    }
-
-    /* ---------- init ---------- */
-    function init() {
-        bindModalButtons();
-        interceptQuizClose();
-        setTimeout(addListeners, MIN_DELAY_MS);
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
-
-    // Expõe para uso externo se necessário
-    window._exitIntent = { showModal, closeModal };
-})();
+// Expõe funções do carousel de depoimentos
+window.nextTestimonial = nextTestimonial;
+window.prevTestimonial = prevTestimonial;
+window.goToTestimonial = goToTestimonial;
