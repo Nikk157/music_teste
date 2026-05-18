@@ -368,26 +368,21 @@ function buildSalesTestimonials() {
   const dotsEl = document.getElementById('spDots');
   if (!track) return;
 
-  track.innerHTML = TESTIMONIALS.map(t => `
-    <div class="sp-tcard">
-      <div class="sp-tcard-top">
-        <img class="sp-tcard-avatar" src="${t.image}" alt="${t.name}" loading="lazy" />
-        <div class="sp-tcard-info">
-          <p class="sp-tcard-name">${t.name}</p>
-          <p class="sp-tcard-role">${t.role}</p>
-          <p class="sp-tcard-stars">${'★'.repeat(t.stars)}</p>
-        </div>
-        <div class="sp-tcard-quote-icon">"</div>
-      </div>
-      <p class="sp-tcard-text">${t.text}</p>
-    </div>
+  track.innerHTML = PREMIUM_TESTIMONIALS.map((item) => `
+    <article class="sale-proof__slide">
+      <img class="sale-proof__img" src="${item.image}" alt="${item.alt}" loading="lazy" />
+    </article>
   `).join('');
 
   if (dotsEl) {
-    dotsEl.innerHTML = TESTIMONIALS.map((_,i) =>
-      `<button class="sp-carousel-dot${i===0?' active':''}" onclick="goToTestimonial(${i})" aria-label="Depoimento ${i+1}"></button>`
-    ).join('');
+    dotsEl.innerHTML = PREMIUM_TESTIMONIALS.map((_, i) => (
+      `<button class="sp-carousel-dot${i === 0 ? ' active' : ''}" onclick="goToTestimonial(${i})" aria-label="Depoimento ${i + 1}"></button>`
+    )).join('');
   }
+
+  spTestimonialIndex = 0;
+  goToTestimonial(0);
+  setupTestimonialSwipe();
 }
 
 function goToTestimonial(idx) {
@@ -526,21 +521,19 @@ function buildSalesCopy(data) {
   const nome  = data.nome || 'sua criança';
   const perso = [...(data.personalidade || []), data.persFree].filter(Boolean).join(' e ');
   const univ  = [...(data.universo || []), data.universoFree].filter(Boolean).join(', ');
-  const oc    = data.oc || '';
 
-  // Headline
-  document.getElementById('spNome').textContent = nome;
+  const nameEl = document.getElementById('spNome');
+  if (nameEl) nameEl.textContent = nome;
 
-  // Subheadline dinâmica baseada nos dados
   const subEl = document.getElementById('spSub');
   if (subEl) {
-    const parts = [];
-    if (perso) parts.push(`${nome} é ${perso}`);
-    if (univ)  parts.push(`adora ${univ}`);
-    const base = parts.length
-      ? `Com tudo que você nos contou — ${parts.join(' e ')} — estamos prontos para criar algo que ela vai querer ouvir toda noite.`
-      : `Só falta garantir para a música de ${nome} ser entregue em até 6h no seu WhatsApp.`;
-    subEl.textContent = base;
+    const fragments = [];
+    if (perso) fragments.push(`${nome} é ${perso}`);
+    if (univ) fragments.push(`ama ${univ}`);
+
+    subEl.textContent = fragments.length
+      ? `Com tudo o que você contou — ${fragments.join(' e ')} — a parte criativa já foi preparada. Agora só falta concluir o pagamento para garantir a entrega no seu WhatsApp.`
+      : `O presente já foi encaminhado. Agora só falta concluir o pagamento para garantir a entrega no seu WhatsApp.`;
   }
 }
 
@@ -1072,3 +1065,604 @@ loadVimeoAPI().then(() => {
 window.nextTestimonial = nextTestimonial;
 window.prevTestimonial = prevTestimonial;
 window.goToTestimonial = goToTestimonial;
+
+/* ══════════════════════════════════════════════════════════
+   SALES PAGE PREMIUM OVERRIDES — mobile first + lead modal
+   ══════════════════════════════════════════════════════════ */
+const PREMIUM_TESTIMONIALS = [
+  { image: 'assets/instagram-dm.png',     alt: 'Print de depoimento de cliente 1' },
+  { image: 'assets/instagram-dm (4).png', alt: 'Print de depoimento de cliente 2' },
+  { image: 'assets/instagram-dm (3).png', alt: 'Print de depoimento de cliente 3' },
+  { image: 'assets/instagram-dm (2).png', alt: 'Print de depoimento de cliente 4' },
+];
+
+const PREMIUM_DEAL_FEATURES = [
+  'Composição completa (letra + melodia)',
+  'Voz profissional de estúdio',
+  'Arquivo MP3 em alta definição',
+  'Capa do álbum personalizada',
+  'Letra criada com base na história da criança',
+  '2 versões para escolher — pague 1, leve 2',
+];
+
+const PREMIUM_FAQS = [
+  {
+    q: 'Em quanto tempo recebo a música?',
+    a: 'Após a confirmação do pedido, nossa equipe começa imediatamente. No Plano Expresso, a entrega é feita em até 6 horas direto no seu WhatsApp.'
+  },
+  {
+    q: 'E se eu ou a criança não gostarmos do resultado?',
+    a: 'Se precisar, fazemos ajustes para melhorar a música. E se ainda assim não fizer sentido para você, existe garantia de 30 dias com devolução do valor.'
+  },
+  {
+    q: 'Preciso escrever a letra ou entender de música?',
+    a: 'Não. Você só conta o nome, gostos, personalidade e algumas memórias. Nossa equipe cuida de letra, melodia, interpretação e produção.'
+  },
+  {
+    q: 'Quais estilos musicais vocês conseguem criar?',
+    a: 'Pop infantil, gospel, sertanejo suave, pagode, MPB, forró e outras variações leves para criança. O estilo final segue o que você marcou no quiz.'
+  },
+  {
+    q: 'O que exatamente eu recebo?',
+    a: 'Você recebe a música em MP3, a capa personalizada e a letra final. No plano atual, também leva duas versões para comparar e escolher a preferida.'
+  },
+  {
+    q: 'Os dados da criança e meu número ficam protegidos?',
+    a: 'Sim. As informações são usadas somente para compor, entregar a música e confirmar o pedido. Não há envio de spam nem compartilhamento indevido.'
+  }
+];
+
+const LEAD_MODAL_COPY = {
+  hero: {
+    chip: 'Finalização',
+    title: (nome) => `Confirme seu WhatsApp para concluir o presente${nome ? ` de ${nome}` : ''}`,
+    text: 'Depois disso, você segue para o checkout seguro e garante a entrega da música nesse número.',
+    previewTitle: 'Entrega direto no seu WhatsApp',
+    previewText: 'Use um número válido para receber a música e as confirmações do pedido.'
+  },
+  testimonials: {
+    chip: 'Quero o mesmo resultado',
+    title: () => 'Seu presente está pronto para ser confirmado',
+    text: 'Informe seu WhatsApp para seguir ao pagamento e receber a música assim que ela for entregue.',
+    previewTitle: 'Mesmo fluxo de quem já comprou',
+    previewText: 'Pagamento seguro e envio direto no WhatsApp.'
+  },
+  compare: {
+    chip: 'Não deixe pela metade',
+    title: () => 'Falta só confirmar o WhatsApp para concluir esse presente',
+    text: 'Você já preparou tudo. Agora é só informar o número de entrega e seguir para o checkout.',
+    previewTitle: 'Recebimento no número informado',
+    previewText: 'Sem spam. Só entrega, confirmação e suporte.'
+  },
+  pricing: {
+    chip: 'Etapa final',
+    title: () => 'Confirme seu WhatsApp e finalize o pagamento',
+    text: 'Esse número será usado para entregar a música, atualizar o pedido e garantir que tudo chegue certo.',
+    previewTitle: 'Pagamento + entrega no WhatsApp',
+    previewText: 'Plano expresso, envio em até 6h e garantia de 30 dias.'
+  }
+};
+
+let premiumAutoRotateTimer = null;
+let leadModalSource = 'hero';
+let premiumRevealObserver = null;
+const legacyCheckout = window.checkout;
+const leadSubmitDefaultHTML = 'Continuar para o checkout <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+
+function renderPremiumDealList() {
+  const el = document.getElementById('spDealList');
+  if (!el) return;
+  el.innerHTML = PREMIUM_DEAL_FEATURES.map((item) => `
+    <li class="sale-price-card__feature"><span class="sale-price-card__check">✓</span><span>${item}</span></li>
+  `).join('');
+}
+
+function buildSalesTestimonials() {
+  const track = document.getElementById('spTrack');
+  const dotsEl = document.getElementById('spDots');
+  if (!track) return;
+
+  track.innerHTML = PREMIUM_TESTIMONIALS.map((item) => `
+    <article class="sp-proof-slide">
+      <img class="sp-proof-shot" src="${item.image}" alt="${item.alt}" loading="lazy" />
+    </article>
+  `).join('');
+
+  if (dotsEl) {
+    dotsEl.innerHTML = PREMIUM_TESTIMONIALS.map((_, i) => (
+      `<button class="sp-carousel-dot${i === 0 ? ' active' : ''}" onclick="goToTestimonial(${i})" aria-label="Depoimento ${i + 1}"></button>`
+    )).join('');
+  }
+
+  spTestimonialIndex = 0;
+  goToTestimonial(0);
+  setupTestimonialSwipe();
+}
+
+function goToTestimonial(idx) {
+  const total = PREMIUM_TESTIMONIALS.length;
+  if (!total) return;
+  spTestimonialIndex = ((idx % total) + total) % total;
+  const track = document.getElementById('spTrack');
+  if (track) track.style.transform = `translateX(-${spTestimonialIndex * 100}%)`;
+  document.querySelectorAll('.sp-carousel-dot').forEach((dot, i) => {
+    dot.classList.toggle('active', i === spTestimonialIndex);
+  });
+}
+
+function nextTestimonial() {
+  goToTestimonial(spTestimonialIndex + 1);
+}
+
+function prevTestimonial() {
+  goToTestimonial(spTestimonialIndex - 1);
+}
+
+function setupTestimonialSwipe() {
+  const viewport = document.querySelector('.sale-proof__viewport');
+  if (!viewport || viewport.dataset.swipeBound === 'true') return;
+
+  viewport.dataset.swipeBound = 'true';
+  let startX = 0;
+  let endX = 0;
+
+  viewport.addEventListener('touchstart', (event) => {
+    startX = event.changedTouches[0].clientX;
+  }, { passive: true });
+
+  viewport.addEventListener('touchend', (event) => {
+    endX = event.changedTouches[0].clientX;
+    const delta = endX - startX;
+    if (Math.abs(delta) < 40) return;
+    if (delta < 0) nextTestimonial();
+    else prevTestimonial();
+  }, { passive: true });
+}
+
+function buildFaq() {
+  const list = document.getElementById('spFaqList');
+  if (!list) return;
+
+  list.innerHTML = PREMIUM_FAQS.map((item, i) => `
+    <div class="sale-faq-item${i === 0 ? ' open' : ''}">
+      <button class="sale-faq-btn" type="button" aria-expanded="${i === 0 ? 'true' : 'false'}">
+        <span class="sale-faq-question">${item.q}</span>
+        <span class="sale-faq-icon">+</span>
+      </button>
+      <div class="sale-faq-answer" style="max-height:${i === 0 ? '400px' : '0px'};opacity:${i === 0 ? '1' : '0'};">
+        <div class="sale-faq-answer-inner">
+          <p class="sale-faq-text">${item.a}</p>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  const firstActive = list.querySelector('.sale-faq-item.open .sale-faq-answer');
+  if (firstActive) firstActive.style.maxHeight = firstActive.scrollHeight + 12 + 'px';
+
+  list.querySelectorAll('.sale-faq-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.sale-faq-item');
+      const answer = item.querySelector('.sale-faq-answer');
+      const isOpen = item.classList.contains('open');
+
+      list.querySelectorAll('.sale-faq-item').forEach((other) => {
+        other.classList.remove('open');
+        other.querySelector('.sale-faq-btn')?.setAttribute('aria-expanded', 'false');
+        const otherAnswer = other.querySelector('.sale-faq-answer');
+        if (otherAnswer) {
+          otherAnswer.style.maxHeight = '0px';
+          otherAnswer.style.opacity = '0';
+        }
+      });
+
+      if (!isOpen) {
+        item.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+        if (answer) {
+          answer.style.maxHeight = answer.scrollHeight + 12 + 'px';
+          answer.style.opacity = '1';
+        }
+      }
+    });
+  });
+}
+
+function setupSalesReveal() {
+  const scrollRoot = document.querySelector('#salesPage .sp-scroll');
+  const items = document.querySelectorAll('#salesPage .reveal');
+  if (!scrollRoot || !items.length) return;
+
+  if (premiumRevealObserver) premiumRevealObserver.disconnect();
+  items.forEach((item) => item.classList.remove('visible'));
+
+  premiumRevealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, {
+    root: scrollRoot,
+    threshold: 0.14,
+    rootMargin: '0px 0px -8% 0px'
+  });
+
+  items.forEach((item) => premiumRevealObserver.observe(item));
+}
+
+function setupLeadMask() {
+  const input = document.getElementById('wpp');
+  if (!input || input.dataset.masked) return;
+
+  input.dataset.masked = 'true';
+  input.addEventListener('input', function() {
+    let value = this.value.replace(/\D/g, '').slice(0, 11);
+    if (value.length > 10) value = value.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+    else if (value.length > 6) value = value.replace(/^(\d{2})(\d{4})(\d*)$/, '($1) $2-$3');
+    else if (value.length > 2) value = value.replace(/^(\d{2})(\d*)$/, '($1) $2');
+    this.value = value;
+  });
+}
+
+function resetLeadModalState() {
+  const btn = document.getElementById('ctaBtn');
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = leadSubmitDefaultHTML;
+  }
+  const wrap = document.getElementById('spWppWrap');
+  if (wrap) wrap.style.borderColor = '';
+}
+
+function updateLeadModalCopy() {
+  const nome = _salesData?.nome || '';
+  const copy = LEAD_MODAL_COPY[leadModalSource] || LEAD_MODAL_COPY.hero;
+
+  const chip = document.getElementById('leadChip');
+  const title = document.getElementById('leadModalTitle');
+  const text = document.getElementById('leadModalText');
+  const previewTitle = document.getElementById('leadPreviewTitle');
+  const previewText = document.getElementById('leadPreviewText');
+
+  if (chip) chip.textContent = copy.chip;
+  if (title) title.textContent = copy.title(nome);
+  if (text) text.textContent = copy.text;
+  if (previewTitle) previewTitle.textContent = copy.previewTitle;
+  if (previewText) previewText.textContent = copy.previewText;
+}
+
+function openLeadModal(source = 'hero') {
+  leadModalSource = source;
+  updateLeadModalCopy();
+  resetLeadModalState();
+  setupLeadMask();
+
+  const modal = document.getElementById('leadModal');
+  if (!modal) return;
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+
+  const input = document.getElementById('wpp');
+  setTimeout(() => input?.focus(), 120);
+}
+
+function closeLeadModal() {
+  const modal = document.getElementById('leadModal');
+  if (!modal) return;
+  modal.classList.remove('active');
+  document.body.style.overflow = '';
+  resetLeadModalState();
+}
+
+function showSalesPage() {
+  renderPremiumDealList();
+  buildSalesTestimonials();
+  buildFaq();
+  setTodayDate();
+  setupLeadMask();
+
+  if (_salesData) buildSalesCopy(_salesData);
+
+  const sp = document.getElementById('salesPage');
+  if (!sp) return;
+  sp.classList.add('active');
+
+  const scroll = sp.querySelector('.sp-scroll');
+  if (scroll) scroll.scrollTop = 0;
+
+  requestAnimationFrame(setupSalesReveal);
+
+  setTimeout(() => {
+    launchEntranceStars(_salesData?.nome);
+    launchSalesConfetti();
+    launchConfetti();
+  }, 240);
+
+  if (premiumAutoRotateTimer) clearInterval(premiumAutoRotateTimer);
+  premiumAutoRotateTimer = setInterval(() => nextTestimonial(), 4800);
+}
+
+if (typeof legacyCheckout === 'function') {
+  window.checkout = function() {
+    const raw = document.getElementById('wpp')?.value.replace(/\D/g, '') || '';
+    legacyCheckout();
+    if (raw.length >= 10) {
+      setTimeout(() => {
+        closeLeadModal();
+      }, 220);
+    }
+  };
+}
+
+window.openLeadModal = openLeadModal;
+window.closeLeadModal = closeLeadModal;
+window.showSalesPage = showSalesPage;
+window.goToTestimonial = goToTestimonial;
+window.nextTestimonial = nextTestimonial;
+window.prevTestimonial = prevTestimonial;
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && document.getElementById('leadModal')?.classList.contains('active')) {
+    closeLeadModal();
+  }
+});
+
+/* ══════════════════════════════════════════════════════════
+   XSP FINAL TRANSPLANT — overrides limpos da sales page
+   ══════════════════════════════════════════════════════════ */
+const XSP_TESTIMONIALS = [
+  { image: 'assets/instagram-dm.png', alt: 'Print real de depoimento 1' },
+  { image: 'assets/instagram-dm (4).png', alt: 'Print real de depoimento 2' },
+  { image: 'assets/instagram-dm (3).png', alt: 'Print real de depoimento 3' },
+  { image: 'assets/instagram-dm (2).png', alt: 'Print real de depoimento 4' },
+];
+
+const XSP_PRICE_FEATURES = [
+  'Composição completa (Letra + Melodia)',
+  'Voz profissional de estúdio',
+  'Arquivo MP3 em alta definição',
+  'Capa do álbum personalizada',
+  'Letra escrita pelos nossos compositores',
+];
+
+const XSP_FAQS = [
+  {
+    q: 'Em quanto tempo recebo a música?',
+    a: 'Após o pedido e pagamento confirmados, nossa equipe começa imediatamente. O prazo padrão é de até 6h no Plano Expresso.'
+  },
+  {
+    q: 'E se a criança — ou eu — não gostar?',
+    a: 'Se acontecer, fazemos revisões gratuitas sem custo adicional. E se ainda assim não ficar bom, devolvemos 100% do valor pago em até 30 dias.'
+  },
+  {
+    q: 'Preciso escrever a letra ou entender de música?',
+    a: 'Não. Você só responde algumas perguntas simples sobre a criança. Nossa equipe de compositores faz todo o resto.'
+  },
+  {
+    q: 'Quais estilos musicais vocês fazem?',
+    a: 'Pop infantil, sertanejo, pagode, gospel, MPB, forró e outros estilos leves para criança. Você escolhe no pedido.'
+  },
+  {
+    q: 'O que exatamente vou receber?',
+    a: 'Você recebe o MP3 em alta qualidade, a capa personalizada e a letra da música. No Plano Expresso, leva 2 versões.'
+  },
+  {
+    q: 'Os dados da criança ficam protegidos?',
+    a: 'Sim. As informações são tratadas com sigilo e segurança, usadas apenas para compor, entregar a música e confirmar o pedido.'
+  },
+];
+
+const XSP_LEAD_COPY = {
+  hero: {
+    chip: 'Finalização',
+    title: (nome) => `Confirme seu WhatsApp para concluir o presente${nome ? ` de ${nome}` : ''}`,
+    text: 'Depois disso, você segue para o checkout seguro e garante a entrega da música nesse número.',
+    previewTitle: 'Entrega direto no seu WhatsApp',
+    previewText: 'Use um número válido para receber a música e as confirmações do pedido.'
+  },
+  testimonials: {
+    chip: 'Quero o mesmo resultado',
+    title: () => 'Seu presente está pronto para ser confirmado',
+    text: 'Informe seu WhatsApp para seguir ao pagamento e receber a música assim que ela for entregue.',
+    previewTitle: 'Mesmo fluxo de quem já comprou',
+    previewText: 'Pagamento seguro e envio direto no WhatsApp.'
+  },
+  compare: {
+    chip: 'Não deixe pela metade',
+    title: () => 'Falta só confirmar o WhatsApp para concluir esse presente',
+    text: 'Você já preparou tudo. Agora é só informar o número de entrega e seguir para o checkout.',
+    previewTitle: 'Recebimento no número informado',
+    previewText: 'Sem spam. Só entrega, confirmação e suporte.'
+  },
+  pricing: {
+    chip: 'Etapa final',
+    title: () => 'Confirme seu WhatsApp e finalize o pagamento',
+    text: 'Esse número será usado para entregar a música, atualizar o pedido e garantir que tudo chegue certo.',
+    previewTitle: 'Pagamento + entrega no WhatsApp',
+    previewText: 'Plano expresso, envio em até 6h e garantia de 30 dias.'
+  }
+};
+
+function renderPremiumDealList() {
+  const el = document.getElementById('spDealList');
+  if (!el) return;
+  el.innerHTML = XSP_PRICE_FEATURES.map((item) => `
+    <li class="xsp-price-card__feature"><span class="xsp-price-card__check">✓</span><span>${item}</span></li>
+  `).join('');
+}
+
+function buildSalesTestimonials() {
+  const track = document.getElementById('spTrack');
+  const dotsEl = document.getElementById('spDots');
+  if (!track) return;
+
+  track.innerHTML = XSP_TESTIMONIALS.map((item) => `
+    <article class="xsp-proof-slide">
+      <img class="xsp-proof-shot" src="${item.image}" alt="${item.alt}" loading="lazy" />
+    </article>
+  `).join('');
+
+  if (dotsEl) {
+    dotsEl.innerHTML = XSP_TESTIMONIALS.map((_, i) => (
+      `<button class="sp-carousel-dot${i === 0 ? ' active' : ''}" onclick="goToTestimonial(${i})" aria-label="Depoimento ${i + 1}"></button>`
+    )).join('');
+  }
+
+  spTestimonialIndex = 0;
+  goToTestimonial(0);
+  setupTestimonialSwipe();
+}
+
+function goToTestimonial(idx) {
+  const total = XSP_TESTIMONIALS.length;
+  if (!total) return;
+  spTestimonialIndex = ((idx % total) + total) % total;
+  const track = document.getElementById('spTrack');
+  if (track) track.style.transform = `translateX(-${spTestimonialIndex * 100}%)`;
+  document.querySelectorAll('.sp-carousel-dot').forEach((dot, i) => {
+    dot.classList.toggle('active', i === spTestimonialIndex);
+  });
+}
+
+function nextTestimonial() {
+  goToTestimonial(spTestimonialIndex + 1);
+}
+
+function prevTestimonial() {
+  goToTestimonial(spTestimonialIndex - 1);
+}
+
+function setupTestimonialSwipe() {
+  const viewport = document.querySelector('.xsp-carousel__viewport');
+  if (!viewport || viewport.dataset.swipeBound === 'true') return;
+
+  viewport.dataset.swipeBound = 'true';
+  let startX = 0;
+  let endX = 0;
+
+  viewport.addEventListener('touchstart', (event) => {
+    startX = event.changedTouches[0].clientX;
+  }, { passive: true });
+
+  viewport.addEventListener('touchend', (event) => {
+    endX = event.changedTouches[0].clientX;
+    const delta = endX - startX;
+    if (Math.abs(delta) < 40) return;
+    if (delta < 0) nextTestimonial();
+    else prevTestimonial();
+  }, { passive: true });
+}
+
+function buildFaq() {
+  const list = document.getElementById('spFaqList');
+  if (!list) return;
+
+  list.innerHTML = XSP_FAQS.map((item, i) => `
+    <div class="xsp-faq-item${i === 0 ? ' open' : ''}">
+      <button class="xsp-faq-btn" type="button" aria-expanded="${i === 0 ? 'true' : 'false'}">
+        <span class="xsp-faq-question">${item.q}</span>
+        <span class="xsp-faq-icon">+</span>
+      </button>
+      <div class="xsp-faq-answer" style="max-height:${i === 0 ? '400px' : '0px'};opacity:${i === 0 ? '1' : '0'};">
+        <div class="xsp-faq-answer-inner">
+          <p class="xsp-faq-text">${item.a}</p>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  const firstActive = list.querySelector('.xsp-faq-item.open .xsp-faq-answer');
+  if (firstActive) firstActive.style.maxHeight = firstActive.scrollHeight + 12 + 'px';
+
+  list.querySelectorAll('.xsp-faq-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.xsp-faq-item');
+      const answer = item.querySelector('.xsp-faq-answer');
+      const isOpen = item.classList.contains('open');
+
+      list.querySelectorAll('.xsp-faq-item').forEach((other) => {
+        other.classList.remove('open');
+        other.querySelector('.xsp-faq-btn')?.setAttribute('aria-expanded', 'false');
+        const otherAnswer = other.querySelector('.xsp-faq-answer');
+        if (otherAnswer) {
+          otherAnswer.style.maxHeight = '0px';
+          otherAnswer.style.opacity = '0';
+        }
+      });
+
+      if (!isOpen) {
+        item.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+        if (answer) {
+          answer.style.maxHeight = answer.scrollHeight + 12 + 'px';
+          answer.style.opacity = '1';
+        }
+      }
+    });
+  });
+}
+
+function buildSalesCopy(data) {
+  const nome  = data.nome || 'sua criança';
+  const perso = [...(data.personalidade || []), data.persFree].filter(Boolean).join(' e ');
+  const univ  = [...(data.universo || []), data.universoFree].filter(Boolean).join(', ');
+
+  const nameEl = document.getElementById('spNome');
+  if (nameEl) nameEl.textContent = nome;
+
+  const subEl = document.getElementById('spSub');
+  if (subEl) {
+    const parts = [];
+    if (perso) parts.push(`${nome} é ${perso}`);
+    if (univ) parts.push(`ama ${univ}`);
+
+    subEl.textContent = parts.length
+      ? `Com tudo o que você contou — ${parts.join(' e ')} — a parte criativa já foi preparada. Agora só falta concluir o pagamento para garantir a entrega no seu WhatsApp.`
+      : `O presente já foi encaminhado. Agora só falta concluir o pagamento para garantir a entrega no seu WhatsApp.`;
+  }
+}
+
+function updateLeadModalCopy() {
+  const nome = _salesData?.nome || '';
+  const copy = XSP_LEAD_COPY[leadModalSource] || XSP_LEAD_COPY.hero;
+  const chip = document.getElementById('leadChip');
+  const title = document.getElementById('leadModalTitle');
+  const text = document.getElementById('leadModalText');
+  const previewTitle = document.getElementById('leadPreviewTitle');
+  const previewText = document.getElementById('leadPreviewText');
+  if (chip) chip.textContent = copy.chip;
+  if (title) title.textContent = copy.title(nome);
+  if (text) text.textContent = copy.text;
+  if (previewTitle) previewTitle.textContent = copy.previewTitle;
+  if (previewText) previewText.textContent = copy.previewText;
+}
+
+function showSalesPage() {
+  renderPremiumDealList();
+  buildSalesTestimonials();
+  buildFaq();
+  setTodayDate();
+  setupLeadMask();
+
+  if (_salesData) buildSalesCopy(_salesData);
+
+  const sp = document.getElementById('salesPage');
+  if (!sp) return;
+  sp.classList.add('active');
+  const scroll = sp.querySelector('.sp-scroll');
+  if (scroll) scroll.scrollTop = 0;
+  requestAnimationFrame(setupSalesReveal);
+
+  setTimeout(() => {
+    launchEntranceStars(_salesData?.nome);
+    launchSalesConfetti();
+    launchConfetti();
+  }, 240);
+
+  if (premiumAutoRotateTimer) clearInterval(premiumAutoRotateTimer);
+  premiumAutoRotateTimer = setInterval(() => nextTestimonial(), 4800);
+}
+
+window.goToTestimonial = goToTestimonial;
+window.nextTestimonial = nextTestimonial;
+window.prevTestimonial = prevTestimonial;
+window.showSalesPage = showSalesPage;
