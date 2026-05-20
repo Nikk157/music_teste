@@ -803,8 +803,10 @@ function showSalesPage() {
 
     // Inicia a tela de loading
    showLoadingScreen(data.nome);
-   document.getElementById('quiz').classList.remove('active');
-   document.body.style.overflow = '';
+      setTimeout(() => {
+        document.getElementById('quiz').classList.remove('active');
+        document.body.style.overflow = '';
+      }, 500);
   }
 
   function resetQuiz() {
