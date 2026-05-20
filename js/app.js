@@ -61,6 +61,7 @@ let spTestimonialIndex = 0;
 const PAUSE_SVG = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5.75A1.75 1.75 0 0 1 8.75 4h.5A1.75 1.75 0 0 1 11 5.75v12.5A1.75 1.75 0 0 1 9.25 20h-.5A1.75 1.75 0 0 1 7 18.25V5.75Zm6 0A1.75 1.75 0 0 1 14.75 4h.5A1.75 1.75 0 0 1 17 5.75v12.5A1.75 1.75 0 0 1 15.25 20h-.5A1.75 1.75 0 0 1 13 18.25V5.75Z"/></svg>`;
 const PLAY_SVG  = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.14v13.72c0 .78.86 1.25 1.52.82l10.2-6.86a.98.98 0 0 0 0-1.64L9.52 4.32A.98.98 0 0 0 8 5.14Z"/></svg>`;
 const AUDIO_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>`;
+const AUDIO_ON_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M16 9.5a4 4 0 0 1 0 5"/><path d="m18 18 4-4"/><path d="m22 14-4-4"/></svg>`;
 
 
 /* ══════════════════════════════════════════════════════════
@@ -312,10 +313,45 @@ function hideAudioPermission(id) {
   const audioBtn = getAudioPermissionButton(id);
   if (audioBtn) {
     audioBtn.disabled = false;
-    audioBtn.classList.remove('is-visible', 'is-loading');
+    audioBtn.classList.remove('is-visible', 'is-loading', 'is-enabled');
     audioBtn.innerHTML = `${AUDIO_SVG}<span>Ativar áudio</span>`;
   }
   if (audioPermissionId === id) audioPermissionId = null;
+}
+
+function showAudioEnabled(id) {
+  const audioBtn = getAudioPermissionButton(id);
+  if (!audioBtn) return;
+
+  audioPermissionId = id;
+  audioBtn.disabled = false;
+  audioBtn.classList.remove('is-loading');
+  audioBtn.classList.add('is-visible', 'is-enabled');
+  audioBtn.innerHTML = `${AUDIO_ON_SVG}<span>Áudio ativo</span>`;
+
+  setTimeout(() => {
+    audioBtn.classList.remove('is-enabled');
+    hideAudioPermission(id);
+  }, 850);
+}
+
+async function waitPlayerCommand(commandPromise, timeout = 900) {
+  if (!commandPromise || typeof commandPromise.then !== 'function') return { ok: true, timedOut: false };
+
+  let timer;
+  try {
+    const result = await Promise.race([
+      commandPromise.then(() => ({ ok: true, timedOut: false })),
+      new Promise((resolve) => {
+        timer = setTimeout(() => resolve({ ok: true, timedOut: true }), timeout);
+      })
+    ]);
+    return result;
+  } catch (error) {
+    return { ok: false, timedOut: false, error };
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
 }
 
 function syncPlayButton(id, playing) {
@@ -367,15 +403,20 @@ async function enableVideoAudio(id) {
     if (iframe) iframe.style.opacity = '1';
 
     // O clique neste botão é a interação explícita exigida pelos browsers mobile.
-    try { await player.setMuted(false); } catch(e) {}
-    try { await player.setVolume(1); } catch(e) {}
-    await player.play();
-    try { await player.setMuted(false); } catch(e) {}
-    try { await player.setVolume(1); } catch(e) {}
+    // Alguns navegadores/Vimeo mantêm as Promises pendentes mesmo com áudio tocando;
+    // por isso não deixamos a UI presa no estado "Ativando...".
+    try { player.setMuted(false); } catch(e) {}
+    try { player.setVolume(1); } catch(e) {}
+
+    const playResult = await waitPlayerCommand(player.play(), 900);
+    if (!playResult.ok) throw playResult.error || new Error('audio play blocked');
+
+    try { player.setMuted(false); } catch(e) {}
+    try { player.setVolume(1); } catch(e) {}
 
     carouselAudioUnlocked = true;
     playingId = id;
-    hideAudioPermission(id);
+    showAudioEnabled(id);
     if (playBtn) syncPlayButton(id, true);
   } catch (err) {
     console.warn('Audio activation error:', err);
