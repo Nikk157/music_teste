@@ -802,11 +802,13 @@ function showSalesPage() {
     _salesData = { ...data, persoFull, univFull };
 
     // Inicia a tela de loading
-    showLoadingScreen(data.nome);
+   showLoadingScreen(data.nome);
 
-      // Fecha o quiz overlay
+   // Aguarda o browser pintar o loading ANTES de fechar o quiz
+    requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
     document.getElementById('quiz').classList.remove('active');
-    document.body.style.overflow = ''; 
+    document.body.style.overflow = '';
   }
 
   function resetQuiz() {
