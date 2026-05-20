@@ -2552,3 +2552,118 @@ ul { list-style: none; }
   object-fit: contain;
   border-radius: 1rem;
 }
+
+/* ══════════════════════════════════════════════════
+   HERO CARD — Personagem na seção hero da sales page
+   ══════════════════════════════════════════════════ */
+#salesPage .xsp-hero-card-wrap {
+  position: relative;
+  width: min(72%, 300px);
+  margin: 2rem auto 3.5rem;
+}
+
+/* Ícone musical roxo — canto superior direito, fora do card */
+#salesPage .xsp-hero-card-icon {
+  position: absolute;
+  top: -18px;
+  right: -18px;
+  z-index: 4;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #7c3aed;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(124,58,237,.45);
+}
+
+/* Card principal */
+#salesPage .xsp-hero-card {
+  position: relative;
+  border-radius: 2rem 2rem 2rem 2rem;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0,0,0,.18);
+}
+
+#salesPage .xsp-hero-card__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Badge "Música 100% personalizada" — canto inferior esquerdo, fora do card */
+#salesPage .xsp-hero-card-badge {
+  position: absolute;
+  bottom: -28px;
+  left: -18px;
+  z-index: 4;
+  background: #fff;
+  border-radius: 1rem;
+  padding: .65rem .85rem;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  box-shadow: 0 6px 24px rgba(0,0,0,.14);
+  min-width: 190px;
+}
+
+#salesPage .xsp-hero-card-badge__icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #ede9fe;
+  color: #7c3aed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+#salesPage .xsp-hero-card-badge__body {
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+}
+
+#salesPage .xsp-hero-card-badge__wave {
+  display: flex;
+  align-items: center;
+}
+
+#salesPage .xsp-hero-card-badge__label {
+  font-family: var(--ff-head);
+  font-size: .78rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  line-height: 1.2;
+}
+
+/* Decorações flutuantes ao redor do card */
+#salesPage .xsp-hero-card-deco {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+#salesPage .xsp-hero-card-deco--note1 {
+  top: 30%; left: -32px;
+  width: 28px; opacity: .7;
+  transform: rotate(-15deg);
+}
+#salesPage .xsp-hero-card-deco--note2 {
+  top: 55%; left: -24px;
+  width: 22px; opacity: .55;
+  transform: rotate(8deg);
+}
+#salesPage .xsp-hero-card-deco--star1 {
+  top: 10%; right: -28px;
+  width: 18px; opacity: .6;
+  transform: rotate(12deg);
+}
+#salesPage .xsp-hero-card-deco--star2 {
+  top: 72%; right: -22px;
+  width: 14px; opacity: .5;
+  transform: rotate(-8deg);
+}
