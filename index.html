@@ -225,6 +225,39 @@ fbq('track', 'PageView');
         <h1 class="xsp-hero__title">A música de <span class="xsp-name" id="spNome">sua criança</span> já está pronta para ser garantida.</h1>
         <p class="xsp-hero__copy" id="spSub">Agora só falta concluir o pagamento para liberar a entrega desse presente no seu WhatsApp.</p>
 
+        <!-- Card de personagem -->
+        <div class="xsp-hero-card-wrap">
+          <!-- Decorações ao redor -->
+          <img src="assets/not_unica.png"      class="xsp-hero-card-deco xsp-hero-card-deco--note1 float-note"   alt="" aria-hidden="true" />
+          <img src="assets/not_unicaa.png"     class="xsp-hero-card-deco xsp-hero-card-deco--note2 float-note-2" alt="" aria-hidden="true" />
+          <img src="assets/estrela_pequena.png" class="xsp-hero-card-deco xsp-hero-card-deco--star1 float-note-3" alt="" aria-hidden="true" />
+          <img src="assets/estrela_pequena.png" class="xsp-hero-card-deco xsp-hero-card-deco--star2 float-note-4" alt="" aria-hidden="true" />
+
+          <!-- Ícone musical flutuante (canto superior direito) -->
+          <div class="xsp-hero-card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          </div>
+
+          <!-- Card principal -->
+          <div class="xsp-hero-card">
+            <img src="assets/Lucas_img.jpg" class="xsp-hero-card__img" alt="Personagem Kids Music" />
+          </div>
+
+          <!-- Badge flutuante inferior esquerdo -->
+          <div class="xsp-hero-card-badge">
+            <div class="xsp-hero-card-badge__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            </div>
+            <div class="xsp-hero-card-badge__body">
+              <div class="xsp-hero-card-badge__wave" aria-hidden="true">
+                <svg viewBox="0 0 80 20" preserveAspectRatio="none" width="80" height="20"><polyline points="0,10 6,4 12,16 18,6 24,14 30,4 36,16 42,8 48,14 54,4 60,16 66,6 72,14 78,8 80,10" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <svg viewBox="0 0 8 8" width="14" height="14" style="margin-left:6px"><circle cx="4" cy="4" r="4" fill="#7c3aed"/></svg>
+              </div>
+              <span class="xsp-hero-card-badge__label">Música 100% personalizada</span>
+            </div>
+          </div>
+        </div>
+
         <button class="xsp-primary-cta" id="spHeroCta" onclick="openLeadModal('hero')">
           Finalizar e garantir a entrega
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
