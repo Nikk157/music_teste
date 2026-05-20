@@ -52,12 +52,15 @@ const DEAL_FEATURES = [
 /* ── Estado global ──────────────────────────────────────── */
 let activeIndex  = 0;
 let playingId    = null;
+let audioPermissionId = null;
+let carouselAudioUnlocked = false;
 let vimeoPlayers = {};
 let vimeoApiLoaded = false;
 let spTestimonialIndex = 0;
 
 const PAUSE_SVG = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5.75A1.75 1.75 0 0 1 8.75 4h.5A1.75 1.75 0 0 1 11 5.75v12.5A1.75 1.75 0 0 1 9.25 20h-.5A1.75 1.75 0 0 1 7 18.25V5.75Zm6 0A1.75 1.75 0 0 1 14.75 4h.5A1.75 1.75 0 0 1 17 5.75v12.5A1.75 1.75 0 0 1 15.25 20h-.5A1.75 1.75 0 0 1 13 18.25V5.75Z"/></svg>`;
 const PLAY_SVG  = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.14v13.72c0 .78.86 1.25 1.52.82l10.2-6.86a.98.98 0 0 0 0-1.64L9.52 4.32A.98.98 0 0 0 8 5.14Z"/></svg>`;
+const AUDIO_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>`;
 
 
 /* ══════════════════════════════════════════════════════════
@@ -72,8 +75,11 @@ function buildCarousel() {
     <div class="carousel__card" id="card-${card.id}" data-index="${idx}">
       <img class="carousel__poster" id="poster-${card.id}" src="${card.poster}" alt="" loading="${idx === activeIndex ? 'eager' : 'lazy'}" decoding="async" />
       <div class="carousel__media" id="media-${card.id}"></div>
-      <button class="carousel__play" id="play-${card.id}" onclick="event.stopPropagation(); toggleVideo(${card.id})" aria-label="Play">
+      <button class="carousel__play" id="play-${card.id}" type="button" onclick="event.stopPropagation(); toggleVideo(${card.id})" aria-label="Play">
         ${PLAY_SVG}
+      </button>
+      <button class="carousel__audio-permission" id="audio-${card.id}" type="button" onclick="event.stopPropagation(); enableVideoAudio(${card.id})" aria-label="Ativar áudio do vídeo" aria-live="polite">
+        ${AUDIO_SVG}<span>Ativar áudio</span>
       </button>
     </div>
   `).join('');
@@ -125,6 +131,8 @@ function updateCards() {
     el.style.transform = `translateY(${active?0:20}px) rotate(${d*-4}deg) scale(${active?1:.91})`;
     el.style.opacity   = active ? '1' : '0.62';
     el.style.zIndex    = active ? '10' : '1';
+
+    if (!active) hideAudioPermission(card.id);
 
     if (!active && playingId === card.id) {
       const player = vimeoPlayers[card.id];
@@ -204,7 +212,7 @@ function loadVimeoAPI() {
 
 /* Cria o iframe com thumbnail placeholder e defer attribute.
    O player Vimeo só é instanciado no clique (lazy instantiation). */
-async function initVimeoPlayer(id, autoplay = false) {
+async function initVimeoPlayer(id, autoplay = false, muted = false) {
   if (vimeoPlayers[id]) return;  /* já criado, reutiliza */
 
   const card = MUSIC_EXAMPLES.find(c => c.id === id);
@@ -226,7 +234,7 @@ async function initVimeoPlayer(id, autoplay = false) {
   }
 
   /* Monta iframe */
-  const vimeoUrl = `https://player.vimeo.com/video/${card.vimeoId}?autoplay=${autoplay ? 1 : 0}&loop=1&muted=0&dnt=1&responsive=1&player_id=vp-${id}`;
+  const vimeoUrl = `https://player.vimeo.com/video/${card.vimeoId}?autoplay=${autoplay ? 1 : 0}&loop=1&muted=${muted ? 1 : 0}&dnt=1&responsive=1&playsinline=1&player_id=vp-${id}`;
 
   const iframe = document.createElement('iframe');
   iframe.id = `vp-${id}`;
@@ -266,6 +274,117 @@ async function initVimeoPlayer(id, autoplay = false) {
   }
 }
 
+function isMobileAudioGateNeeded() {
+  const ua = navigator.userAgent || '';
+  const hasCoarsePointer = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+  const hasTouch = (navigator.maxTouchPoints || 0) > 0;
+  return hasCoarsePointer || hasTouch || /Mobi|Android|iPhone|iPad|iPod/i.test(ua) || window.innerWidth < 768;
+}
+
+function getAudioPermissionButton(id) {
+  return document.getElementById(`audio-${id}`);
+}
+
+function setAudioPermissionLoading(id, loading, text = 'Ativando...') {
+  const audioBtn = getAudioPermissionButton(id);
+  if (!audioBtn) return;
+  audioBtn.disabled = !!loading;
+  audioBtn.classList.toggle('is-loading', !!loading);
+  audioBtn.innerHTML = loading
+    ? '<span class="audio-loader-spinner"></span><span>' + text + '</span>'
+    : `${AUDIO_SVG}<span>${text}</span>`;
+}
+
+function showAudioPermission(id, text = 'Ativar áudio') {
+  if (audioPermissionId !== null && audioPermissionId !== id) hideAudioPermission(audioPermissionId);
+
+  const audioBtn = getAudioPermissionButton(id);
+  if (!audioBtn) return;
+
+  audioPermissionId = id;
+  audioBtn.disabled = false;
+  audioBtn.classList.remove('is-loading');
+  audioBtn.innerHTML = `${AUDIO_SVG}<span>${text}</span>`;
+  audioBtn.classList.add('is-visible');
+}
+
+function hideAudioPermission(id) {
+  const audioBtn = getAudioPermissionButton(id);
+  if (audioBtn) {
+    audioBtn.disabled = false;
+    audioBtn.classList.remove('is-visible', 'is-loading');
+    audioBtn.innerHTML = `${AUDIO_SVG}<span>Ativar áudio</span>`;
+  }
+  if (audioPermissionId === id) audioPermissionId = null;
+}
+
+function syncPlayButton(id, playing) {
+  const btn = document.getElementById(`play-${id}`);
+  if (!btn) return;
+  btn.classList.remove('is-loading');
+  btn.innerHTML = playing ? PAUSE_SVG : PLAY_SVG;
+  btn.classList.toggle('playing', !!playing);
+}
+
+async function pauseCarouselVideo(id, resetMedia = true) {
+  if (id === null || id === undefined) return;
+
+  const player = vimeoPlayers[id];
+  if (player) {
+    try { await player.pause(); } catch(e) {}
+    try { await player.setVolume(0); } catch(e) {}
+    try { await player.setMuted(true); } catch(e) {}
+  }
+
+  syncPlayButton(id, false);
+  hideAudioPermission(id);
+
+  if (resetMedia) document.getElementById(`media-${id}`)?.classList.remove('active');
+  if (playingId === id) playingId = null;
+}
+
+async function enableVideoAudio(id) {
+  const idx = MUSIC_EXAMPLES.findIndex(c => c.id === id);
+  if (idx !== activeIndex) {
+    goToCard(idx);
+    setTimeout(() => enableVideoAudio(id), 360);
+    return;
+  }
+
+  const playBtn = document.getElementById(`play-${id}`);
+  setAudioPermissionLoading(id, true, 'Ativando...');
+
+  try {
+    if (playingId !== null && playingId !== id) await pauseCarouselVideo(playingId);
+
+    await initVimeoPlayer(id, false, false);
+    const player = vimeoPlayers[id];
+    if (!player) throw new Error('player not ready');
+
+    const media = document.getElementById(`media-${id}`);
+    const iframe = media?.querySelector('iframe');
+    if (media) media.classList.add('active');
+    if (iframe) iframe.style.opacity = '1';
+
+    // O clique neste botão é a interação explícita exigida pelos browsers mobile.
+    try { await player.setMuted(false); } catch(e) {}
+    try { await player.setVolume(1); } catch(e) {}
+    await player.play();
+    try { await player.setMuted(false); } catch(e) {}
+    try { await player.setVolume(1); } catch(e) {}
+
+    carouselAudioUnlocked = true;
+    playingId = id;
+    hideAudioPermission(id);
+    if (playBtn) syncPlayButton(id, true);
+  } catch (err) {
+    console.warn('Audio activation error:', err);
+    setAudioPermissionLoading(id, false, 'Tocar com som');
+    showAudioPermission(id, 'Tocar com som');
+    if (playBtn && playingId !== id) syncPlayButton(id, false);
+  }
+}
+
 async function toggleVideo(id) {
   const idx = MUSIC_EXAMPLES.findIndex(c => c.id === id);
   const btn = document.getElementById(`play-${id}`);
@@ -273,55 +392,81 @@ async function toggleVideo(id) {
   if (idx !== activeIndex) { goToCard(idx); setTimeout(() => toggleVideo(id), 400); return; }
   const isPlaying = playingId === id;
 
-  if (playingId !== null && playingId !== id) {
-    const op = vimeoPlayers[playingId];
-    const ob = document.getElementById(`play-${playingId}`);
-    const om = document.getElementById(`media-${playingId}`);
-    if (op) { op.pause(); op.setVolume(0); }
-    if (ob) { ob.innerHTML = PLAY_SVG; ob.classList.remove('playing'); }
-    if (om) om.classList.remove('active');
+  if (isPlaying) {
+    await pauseCarouselVideo(id);
+    return;
   }
 
-  if (isPlaying) {
+  if (playingId !== null && playingId !== id) await pauseCarouselVideo(playingId);
+
+  btn.classList.add('is-loading');
+  btn.innerHTML = '<div class="loader-spinner"></div>';
+
+  try {
+    /* Inicialização lazy — só agora, no clique do usuário */
+    const useAudioGate = isMobileAudioGateNeeded() && !carouselAudioUnlocked;
+    await initVimeoPlayer(id, useAudioGate, useAudioGate);
     const player = vimeoPlayers[id];
-    if (player) { await player.pause(); await player.setVolume(0); }
-    playingId = null;
-    btn.innerHTML = PLAY_SVG;
-    btn.classList.remove('playing');
-    document.getElementById(`media-${id}`)?.classList.remove('active');
-  } else {
-    btn.classList.add('is-loading');
-    btn.innerHTML = '<div class="loader-spinner"></div>';
-    try {
-      /* Inicialização lazy — só agora, no clique do usuário */
-      await initVimeoPlayer(id);
-      const player = vimeoPlayers[id];
-      if (!player) throw new Error('not ready');
+    if (!player) throw new Error('not ready');
 
-      const media = document.getElementById(`media-${id}`);
-      const iframe = media?.querySelector('iframe');
+    const media = document.getElementById(`media-${id}`);
+    const iframe = media?.querySelector('iframe');
 
-      /* Ativa visual do media container */
-      if (media) media.classList.add('active');
+    /* Ativa visual do media container */
+    if (media) media.classList.add('active');
 
-      /* Garante que thumbnail/placeholder está visível até iframe carregar */
-      if (iframe) iframe.style.opacity = '1';
+    /* Garante que thumbnail/placeholder está visível até iframe carregar */
+    if (iframe) iframe.style.opacity = '1';
 
-      player.setMuted(false);
-      player.setVolume(1);
-      await player.play();
+    if (useAudioGate) {
+      let mutedPreviewStarted = false;
 
-      playingId = id;
+      try { await player.setMuted(true); } catch(e) {}
+      try { await player.setVolume(0); } catch(e) {}
+
+      try {
+        await player.play();
+        mutedPreviewStarted = true;
+      } catch (previewErr) {
+        console.warn('Muted preview playback error:', previewErr);
+      }
+
       btn.classList.remove('is-loading');
-      btn.innerHTML = PAUSE_SVG;
-      btn.classList.add('playing');
-    } catch (err) {
-      btn.classList.remove('is-loading');
-      btn.innerHTML = PLAY_SVG;
-      console.warn('Video playback error:', err);
+      if (mutedPreviewStarted) {
+        playingId = id;
+        syncPlayButton(id, true);
+        showAudioPermission(id, 'Ativar áudio');
+      } else {
+        playingId = null;
+        syncPlayButton(id, false);
+        showAudioPermission(id, 'Tocar com som');
+      }
+      return;
     }
+
+    try { await player.setMuted(false); } catch(e) {}
+    try { await player.setVolume(1); } catch(e) {}
+    await player.play();
+    try { await player.setMuted(false); } catch(e) {}
+    try { await player.setVolume(1); } catch(e) {}
+
+    carouselAudioUnlocked = true;
+    playingId = id;
+    btn.classList.remove('is-loading');
+    syncPlayButton(id, true);
+    hideAudioPermission(id);
+  } catch (err) {
+    btn.classList.remove('is-loading');
+    syncPlayButton(id, false);
+    console.warn('Video playback error:', err);
+
+    // Fallback: se o browser/Vimeo bloquear áudio, oferece um botão explícito de permissão.
+    const media = document.getElementById(`media-${id}`);
+    if (media) media.classList.add('active');
+    showAudioPermission(id, isMobileAudioGateNeeded() ? 'Tocar com som' : 'Ativar áudio');
   }
 }
+
 
 
 /* ══════════════════════════════════════════════════════════
