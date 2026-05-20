@@ -1317,8 +1317,9 @@ ul { list-style: none; }
   #salesPage .compare,
   #salesPage .pricing,
   #salesPage .faq { padding: 4rem 0; }
-  #salesPage .sp-ref-carousel__btn--prev { left: .35rem; }
-  #salesPage .sp-ref-carousel__btn--next { right: .35rem; }
+  #salesPage .sp-ref-carousel { padding: 0 2.75rem; }
+  #salesPage .sp-ref-carousel__btn--prev { left: 0; }
+  #salesPage .sp-ref-carousel__btn--next { right: 0; }
   #salesPage .sp-proof-shot { max-width: 100%; }
   #salesPage .pricing-card { padding: 1.4rem; border-radius: 1.5rem; }
   #salesPage .pricing-card__price-amount { font-size: 2.5rem; }
