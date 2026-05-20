@@ -801,12 +801,12 @@ function showSalesPage() {
     // Salva dados para a página de vendas
     _salesData = { ...data, persoFull, univFull };
 
-    // Fecha o quiz overlay
-    document.getElementById('quiz').classList.remove('active');
-    document.body.style.overflow = '';
-
     // Inicia a tela de loading
     showLoadingScreen(data.nome);
+
+      // Fecha o quiz overlay
+    document.getElementById('quiz').classList.remove('active');
+    document.body.style.overflow = ''; 
   }
 
   function resetQuiz() {
