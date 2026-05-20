@@ -67,6 +67,7 @@ function buildCarousel() {
   const c = document.getElementById('carousel');
   if (!c) return;
 
+  c.style.paddingLeft = c.style.paddingRight = 'calc(50% - 124px)';
   c.innerHTML = MUSIC_EXAMPLES.map((card, idx) => `
     <div class="carousel__card" id="card-${card.id}" data-index="${idx}">
       <img class="carousel__poster" id="poster-${card.id}" src="${card.poster}" alt="" loading="${idx === activeIndex ? 'eager' : 'lazy'}" decoding="async" />
