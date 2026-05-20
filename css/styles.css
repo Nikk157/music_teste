@@ -2130,6 +2130,7 @@ ul { list-style: none; }
 #salesPage .xsp-secondary-cta,
 #salesPage .xsp-price-card__btn {
   display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: .55rem;
