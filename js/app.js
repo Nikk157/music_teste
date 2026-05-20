@@ -125,9 +125,6 @@ function updateCards() {
     el.style.transform = `translateY(${active?0:20}px) rotate(${d*-4}deg) scale(${active?1:.91})`;
     el.style.opacity   = active ? '1' : '0.62';
     el.style.zIndex    = active ? '10' : '1';
-    el.style.boxShadow = active
-      ? `0 30px 60px rgba(0,0,0,.7), 0 0 48px ${card.glow}`
-      : '0 8px 32px rgba(0,0,0,.4)';
 
     if (!active && playingId === card.id) {
       const player = vimeoPlayers[card.id];
