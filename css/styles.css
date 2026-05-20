@@ -284,6 +284,20 @@ ul { list-style: none; }
 .carousel__media.active { opacity: 1; pointer-events: auto; }
 .carousel__media iframe { width: 100% !important; height: 100% !important; border-radius: 2rem; border: none; }
 
+/* Cobre a barra de controles e logo do Vimeo na borda inferior */
+.carousel__media::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  z-index: 10;
+  pointer-events: none;
+  border-radius: 0 0 2rem 2rem;
+  background: linear-gradient(to top, #1a0a2e 60%, transparent);
+}
+
 .ql-cta {
   display: flex;
   align-items: center;
