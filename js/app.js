@@ -260,8 +260,22 @@ async function initVimeoPlayer(id, autoplay = false) {
     pointer-events: none;
   `;
 
+  /* Overlay transparente que cobre a UI nativa do Vimeo (barra, logo, etc.)
+     pointer-events:none = não bloqueia cliques; z-index alto = fica na frente */
+  const uiOverlay = document.createElement('div');
+  uiOverlay.setAttribute('aria-hidden', 'true');
+  uiOverlay.style.cssText = `
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+    border-radius: 2rem;
+    background: transparent;
+  `;
+
   mc.appendChild(placeholder);
   mc.appendChild(iframe);
+  mc.appendChild(uiOverlay);
 
   /* Quando iframe dispara load, fade-in suave */
   iframe.addEventListener('load', () => {
