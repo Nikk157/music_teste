@@ -156,7 +156,7 @@ ul { list-style: none; }
   align-items: center;
   width: 100%;
   max-width: 520px;
-  padding: 0;
+  padding: 0 0 0 1.25rem;
   gap: .15rem;
 }
 
