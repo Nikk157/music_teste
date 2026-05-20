@@ -420,28 +420,25 @@ function launchEntranceStars(nome) {
   const area = document.getElementById('spEntranceStars');
   if (!area) return;
   area.innerHTML = '';
-  const assets = [
-    'assets/estrela_grande.png',
-    'assets/estrela_pequena.png',
-    'assets/not_unica.png',
-    'assets/not_unicaa.png',
-    'assets/nota_dupla.png',
-  ];
-  for (let i = 0; i < 20; i++) {
-    const img = document.createElement('img');
-    img.src = assets[i % assets.length];
-    const size = 20 + Math.random() * 44;
-    img.style.cssText = `
-      width:${size}px;
+  const colors = ['#ec4899','#f9a8d4','#8b5cf6','#c4b5fd','#3b82f6','#93c5fd','#f59e0b','#fde68a','#10b981','#6ee7b7','#ff6b6b','#ffd93d'];
+  const shapes = ['50%', '2px', '50% 0 50% 0', '0 50% 0 50%'];
+  for (let i = 0; i < 48; i++) {
+    const el = document.createElement('div');
+    const size = 7 + Math.random() * 12;
+    const isRect = Math.random() > .5;
+    el.style.cssText = `
+      width:${isRect ? size * 2 : size}px;
+      height:${size}px;
+      background:${colors[Math.floor(Math.random() * colors.length)]};
+      border-radius:${shapes[Math.floor(Math.random() * shapes.length)]};
       left:${Math.random() * 100}%;
-      top:${20 + Math.random() * 60}%;
+      top:${10 + Math.random() * 80}%;
       animation-delay:${Math.random() * 1.2}s;
-      animation-duration:${1.8 + Math.random() * 1.2}s;
+      animation-duration:${1.6 + Math.random() * 1.4}s;
     `;
-    img.className = 'sp-entrance-star';
-    area.appendChild(img);
+    el.className = 'sp-entrance-star';
+    area.appendChild(el);
   }
-  // Remove após animação
   setTimeout(() => { area.innerHTML = ''; }, 4000);
 }
 
@@ -802,11 +799,11 @@ function showSalesPage() {
     _salesData = { ...data, persoFull, univFull };
 
     // Inicia a tela de loading
-   showLoadingScreen(data.nome);
-      setTimeout(() => {
-        document.getElementById('quiz').classList.remove('active');
-        document.body.style.overflow = '';
-      }, 500);
+    showLoadingScreen(data.nome);
+
+      // Fecha o quiz overlay
+    document.getElementById('quiz').classList.remove('active');
+    document.body.style.overflow = ''; 
   }
 
   function resetQuiz() {
