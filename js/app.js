@@ -66,7 +66,6 @@ const PLAY_SVG  = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.14
 function buildCarousel() {
   const c = document.getElementById('carousel');
   if (!c) return;
-  c.style.paddingLeft = c.style.paddingRight = 'calc(50% - 124px)';
 
   c.innerHTML = MUSIC_EXAMPLES.map((card, idx) => `
     <div class="carousel__card" id="card-${card.id}" data-index="${idx}">
