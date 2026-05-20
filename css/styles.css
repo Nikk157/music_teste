@@ -189,11 +189,12 @@ ul { list-style: none; }
 .carousel {
   display: flex;
   gap: 1.25rem;
+  overflow-y: hidden;        /* ← adicionar */ 
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  /* padding-block: 2rem; */
+  padding-block: 2rem;
   scrollbar-width: none;
 }
 .carousel::-webkit-scrollbar { display: none; }
