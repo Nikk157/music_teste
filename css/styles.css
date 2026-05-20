@@ -2233,7 +2233,7 @@ ul { list-style: none; }
   background: rgba(219,39,119,.2);
 }
 #salesPage .sp-carousel-dot.active { width: 24px; background: #ec4899; }
-#salesPage .xsp-proof__inner .xsp-secondary-cta { margin: 1.35rem auto 0; }
+#salesPage .xsp-proof__inner .xsp-secondary-cta { display: block; margin: 1.35rem auto 0; text-align: center; }
 #salesPage .xsp-compare-grid {
   display: grid;
   gap: 1.25rem;
