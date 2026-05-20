@@ -226,7 +226,7 @@ async function initVimeoPlayer(id, autoplay = false) {
   }
 
   /* Monta iframe com defer + thumbnail placeholder */
-  const vimeoUrl = `https://player.vimeo.com/video/${card.vimeoId}?autoplay=${autoplay ? 1 : 0}&loop=1&muted=0&dnt=1&responsive=1&player_id=vp-${id}`;
+  const vimeoUrl = `https://player.vimeo.com/video/${card.vimeoId}?autoplay=${autoplay ? 1 : 0}&loop=1&muted=0&controls=0&title=0&byline=0&portrait=0&pip=0&dnt=1&responsive=1&player_id=vp-${id}`;
   const thumbnailUrl = `https://vumbnail.com/${card.vimeoId}.jpg`;
 
   const iframe = document.createElement('iframe');
