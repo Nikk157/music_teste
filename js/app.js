@@ -235,7 +235,8 @@ async function initVimeoPlayer(id, autoplay = false, muted = false) {
   }
 
   /* Monta iframe */
-  const vimeoUrl = `https://player.vimeo.com/video/${card.vimeoId}?autoplay=${autoplay ? 1 : 0}&loop=1&muted=${muted ? 1 : 0}&dnt=1&responsive=1&playsinline=1&player_id=vp-${id}`;
+  const vimeoUrl = `https://player.vimeo.com/video/${card.vimeoId}?autoplay=${autoplay ? 1 : 0}&loop=1&muted=0&dnt=1&responsive=1&player_id=vp-${id}`;
+
 
   const iframe = document.createElement('iframe');
   iframe.id = `vp-${id}`;
