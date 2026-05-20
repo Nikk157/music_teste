@@ -892,65 +892,96 @@ function showSalesPage() {
 
 
 /* ══════════════════════════════════════════════════════════
-   EXIT INTENT (preservado do original)
+   EXIT INTENT
+   — Quiz:  1 exibição, contagem isolada (km_exit_quiz)
+   — Vendas: 1 exibição, contagem isolada (km_exit_sales)
    ══════════════════════════════════════════════════════════ */
 (function() {
-  const STORAGE_KEY = 'km_exit_count';
-  const MAX_SHOWS   = 2;
-  const MIN_DELAY   = 3500;
+  const MIN_DELAY = 3500;
 
-  let modalShown = false, pageReadyTime = Date.now(), listenersAdded = false;
-  let historyBufferSet = false, lastScrollY = window.scrollY, lastScrollTime = Date.now();
-  let idleTimer = null;
-  const IDLE_DELAY = 45000;
+  // ── Contadores isolados por contexto ──────────────────
+  const KEYS = { quiz: 'km_exit_quiz', sales: 'km_exit_sales' };
+  function getCount(k) { try { return parseInt(sessionStorage.getItem(k)||'0',10); } catch(e){ return 0; } }
+  function incCount(k) { try { sessionStorage.setItem(k, String(getCount(k)+1)); } catch(e){} }
+  function canShowCtx(k) { return getCount(k) < 1; }
 
-  function getCount() { try { return parseInt(sessionStorage.getItem(STORAGE_KEY)||'0',10); } catch(e){ return 0; } }
-  function incCount() { try { sessionStorage.setItem(STORAGE_KEY, String(getCount()+1)); } catch(e){} }
-  function canShow()  { return getCount() < MAX_SHOWS; }
-  function isQuizOpen()      { return document.getElementById('quiz')?.classList.contains('active'); }
-  function isSalesOpen()     { return document.getElementById('salesPage')?.classList.contains('active'); }
-  function isLoadingOpen()   { return document.getElementById('loadingScreen')?.classList.contains('active'); }
-  function readyLongEnough() { return (Date.now() - pageReadyTime) >= MIN_DELAY; }
-  function isMobile()        { return /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 768; }
+  // ── Helpers de estado ─────────────────────────────────
+  function isQuizOpen()    { return document.getElementById('quiz')?.classList.contains('active'); }
+  function isSalesOpen()   { return document.getElementById('salesPage')?.classList.contains('active'); }
+  function isLoadingOpen() { return document.getElementById('loadingScreen')?.classList.contains('active'); }
+  function isMobile()      { return /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 768; }
 
+  // ── Copy ──────────────────────────────────────────────
   const COPY = {
     page: {
-      badge:'Espera um segundo',
-      title:'Sua música ainda <span class="exit-title-accent">não foi criada</span>',
-      body:'Por menos de um café, sua criança terá uma música única no mundo — com o nome e a história dela. Esse presente ela vai pedir pra ouvir toda noite.',
-      cta:'Quero criar a música agora',
-      dismiss:'Não, prefiro dar um presente comum'
+      badge: 'Espera um segundo',
+      title: 'Sua música ainda <span class="exit-title-accent">não foi criada</span>',
+      body:  'Por menos de um café, sua criança terá uma música única no mundo — com o nome e a história dela. Esse presente ela vai pedir pra ouvir toda noite.',
+      cta:   'Quero criar a música agora',
+      dismiss: 'Não, prefiro dar um presente comum',
+      action: 'openQuiz'
     },
     quiz: {
-      badge:'Quase lá',
-      title:'Você já está <span class="exit-title-accent">no caminho certo</span>',
-      body:'Você já dedicou seu tempo para personalizar esse presente. Falta muito pouco — e no final sua criança vai ter uma música que só ela tem no mundo inteiro.',
-      cta:'Continuar e finalizar minha música',
-      dismiss:'Deixar pra depois e perder os dados'
+      badge: 'Quase lá',
+      title: 'Seus dados serão <span class="exit-title-accent">perdidos se sair agora</span>',
+      body:  'Você já dedicou seu tempo para personalizar esse presente. Falta muito pouco — e no final sua criança vai ter uma música que só ela tem no mundo inteiro.',
+      cta:   'Continuar e finalizar minha música',
+      dismiss: 'Deixar pra depois e perder os dados',
+      action: 'openQuiz'
+    },
+    sales: {
+      badge: 'Falta apenas 1 passo',
+      title: 'Não desista da música de <span class="exit-title-accent" id="exitSalesName">sua criança</span>',
+      body:  'Custa menos que um lanche — e ela vai guardar esse presente pra sempre.',
+      cta:   'Fazer pagamento',
+      dismiss: 'Não, prefiro dar um presente comum',
+      action: 'leadModal'
     }
   };
 
-  function showModal(forceCtx) {
-    if (modalShown || !canShow() || !readyLongEnough()) return;
-    if (isSalesOpen() || isLoadingOpen()) return;
-    modalShown = true; incCount();
-    const ctx  = forceCtx || (isQuizOpen() ? 'quiz' : 'page');
-    const copy = COPY[ctx];
+  // ── Modal ─────────────────────────────────────────────
+  let modalShown = false;
+  let pageReadyTime = Date.now();
+  let pendingAction = 'openQuiz';
+
+  function readyLongEnough() { return (Date.now() - pageReadyTime) >= MIN_DELAY; }
+
+  function showModal(ctx) {
+    if (modalShown || !readyLongEnough() || isLoadingOpen()) return;
+    const key = ctx === 'sales' ? KEYS.sales : KEYS.quiz;
+    if (!canShowCtx(key)) return;
+
+    modalShown = true;
+    incCount(key);
+    pendingAction = COPY[ctx]?.action || 'openQuiz';
+
+    const copy = COPY[ctx] || COPY.page;
     document.getElementById('exitBadge').textContent    = copy.badge;
     document.getElementById('exitModalTitle').innerHTML = copy.title;
     document.getElementById('exitBody').textContent     = copy.body;
     document.getElementById('exitCta').textContent      = copy.cta;
     document.getElementById('exitDismiss').textContent  = copy.dismiss;
+
+    // Injeta nome da criança no modal de vendas
+    if (ctx === 'sales' && _salesData?.nome) {
+      const nameEl = document.getElementById('exitSalesName');
+      if (nameEl) nameEl.textContent = _salesData.nome;
+    }
+
     document.getElementById('exitModal').classList.add('active');
     document.body.style.overflow = 'hidden';
-    if (historyBufferSet) history.pushState({ exitBuffer:true },'',location.href);
   }
 
-  function closeModal(openQuizAfter) {
+  function closeModal(accept) {
     document.getElementById('exitModal').classList.remove('active');
     modalShown = false;
     if (!isQuizOpen()) document.body.style.overflow = '';
-    if (openQuizAfter && typeof window.openQuiz === 'function') window.openQuiz();
+    if (!accept) return;
+    if (pendingAction === 'leadModal' && typeof window.openLeadModal === 'function') {
+      window.openLeadModal('hero');
+    } else if (pendingAction === 'openQuiz' && typeof window.openQuiz === 'function') {
+      window.openQuiz();
+    }
   }
 
   function bindModalButtons() {
@@ -959,87 +990,175 @@ function showSalesPage() {
     document.getElementById('exitOverlay')?.addEventListener('click', () => closeModal(false));
   }
 
-  function setupBackButtonTrap() {
-    if (historyBufferSet) return;
-    history.pushState({ exitBuffer:true },'',location.href);
-    historyBufferSet = true;
-    window.addEventListener('popstate', function() {
-      if (!canShow() || !readyLongEnough() || isSalesOpen() || isLoadingOpen()) return;
-      history.pushState({ exitBuffer:true },'',location.href);
-      showModal();
-    });
-  }
+  // ── QUIZ exit intent ──────────────────────────────────
+  (function quizExit() {
+    let listenersAdded = false;
+    let historyBufferSet = false;
+    let idleTimer = null;
+    const IDLE_DELAY = 35000;
 
-  function onScroll() {
-    const now = Date.now(), dy = window.scrollY - lastScrollY, dt = now - lastScrollTime;
-    if (dt > 0 && dt < 200 && (dy/dt) < -.8 && window.scrollY < 600) showModal();
-    lastScrollY = window.scrollY; lastScrollTime = now;
-    if (!isQuizOpen()) resetIdleTimer();
-  }
+    function canShow() { return canShowCtx(KEYS.quiz) && readyLongEnough(); }
 
-  function onVisibilityChange() {
-    if (document.visibilityState !== 'hidden') return;
-    if (isQuizOpen() || isSalesOpen() || isLoadingOpen()) return;
-    showModal();
-  }
-
-  function resetIdleTimer() {
-    if (isQuizOpen()) return;
-    clearTimeout(idleTimer);
-    idleTimer = setTimeout(() => { if (!isQuizOpen()) showModal(); }, IDLE_DELAY);
-  }
-
-  function onUserActivity() { if (!isQuizOpen()) resetIdleTimer(); }
-  function onMouseLeave(e)  { if (e.clientY <= 10) showModal(); }
-
-  function addListeners() {
-    if (listenersAdded) return;
-    listenersAdded = true;
-    document.addEventListener('visibilitychange', onVisibilityChange, { passive:true });
-    if (isMobile()) {
-      window.addEventListener('scroll', onScroll, { passive:true });
-      resetIdleTimer();
-      document.addEventListener('touchstart', onUserActivity, { passive:true });
-      document.addEventListener('touchend',   onUserActivity, { passive:true });
-      document.addEventListener('touchend', function setupBuffer() {
-        setupBackButtonTrap();
-        document.removeEventListener('touchend', setupBuffer);
-      }, { once:true, passive:true });
-    } else {
-      document.addEventListener('mouseleave', onMouseLeave, { passive:true });
-      resetIdleTimer();
-      document.addEventListener('mousemove', onUserActivity, { passive:true });
-      document.addEventListener('click',     onUserActivity, { passive:true });
-      document.addEventListener('keydown',   onUserActivity, { passive:true });
-      document.addEventListener('click', function setupBuffer() {
-        setupBackButtonTrap();
-        document.removeEventListener('click', setupBuffer);
-      }, { once:true });
+    function trigger() {
+      if (!canShow()) return;
+      const ctx = isQuizOpen() ? 'quiz' : (isSalesOpen() ? null : 'page');
+      if (!ctx) return;
+      showModal(ctx);
     }
-  }
 
-  function interceptQuizClose() {
-    const closeBtn = document.querySelector('.q-close');
-    if (!closeBtn) return;
-    closeBtn.addEventListener('click', function(e) {
-      if (canShow() && readyLongEnough() && isQuizOpen()) {
-        e.stopImmediatePropagation();
-        showModal('quiz');
+    function resetIdleTimer() {
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => { if (isQuizOpen()) showModal('quiz'); }, IDLE_DELAY);
+    }
+
+    function setupBackButtonTrap() {
+      if (historyBufferSet) return;
+      history.pushState({ exitBuffer: true }, '', location.href);
+      historyBufferSet = true;
+      window.addEventListener('popstate', function() {
+        if (isSalesOpen() || isLoadingOpen()) return;
+        history.pushState({ exitBuffer: true }, '', location.href);
+        trigger();
+      });
+    }
+
+    function onVisibilityChange() {
+      if (document.visibilityState !== 'hidden') return;
+      if (isLoadingOpen() || isSalesOpen()) return;
+      trigger();
+    }
+
+    function onMouseLeave(e) { if (e.clientY <= 10) trigger(); }
+
+    function addListeners() {
+      if (listenersAdded) return;
+      listenersAdded = true;
+      document.addEventListener('visibilitychange', onVisibilityChange, { passive: true });
+      if (isMobile()) {
+        document.addEventListener('touchstart', resetIdleTimer, { passive: true });
+        document.addEventListener('touchend',   resetIdleTimer, { passive: true });
+        document.addEventListener('touchend', function setupBuffer() {
+          setupBackButtonTrap();
+          document.removeEventListener('touchend', setupBuffer);
+        }, { once: true, passive: true });
+        resetIdleTimer();
+      } else {
+        document.addEventListener('mouseleave', onMouseLeave, { passive: true });
+        document.addEventListener('mousemove',  resetIdleTimer, { passive: true });
+        document.addEventListener('click',      resetIdleTimer, { passive: true });
+        document.addEventListener('keydown',    resetIdleTimer, { passive: true });
+        document.addEventListener('click', function setupBuffer() {
+          setupBackButtonTrap();
+          document.removeEventListener('click', setupBuffer);
+        }, { once: true });
       }
-    }, true);
-  }
+    }
 
-  function init() {
-    bindModalButtons();
-    interceptQuizClose();
-    setTimeout(addListeners, MIN_DELAY);
-  }
+    function interceptQuizClose() {
+      const closeBtn = document.querySelector('.q-close');
+      if (!closeBtn) return;
+      closeBtn.addEventListener('click', function(e) {
+        if (canShow() && isQuizOpen()) {
+          e.stopImmediatePropagation();
+          showModal('quiz');
+        }
+      }, true);
+    }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+    function init() {
+      interceptQuizClose();
+      setTimeout(addListeners, MIN_DELAY);
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+  })();
+
+  // ── VENDAS exit intent ────────────────────────────────
+  (function salesExit() {
+    let listenersAdded = false;
+    let historyBufferSet = false;
+    let idleTimer = null;
+    let lastScrollY = 0, lastScrollTime = Date.now();
+    const IDLE_DELAY = 25000;
+
+    function canShow() { return canShowCtx(KEYS.sales) && readyLongEnough() && isSalesOpen() && !isLoadingOpen(); }
+
+    function trigger() { if (canShow()) showModal('sales'); }
+
+    function resetIdleTimer() {
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(trigger, IDLE_DELAY);
+    }
+
+    function onScroll() {
+      const spScroll = document.querySelector('#salesPage .sp-scroll');
+      if (!spScroll) return;
+      const now = Date.now();
+      const currentY = spScroll.scrollTop;
+      const dy = currentY - lastScrollY;
+      const dt = now - lastScrollTime;
+      // Scroll rápido para cima = sinal de saída
+      if (dt > 0 && dt < 200 && (dy / dt) < -1 && currentY < 400) trigger();
+      lastScrollY = currentY;
+      lastScrollTime = now;
+      resetIdleTimer();
+    }
+
+    function onVisibilityChange() {
+      if (document.visibilityState !== 'hidden') return;
+      if (!isSalesOpen()) return;
+      trigger();
+    }
+
+    function setupBackButtonTrap() {
+      if (historyBufferSet) return;
+      history.pushState({ exitBuffer: true }, '', location.href);
+      historyBufferSet = true;
+      window.addEventListener('popstate', function() {
+        if (!isSalesOpen()) return;
+        history.pushState({ exitBuffer: true }, '', location.href);
+        trigger();
+      });
+    }
+
+    function addListeners() {
+      if (listenersAdded) return;
+      listenersAdded = true;
+      document.addEventListener('visibilitychange', onVisibilityChange, { passive: true });
+      const spScroll = document.querySelector('#salesPage .sp-scroll');
+      if (spScroll) spScroll.addEventListener('scroll', onScroll, { passive: true });
+      if (isMobile()) {
+        document.addEventListener('touchstart', resetIdleTimer, { passive: true });
+        document.addEventListener('touchend',   resetIdleTimer, { passive: true });
+        document.addEventListener('touchend', function setupBuffer() {
+          setupBackButtonTrap();
+          document.removeEventListener('touchend', setupBuffer);
+        }, { once: true, passive: true });
+      } else {
+        document.addEventListener('mouseleave', function(e) { if (e.clientY <= 10) trigger(); }, { passive: true });
+        document.addEventListener('mousemove', resetIdleTimer, { passive: true });
+        document.addEventListener('click', function setupBuffer() {
+          setupBackButtonTrap();
+          document.removeEventListener('click', setupBuffer);
+        }, { once: true });
+      }
+      resetIdleTimer();
+    }
+
+    // Ativa listeners assim que a sales page abre
+    const _origShowSalesPage = window.showSalesPage;
+    window.showSalesPage = function() {
+      if (_origShowSalesPage) _origShowSalesPage.apply(this, arguments);
+      lastScrollY = 0;
+      lastScrollTime = Date.now();
+      setTimeout(addListeners, MIN_DELAY);
+    };
+  })();
+
+  // ── Bind botões do modal ──────────────────────────────
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bindModalButtons);
+  else bindModalButtons();
 
   window._exitIntent = { showModal, closeModal };
 })();
