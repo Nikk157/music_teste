@@ -1317,9 +1317,8 @@ ul { list-style: none; }
   #salesPage .compare,
   #salesPage .pricing,
   #salesPage .faq { padding: 4rem 0; }
-  #salesPage .sp-ref-carousel { padding: 0 2.75rem; }
-  #salesPage .sp-ref-carousel__btn--prev { left: 0; }
-  #salesPage .sp-ref-carousel__btn--next { right: 0; }
+  #salesPage .sp-ref-carousel__btn--prev { left: .35rem; }
+  #salesPage .sp-ref-carousel__btn--next { right: .35rem; }
   #salesPage .sp-proof-shot { max-width: 100%; }
   #salesPage .pricing-card { padding: 1.4rem; border-radius: 1.5rem; }
   #salesPage .pricing-card__price-amount { font-size: 2.5rem; }
@@ -2536,9 +2535,8 @@ ul { list-style: none; }
   #salesPage .xsp-pricing,
   #salesPage .xsp-faq { padding: 4rem 0; }
   #salesPage .xsp-container { padding-inline: 1rem; }
-  #salesPage .xsp-carousel { padding: 0 2.75rem; }
-  #salesPage .xsp-carousel__nav--prev { left: 0; }
-  #salesPage .xsp-carousel__nav--next { right: 0; }
+  #salesPage .xsp-carousel__nav--prev { left: .35rem; }
+  #salesPage .xsp-carousel__nav--next { right: .35rem; }
   #salesPage .xsp-price-card { padding: 1.35rem; border-radius: 1.5rem; }
   #salesPage .xsp-price-card__price-amount { font-size: 2.45rem; }
 }
@@ -2602,27 +2600,28 @@ ul { list-style: none; }
   object-fit: cover;
 }
 
-/* Badge — canto inferior esquerdo, fora e abaixo do card */
-#salesPage .xsp-hero-card-badge {
+/* Player — canto inferior esquerdo, fora e abaixo do card */
+#salesPage .xsp-hero-player {
   position: absolute;
-  bottom: -52px;
-  left: 0;
+  bottom: -64px;
+  left: -8px;
   z-index: 4;
   background: #fff;
-  border-radius: 1.1rem;
-  padding: .7rem 1rem;
+  border-radius: 1.25rem;
+  padding: .75rem 1rem;
   display: flex;
   align-items: center;
-  gap: .65rem;
-  box-shadow: 0 8px 28px rgba(0,0,0,.13);
-  min-width: 200px;
+  gap: .7rem;
+  box-shadow: 0 10px 32px rgba(0,0,0,.15);
+  min-width: 220px;
+  transform: rotate(-2deg);
 }
 
-#salesPage .xsp-hero-card-badge__icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #7c3aed;
+#salesPage .xsp-hero-player__thumb {
+  width: 42px;
+  height: 42px;
+  border-radius: .75rem;
+  background: linear-gradient(135deg, #7c3aed, #ec4899);
   color: #fff;
   display: flex;
   align-items: center;
@@ -2630,24 +2629,83 @@ ul { list-style: none; }
   flex-shrink: 0;
 }
 
-#salesPage .xsp-hero-card-badge__body {
+#salesPage .xsp-hero-player__body {
   display: flex;
   flex-direction: column;
-  gap: .22rem;
+  gap: .3rem;
+  flex: 1;
+  min-width: 0;
 }
 
-#salesPage .xsp-hero-card-badge__wave {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-#salesPage .xsp-hero-card-badge__label {
+#salesPage .xsp-hero-player__title {
   font-family: var(--ff-head);
-  font-size: .8rem;
+  font-size: .78rem;
   font-weight: 700;
   color: #1e1b4b;
-  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#salesPage .xsp-hero-player__progress {
+  width: 100%;
+}
+
+#salesPage .xsp-hero-player__bar {
+  position: relative;
+  height: 4px;
+  background: #e9d5ff;
+  border-radius: 9999px;
+}
+
+#salesPage .xsp-hero-player__fill {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 38%;
+  background: linear-gradient(90deg, #7c3aed, #ec4899);
+  border-radius: 9999px;
+}
+
+#salesPage .xsp-hero-player__dot {
+  position: absolute;
+  top: 50%;
+  left: 38%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #7c3aed;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+#salesPage .xsp-hero-player__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#salesPage .xsp-hero-player__time {
+  font-size: .65rem;
+  color: #9ca3af;
+  font-variant-numeric: tabular-nums;
+}
+
+#salesPage .xsp-hero-player__controls {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  color: #7c3aed;
+}
+
+#salesPage .xsp-hero-player__play {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #7c3aed;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Decorações laterais */
