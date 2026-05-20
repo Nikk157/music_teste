@@ -204,7 +204,7 @@ ul { list-style: none; }
   height: 396px;
   scroll-snap-align: center;
   border-radius: 2rem;
-  clip-path: inset(33px 0 38px 0 round 2rem); /* corta topo(três pontinhos) e base(barra Vimeo) — ajuste os px se necessário */
+  clip-path: inset(36px 0 36px 0 round 2rem); /* corta topo(três pontinhos) e base(barra Vimeo) — ajuste os px se necessário */
   /* overflow: hidden; ← era este o culpado */
   position: relative;
   cursor: pointer;
