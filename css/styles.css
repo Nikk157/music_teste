@@ -338,7 +338,7 @@ ul { list-style: none; }
   display: none;
   position: fixed;
   inset: 0;
-  z-index: 5000;
+  z-index: 3000;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -2536,8 +2536,9 @@ ul { list-style: none; }
   #salesPage .xsp-pricing,
   #salesPage .xsp-faq { padding: 4rem 0; }
   #salesPage .xsp-container { padding-inline: 1rem; }
-  #salesPage .xsp-carousel__nav--prev { left: .35rem; }
-  #salesPage .xsp-carousel__nav--next { right: .35rem; }
+  #salesPage .xsp-carousel { padding: 0 2.75rem; }
+  #salesPage .xsp-carousel__nav--prev { left: 0; }
+  #salesPage .xsp-carousel__nav--next { right: 0; }
   #salesPage .xsp-price-card { padding: 1.35rem; border-radius: 1.5rem; }
   #salesPage .xsp-price-card__price-amount { font-size: 2.45rem; }
 }
