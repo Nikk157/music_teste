@@ -2556,21 +2556,23 @@ ul { list-style: none; }
 /* ══════════════════════════════════════════════════
    HERO CARD — Personagem na seção hero da sales page
    ══════════════════════════════════════════════════ */
-/* ── wrap: espaço extra embaixo para o badge e à esquerda para a seta ── */
+/* ── wrap: padding lateral generoso para elementos flutuantes não serem cortados ── */
 #salesPage .xsp-hero-card-wrap {
   position: relative;
-  width: min(82%, 340px);
-  margin: 2rem auto 5rem;
+  width: min(78%, 320px);
+  margin: 2rem auto 5.5rem;
+  padding: 0 2rem;
+  box-sizing: content-box;
 }
 
-/* Ícone musical roxo — bem fora do card, canto sup. direito */
+/* Ícone musical roxo — canto superior direito, fora do card */
 #salesPage .xsp-hero-card-icon {
   position: absolute;
-  top: -22px;
-  right: -22px;
+  top: -20px;
+  right: 8px;
   z-index: 4;
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   background: #7c3aed;
   color: #fff;
@@ -2580,13 +2582,13 @@ ul { list-style: none; }
   box-shadow: 0 6px 20px rgba(124,58,237,.50);
 }
 
-/* Card principal com leve inclinação */
+/* Card principal — inclinação suave */
 #salesPage .xsp-hero-card {
   position: relative;
   border-radius: 2rem;
   overflow: hidden;
   box-shadow: 0 20px 56px rgba(0,0,0,.22);
-  transform: rotate(3deg);
+  transform: rotate(1.5deg);
 }
 
 #salesPage .xsp-hero-card__img {
@@ -2600,21 +2602,21 @@ ul { list-style: none; }
 #salesPage .xsp-hero-card-badge {
   position: absolute;
   bottom: -52px;
-  left: -12px;
+  left: 0;
   z-index: 4;
   background: #fff;
   border-radius: 1.1rem;
-  padding: .75rem 1rem;
+  padding: .7rem 1rem;
   display: flex;
   align-items: center;
-  gap: .7rem;
-  box-shadow: 0 8px 28px rgba(0,0,0,.15);
-  min-width: 210px;
+  gap: .65rem;
+  box-shadow: 0 8px 28px rgba(0,0,0,.13);
+  min-width: 200px;
 }
 
 #salesPage .xsp-hero-card-badge__icon {
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: #7c3aed;
   color: #fff;
@@ -2627,7 +2629,7 @@ ul { list-style: none; }
 #salesPage .xsp-hero-card-badge__body {
   display: flex;
   flex-direction: column;
-  gap: .25rem;
+  gap: .22rem;
 }
 
 #salesPage .xsp-hero-card-badge__wave {
@@ -2638,46 +2640,46 @@ ul { list-style: none; }
 
 #salesPage .xsp-hero-card-badge__label {
   font-family: var(--ff-head);
-  font-size: .82rem;
+  font-size: .8rem;
   font-weight: 700;
   color: #1e1b4b;
   line-height: 1.2;
 }
 
-/* Decorações — notas e losangos maiores e mais visíveis */
+/* Decorações laterais */
 #salesPage .xsp-hero-card-deco {
   position: absolute;
   pointer-events: none;
   z-index: 0;
 }
 #salesPage .xsp-hero-card-deco--note1 {
-  top: 28%; left: -44px;
-  width: 38px; opacity: .75;
+  top: 32%; left: -20px;
+  width: 32px; opacity: .70;
   transform: rotate(-15deg);
 }
 #salesPage .xsp-hero-card-deco--note2 {
-  top: 58%; left: -34px;
-  width: 28px; opacity: .60;
+  top: 60%; left: -14px;
+  width: 24px; opacity: .55;
   transform: rotate(8deg);
 }
 #salesPage .xsp-hero-card-deco--star1 {
-  top: 8%; right: -36px;
-  width: 26px; opacity: .65;
+  top: 12%; right: -10px;
+  width: 22px; opacity: .60;
   transform: rotate(12deg);
 }
 #salesPage .xsp-hero-card-deco--star2 {
-  top: 68%; right: -28px;
-  width: 20px; opacity: .55;
+  top: 65%; right: -8px;
+  width: 16px; opacity: .50;
   transform: rotate(-8deg);
 }
 
-/* Seta tracejada roxa à esquerda do card */
+/* Seta tracejada */
 #salesPage .xsp-hero-card-arrow {
   position: absolute;
-  bottom: 18%;
-  left: -64px;
+  bottom: 22%;
+  left: -52px;
   z-index: 3;
-  width: 56px;
-  height: 56px;
+  width: 44px;
+  height: 52px;
   pointer-events: none;
 }
