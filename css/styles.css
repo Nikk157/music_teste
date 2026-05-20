@@ -204,7 +204,8 @@ ul { list-style: none; }
   height: 396px;
   scroll-snap-align: center;
   border-radius: 2rem;
-  overflow: hidden;
+  clip-path: inset(0 round 2rem); /* ← substitui o overflow: hidden */
+  /* overflow: hidden; ← era este o culpado */
   position: relative;
   cursor: pointer;
   transition: transform .5s cubic-bezier(.34,1.56,.64,1), opacity .5s ease;
