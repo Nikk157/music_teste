@@ -206,7 +206,7 @@ ul { list-style: none; }
   overflow: hidden;
   position: relative;
   cursor: pointer;
-  transition: transform .5s cubic-bezier(.34,1.56,.64,1), opacity .5s ease, box-shadow .5s ease;
+  transition: transform .5s cubic-bezier(.34,1.56,.64,1), opacity .5s ease;
   background: #090b10;
   will-change: transform;
   backface-visibility: hidden;
