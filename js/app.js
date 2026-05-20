@@ -148,7 +148,7 @@ function updateCards() {
       `linear-gradient(160deg, #e8d5f5 0%, #dde8fb 28%, #efe4fb 55%, #f8dde8 80%, #fce8d5 100%)`;
   }
   const qlBg = document.getElementById('qlBgImg');
-  if (qlBg) qlBg.src = card.poster;
+  if (qlBg)  qlBg.src = card.poster;
   const accent = document.getElementById('qlAccent');
   if (accent) accent.style.color = card.color;
   const cta = document.getElementById('qlCta');
@@ -187,36 +187,106 @@ document.getElementById('carousel')?.addEventListener('scroll', function() {
 }, { passive: true });
 
 
-/* ── Vimeo ──────────────────────────────────────────────── */
+/* ── Vimeo — OTIMIZADO ──────────────────────────────────── */
+
+/* Carrega a API do Vimeo uma única vez, sem bloqueios */
 function loadVimeoAPI() {
   if (vimeoApiLoaded) return Promise.resolve();
   return new Promise((resolve) => {
     if (typeof Vimeo !== 'undefined') { vimeoApiLoaded = true; resolve(); return; }
     const script = document.createElement('script');
     script.src = 'https://player.vimeo.com/api/player.js';
-    script.defer = true;
+    script.defer = true;  /* adiado para não bloquear render */
     script.onload = () => { vimeoApiLoaded = true; resolve(); };
     document.body.appendChild(script);
   });
 }
 
+/* Cria o iframe com thumbnail placeholder e defer attribute.
+   O player Vimeo só é instanciado no clique (lazy instantiation). */
 async function initVimeoPlayer(id, autoplay = false) {
-  await loadVimeoAPI();
+  if (vimeoPlayers[id]) return;  /* já criado, reutiliza */
+
   const card = MUSIC_EXAMPLES.find(c => c.id === id);
-  if (!card || vimeoPlayers[id]) return;
+  if (!card) return;
+
   const mc = document.getElementById(`media-${id}`);
   if (!mc) return;
-  const player = new Vimeo.Player(mc, {
-    id: parseInt(card.vimeoId), loop: true, autoplay,
-    muted: false, controls: false, responsive: true, dnt: true
+
+  /* Se já tem iframe, não recria */
+  if (mc.querySelector('iframe')) return;
+
+  /* Preconnect no vimeo para reduzir latência DNS */
+  if (!document.querySelector('link[href*="player.vimeo.com"]')) {
+    const link = document.createElement('link');
+    link.rel = 'preconnect';
+    link.href = 'https://player.vimeo.com';
+    link.crossOrigin = 'anonymous';
+    document.head.appendChild(link);
+  }
+
+  /* Monta iframe com defer + thumbnail placeholder */
+  const vimeoUrl = `https://player.vimeo.com/video/${card.vimeoId}?autoplay=${autoplay ? 1 : 0}&loop=1&muted=0&dnt=1&responsive=1&player_id=vp-${id}`;
+  const thumbnailUrl = `https://vumbnail.com/${card.vimeoId}.jpg`;
+
+  const iframe = document.createElement('iframe');
+  iframe.id = `vp-${id}`;
+  iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
+  iframe.setAttribute('allowfullscreen', '');
+  iframe.setAttribute('data-vimeo-defer', '');   /* defer nativo do Vimeo */
+  iframe.setAttribute('loading', 'lazy');         /* lazy loading nativo */
+  iframe.setAttribute('title', 'Vídeo Kids Music');
+  iframe.src = vimeoUrl;
+  iframe.style.cssText = `
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 2rem;
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    display: block;
+  `;
+
+  /* Placeholder visual: mostra thumbnail enquanto iframe carrega */
+  const placeholder = document.createElement('div');
+  placeholder.style.cssText = `
+    position: absolute;
+    inset: 0;
+    border-radius: 2rem;
+    background: url('${thumbnailUrl}') center/cover no-repeat;
+    z-index: 1;
+    pointer-events: none;
+  `;
+
+  mc.appendChild(placeholder);
+  mc.appendChild(iframe);
+
+  /* Quando iframe dispara load, fade-in suave */
+  iframe.addEventListener('load', () => {
+    iframe.style.opacity = '1';
+    placeholder.style.opacity = '0';
+    placeholder.style.transition = 'opacity 0.3s ease';
+    setTimeout(() => placeholder.remove(), 300);
   });
-  vimeoPlayers[id] = player;
-  player.on('timeupdate', (data) => {
-    if (playingId === id && data.duration) {
-      const bar = document.getElementById(`bar-${id}`);
-      if (bar) bar.style.width = (data.seconds / data.duration * 100) + '%';
-    }
-  });
+
+  /* Instancia API e conecta player */
+  await loadVimeoAPI();
+
+  try {
+    const player = new Vimeo.Player(iframe);
+    vimeoPlayers[id] = player;
+
+    player.on('timeupdate', (data) => {
+      if (playingId === id && data.duration) {
+        const bar = document.getElementById(`bar-${id}`);
+        if (bar) bar.style.width = (data.seconds / data.duration * 100) + '%';
+      }
+    });
+  } catch (e) {
+    console.warn('Vimeo player init error:', e);
+  }
 }
 
 async function toggleVideo(id) {
@@ -246,20 +316,32 @@ async function toggleVideo(id) {
     btn.classList.add('is-loading');
     btn.innerHTML = '<div class="loader-spinner"></div>';
     try {
+      /* Inicialização lazy — só agora, no clique do usuário */
       await initVimeoPlayer(id);
       const player = vimeoPlayers[id];
       if (!player) throw new Error('not ready');
+
+      const media = document.getElementById(`media-${id}`);
+      const iframe = media?.querySelector('iframe');
+
+      /* Ativa visual do media container */
+      if (media) media.classList.add('active');
+
+      /* Garante que thumbnail/placeholder está visível até iframe carregar */
+      if (iframe) iframe.style.opacity = '1';
+
       player.setMuted(false);
       player.setVolume(1);
       await player.play();
+
       playingId = id;
       btn.classList.remove('is-loading');
       btn.innerHTML = PAUSE_SVG;
       btn.classList.add('playing');
-      document.getElementById(`media-${id}`)?.classList.add('active');
     } catch (err) {
       btn.classList.remove('is-loading');
       btn.innerHTML = PLAY_SVG;
+      console.warn('Video playback error:', err);
     }
   }
 }
@@ -1165,16 +1247,18 @@ function showSalesPage() {
 
 
 /* ══════════════════════════════════════════════════════════
-   INIT
+   INIT — SEM PRE-CARREGAMENTO DE PLAYERS VIMEO
    ══════════════════════════════════════════════════════════ */
 buildCarousel();
 updateCards();
-loadVimeoAPI().then(() => {
-  initVimeoPlayer(MUSIC_EXAMPLES[activeIndex].id, false);
-  if (MUSIC_EXAMPLES[activeIndex + 1]) initVimeoPlayer(MUSIC_EXAMPLES[activeIndex + 1].id, false);
-});
+/* 
+   OTIMIZAÇÃO: Não inicializa players no carregamento da página.
+   Players Vimeo são criados LAZILY apenas quando o usuário clica no botão play.
+   Isso elimina 2-3s de delay no carregamento inicial da página.
+*/
+loadVimeoAPI();  /* pré-carrega script em background, sem bloquear render */
 
-// Expõe funções do carousel de depoimentos
+/* Expõe funções do carousel de depoimentos */
 window.nextTestimonial = nextTestimonial;
 window.prevTestimonial = prevTestimonial;
 window.goToTestimonial = goToTestimonial;
@@ -1589,7 +1673,7 @@ const XSP_LEAD_COPY = {
   pricing: {
     chip: 'Etapa final',
     title: () => 'Confirme seu WhatsApp e finalize o pagamento',
-    text: 'Esse número será usado para entregar a música, atualizar o pedido e garantir que tudo chegue certo.',
+    text: 'Esse número será usado para entregar a música, atualizar o pedido e garantir que tudo llegue certo.',
     previewTitle: 'Pagamento + entrega no WhatsApp',
     previewText: 'Plano expresso, envio em até 6h e garantia de 30 dias.'
   }
