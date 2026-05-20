@@ -225,9 +225,8 @@ async function initVimeoPlayer(id, autoplay = false) {
     document.head.appendChild(link);
   }
 
-  /* Monta iframe com defer + thumbnail placeholder */
+  /* Monta iframe */
   const vimeoUrl = `https://player.vimeo.com/video/${card.vimeoId}?autoplay=${autoplay ? 1 : 0}&loop=1&muted=0&dnt=1&responsive=1&player_id=vp-${id}`;
-  const thumbnailUrl = `https://vumbnail.com/${card.vimeoId}.jpg`;
 
   const iframe = document.createElement('iframe');
   iframe.id = `vp-${id}`;
@@ -244,46 +243,10 @@ async function initVimeoPlayer(id, autoplay = false) {
     border-radius: 2rem;
     position: absolute;
     inset: 0;
-    opacity: 0;
-    transition: opacity 0.4s ease;
     display: block;
   `;
 
-  /* Placeholder visual: mostra thumbnail enquanto iframe carrega */
-  const placeholder = document.createElement('div');
-  placeholder.style.cssText = `
-    position: absolute;
-    inset: 0;
-    border-radius: 2rem;
-    background: url('${thumbnailUrl}') center/cover no-repeat;
-    z-index: 1;
-    pointer-events: none;
-  `;
-
-  /* Overlay transparente que cobre a UI nativa do Vimeo (barra, logo, etc.)
-     pointer-events:none = não bloqueia cliques; z-index alto = fica na frente */
-  const uiOverlay = document.createElement('div');
-  uiOverlay.setAttribute('aria-hidden', 'true');
-  uiOverlay.style.cssText = `
-    position: absolute;
-    inset: 0;
-    z-index: 10;
-    pointer-events: none;
-    border-radius: 2rem;
-    background: transparent;
-  `;
-
-  mc.appendChild(placeholder);
   mc.appendChild(iframe);
-  mc.appendChild(uiOverlay);
-
-  /* Quando iframe dispara load, fade-in suave */
-  iframe.addEventListener('load', () => {
-    iframe.style.opacity = '1';
-    placeholder.style.opacity = '0';
-    placeholder.style.transition = 'opacity 0.3s ease';
-    setTimeout(() => placeholder.remove(), 300);
-  });
 
   /* Instancia API e conecta player */
   await loadVimeoAPI();
