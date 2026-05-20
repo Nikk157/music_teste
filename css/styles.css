@@ -333,24 +333,19 @@ ul { list-style: none; }
 /* ══════════════════════════════════════════════════════════
    TELA 2 — LOADING SCREEN
    ══════════════════════════════════════════════════════════ */
+/* REVERTER para isso — exatamente como estava antes */
 #loadingScreen {
-  display: flex;           /* sempre no layout, não some do DOM */
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
+  display: none;
   position: fixed;
   inset: 0;
   z-index: 3000;
-  /* demais propriedades mantidas... */
-  transition: opacity .45s ease, visibility .45s ease;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #2d1b6e 0%, #7c2da8 35%, #c026a0 65%, #e91e8c 100%);
+  overflow: hidden;
 }
-
-#loadingScreen.active {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  /* animation: fadeIn .5s ease; ← remover */
-}
+#loadingScreen.active { display: flex; animation: fadeIn .5s ease; }
 
 #lsParticles {
   position: absolute;
